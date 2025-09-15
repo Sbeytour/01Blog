@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/blog_db
+    username: bloguser
+    password: blogpass
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
