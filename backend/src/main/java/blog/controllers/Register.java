@@ -12,8 +12,8 @@ import blog.services.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/users")
-public class UserController {
+@RequestMapping("/auth")
+public class Register {
     @Autowired
     UserService userService;
     

@@ -1,6 +1,9 @@
 package blog.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,7 +21,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotBlank
+    @NotBlank(message = "Username is required")
+    @Column(unique = true, nullable = false)
     @Pattern(regexp = "^[a-zA-Z0-9]{4,12}$", message = "username must be between 4 and 12 characters and contain only characters and numbers")
     private String username;
 
@@ -29,7 +33,8 @@ public class User {
     private String lastName;
 
     @Email
-    @NotBlank
+    @NotBlank(message = "Email is required")
+    @Column(unique = true, nullable = false)
     @Pattern(regexp = "^[a-zA-Z0-9]+\\.?[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-z]+$", message = "Email format is invalid")
     private String email;
 
@@ -40,6 +45,13 @@ public class User {
     @Size(min = 3, max = 1000)
     private String bio;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
+
+    @Column(length = 500)
+    private String profileImgUrl;
+
     public long getId() {
         return id;
     }
@@ -48,7 +60,7 @@ public class User {
         this.id = id;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 
@@ -95,4 +107,21 @@ public class User {
     public void setBio(String bio) {
         this.bio = bio;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getProfileImgUrl() {
+        return profileImgUrl;
+    }
+
+    public void setProfileImgUrl(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
+
 }

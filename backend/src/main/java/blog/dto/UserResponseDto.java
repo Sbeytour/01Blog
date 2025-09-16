@@ -15,7 +15,7 @@ public class UserResponseDto {
 
     public static UserResponseDto fromEntity(User user) {
         UserResponseDto userResp = new UserResponseDto();
-        userResp.username = user.getUserName();
+        userResp.username = user.getUsername();
         userResp.email = user.getEmail();
         userResp.firstName = user.getFirstName();
         userResp.lastName = user.getLastName();
