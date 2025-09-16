@@ -1,5 +1,12 @@
 package blog.entity;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,7 +22,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -124,4 +131,9 @@ public class User {
         this.profileImgUrl = profileImgUrl;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
 }

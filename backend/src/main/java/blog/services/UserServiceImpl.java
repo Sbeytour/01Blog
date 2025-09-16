@@ -3,7 +3,7 @@ package blog.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import blog.dto.CreateUserDto;
+import blog.dto.RegisterUserDto;
 import blog.dto.UserResponseDto;
 import blog.entity.User;
 import blog.exceptions.UserAlreadyExists;
@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     
 
     @Override
-    public UserResponseDto saveUser(@Valid CreateUserDto userDto) {
+    public UserResponseDto saveUser(@Valid RegisterUserDto userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new UserAlreadyExists("Email '" + userDto.getEmail() + "' is already registered.");
         }
