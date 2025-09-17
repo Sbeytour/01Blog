@@ -53,7 +53,7 @@ public class JwtUtils {
     }
 
     public boolean validateToken(String token) {
-        return isTokenExpired(token);
+        return !isTokenExpired(token);
     }
 
     public String getIdentifierFromJwt(String token) {
