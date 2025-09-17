@@ -2,9 +2,11 @@ package blog.security;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 
 import blog.entity.User;
 import io.jsonwebtoken.Claims;
@@ -13,6 +15,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+@Service
 public class JwtUtils {
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -22,6 +25,7 @@ public class JwtUtils {
 
     public String generateToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
+
         String identifier = user.getUsername();
         Date now = new Date();
         Date expaireDate = new Date(now.getTime() + jwtExpiration);
@@ -31,10 +35,30 @@ public class JwtUtils {
                 .compact();
     }
 
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
+    }
+
+    private Date extractExpirationDate(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpirationDate(token).before(new Date());
+    }
+
+    public boolean validateToken(String token) {
+        return isTokenExpired(token);
+    }
+
     public String getIdentifierFromJwt(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
         return claims.getSubject();
-
     }
 
     private Key getSignInKey() {
