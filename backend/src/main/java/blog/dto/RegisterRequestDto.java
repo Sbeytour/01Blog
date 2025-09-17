@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class RegisterUserDto {
+public class RegisterRequestDto {
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9]{4,12}$", message = "username must be between 4 and 12 characters and contain only characters and numbers")
     private String username;
