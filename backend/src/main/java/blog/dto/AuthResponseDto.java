@@ -1,10 +1,10 @@
 package blog.dto;
 
-public class AuthResponceDto {
+public class AuthResponseDto {
     private String token;
     private UserResponseDto user;
 
-    public AuthResponceDto(String token, UserResponseDto user) {
+    public AuthResponseDto(String token, UserResponseDto user) {
         this.token = token;
         this.user = user;
     }

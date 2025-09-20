@@ -26,6 +26,7 @@ public class SecurityConfig {
     
     @Autowired
     JwtAuthEntryPoint jwtAuthEntryPoint;
+    
     @Bean
     public PasswordEncoder passwodEncode() {
         return new BCryptPasswordEncoder();

@@ -26,11 +26,11 @@ public class JwtUtils {
     public String generateToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
 
-        String identifier = user.getUsername();
+        String username = user.getUsername();
         Date now = new Date();
         Date expaireDate = new Date(now.getTime() + jwtExpiration);
 
-        return Jwts.builder().setSubject(identifier).setIssuedAt(now).setExpiration(expaireDate)
+        return Jwts.builder().setSubject(username).setIssuedAt(now).setExpiration(expaireDate)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -56,7 +56,7 @@ public class JwtUtils {
         return !isTokenExpired(token);
     }
 
-    public String getIdentifierFromJwt(String token) {
+    public String getUsernameFromJwt(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
         return claims.getSubject();
     }
