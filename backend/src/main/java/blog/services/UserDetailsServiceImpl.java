@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import blog.exceptions.UserNotFound;
+import blog.exceptions.UserNotFoundException;
 import blog.repositories.UserRepository;
 
 @Service
@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             UserDetails user = userRepository.findByUsernameOrEmail(identifier);
 
             if (user == null) {
-                throw new UserNotFound("User not found with identifier: " + identifier);
+                throw new UserNotFoundException("User not found with identifier: " + identifier);
             }
 
             return user;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import blog.dto.RegisterRequestDto;
 import blog.entity.User;
 import blog.exceptions.SuccessException;
-import blog.exceptions.UserAlreadyExists;
+import blog.exceptions.UserAlreadyExistsException;
 import blog.repositories.UserRepository;
 
 @Service
@@ -21,7 +21,7 @@ public class AuthService {
     public User saveUser(RegisterRequestDto registerDto) {
         if (userRespository.existsByEmail(registerDto.getUsername())
                 || userRespository.existsByEmail(registerDto.getEmail())) {
-            throw new UserAlreadyExists("username or email already exists");
+            throw new UserAlreadyExistsException("username or email already exists");
         }
         try {
             User user = new User();

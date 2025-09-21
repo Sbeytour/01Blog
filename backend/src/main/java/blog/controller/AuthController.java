@@ -17,7 +17,7 @@ import blog.dto.LoginRequestDto;
 import blog.dto.RegisterRequestDto;
 import blog.dto.UserResponseDto;
 import blog.entity.User;
-import blog.exceptions.InvalidCredentials;
+import blog.exceptions.InvalidCredentialsException;
 import blog.security.JwtUtils;
 import blog.services.AuthService;
 import jakarta.validation.Valid;
@@ -49,7 +49,7 @@ public class AuthController {
 
             return authResponse;
         } catch (AuthenticationException e) {
-            throw new InvalidCredentials("Registration successful but authentication failed. Please try logging in.");
+            throw new InvalidCredentialsException("Registration successful but authentication failed. Please try logging in.");
         }
     }
 
@@ -69,9 +69,9 @@ public class AuthController {
 
             return authResponse;
         } catch (BadCredentialsException e) {
-            throw new InvalidCredentials("Invalid username/email or password");
+            throw new InvalidCredentialsException("Invalid username/email or password");
         } catch (AuthenticationException e) {
-            throw new InvalidCredentials("Authentication failed. Please check your credentials");
+            throw new InvalidCredentialsException("Authentication failed. Please check your credentials");
         }
 
     }
