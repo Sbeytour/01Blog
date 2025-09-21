@@ -46,7 +46,6 @@ public class User implements UserDetails {
     private String email;
 
     @NotBlank
-    @Size(min = 3, max = 30)
     private String password;
 
     @Size(min = 3, max = 1000)
