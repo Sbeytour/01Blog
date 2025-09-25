@@ -4,5 +4,12 @@ export interface User {
     firstName: string;
     lastName: string;
     email: string;
-    role: string;
+    bio?: string;
+    profileImgUrl?:string;
+    role: UserRole;
+}
+
+export enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN'
 }
