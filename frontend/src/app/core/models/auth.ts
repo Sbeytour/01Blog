@@ -1,6 +1,6 @@
 import { User } from "./user";
 
-export interface AuthResponce {
+export interface AuthResponse {
     token: string;
     userData: User;
 }
@@ -18,4 +18,10 @@ export interface RegisterRequest {
     password: string;
     bio?: string;
     profileImgUrl?: string;
+}
+
+export interface AuthState {
+    isAuthenticated: boolean;
+    user: User | null;
+    token: string | null;
 }
