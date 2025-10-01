@@ -1,14 +1,27 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterLink
+  ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
 export class Login implements OnInit {
-  loginForm !: FormGroup;
+  loginForm!: FormGroup;
+  hidePassword = true;
 
   formbuilder = inject(FormBuilder);
 
@@ -30,6 +43,8 @@ export class Login implements OnInit {
   }
 
   onSubmit(): void {
-    console.log('login successfully');
+    if (this.loginForm.valid) {
+      console.log('login successfully', this.loginForm.value);
+    }
   }
 }

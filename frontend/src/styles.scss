@@ -1,1 +1,62 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme((color: (primary: mat.$red-palette,
+        tertiary: mat.$orange-palette,
+        theme-type: light,
+      ),
+      typography: Roboto,
+      density: 0));
+}
+
+// --mat-sys-background: #fff8f6;
+// --mat-sys-error: #ba1a1a;
+// --mat-sys-error-container: #ffdad6;
+// --mat-sys-inverse-on-surface #fbeeec: #fbeeec;
+// --mat-sys-inverse-primary: #ffb4a8;
+// --mat-sys-inverse-surface: #362f2e;
+// --mat-sys-on-background: #201a19;
+// --mat-sys-on-error: #ffffff;
+// --mat-sys-on-error-container: #93000a;
+// --mat-sys-on-primary: #ffffff;
+// --mat-sys-on-primary-container: #930100;
+// --mat-sys-on-primary-fixed: #410000;
+// --mat-sys-on-primary-fixed-variant: #930100;
+// --mat-sys-on-secondary: #ffffff;
+// --mat-sys-on-secondary-container: #5d3f3b;
+// --mat-sys-on-secondary-fixed: #2c1512;
+// --mat-sys-on-secondary-fixed-variant: #5d3f3b;
+// --mat-sys-on-surface: #201a19;
+// --mat-sys-on-surface-variant: #534341;
+// --mat-sys-on-tertiary: #ffffff;
+// --mat-sys-on-tertiary-container: #723600;
+// --mat-sys-on-tertiary-fixed: #311300;
+// --mat-sys-on-tertiary-fixed-variant: #723600;
+// --mat-sys-outline: #857370;
+// --mat-sys-outline-variant: #d8c2be;
+// --mat-sys-primary: #c00100;
+// --mat-sys-primary-container: #ffdad4;
+// --mat-sys-primary-fixed: #ffdad4;
+// --mat-sys-primary-fixed-dim: #ffb4a8;
+// --mat-sys-scrim: #000000;
+// --mat-sys-secondary: #775651;
+// --mat-sys-secondary-container: #ffdad4;
+// --mat-sys-secondary-fixed: #ffdad4;
+// --mat-sys-secondary-fixed-dim: #e7bdb6;
+// --mat-sys-shadow: #000000;
+// --mat-sys-surface: #fff8f6;
+// --mat-sys-surface-bright: #fff8f6;
+// --mat-sys-surface-container: #f9ebe9;
+// --mat-sys-surface-container-high: #f3e5e4;
+// --mat-sys-surface-container-highest: #ede0dd;
+// --mat-sys-surface-container-low: #fef1ef;
+// --mat-sys-surface-container-lowest: #ffffff;
+// --mat-sys-surface-dim: #e4d7d6;
+// --mat-sys-surface-tint: #c00100;
+// --mat-sys-surface-variant: #f5ddda;
+// --mat-sys-tertiary: #964900;
+// --mat-sys-tertiary-container: #ffdcc7;
+// --mat-sys-tertiary-fixed: #ffdcc7;
+// --mat-sys-tertiary-fixed-dim: #ffb787;
+// --mat-sys-neutral-variant20: #3b2d2b;
