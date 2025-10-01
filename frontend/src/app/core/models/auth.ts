@@ -19,9 +19,3 @@ export interface RegisterRequest {
     bio?: string;
     profileImgUrl?: string;
 }
-
-export interface AuthState {
-    isAuthenticated: boolean;
-    user: User | null;
-    token: string | null;
-}
