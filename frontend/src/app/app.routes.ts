@@ -18,6 +18,13 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/auth/register/register').then(m => m.Register)
             }
 
-        ]
+        ],
+    },
+
+    {
+        path: "home",
+        // canActivate: [AuthGard],
+        loadComponent: () => import('./features/home/home').then(m => m.Home)
     }
+
 ];
