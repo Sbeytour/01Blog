@@ -90,6 +90,7 @@ export class Register implements OnInit {
         this.router.navigate(['/auth/login'])
       },
       error: (error: HttpErrorResponse) => {
+        console.log("error: ", error);
         this.handleError(error);
       }
     })
