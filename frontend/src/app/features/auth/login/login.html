@@ -8,75 +8,22 @@
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Username or Email</mat-label>
         <input matInput formControlName="identifier" placeholder="Enter your username or email">
+        <mat-icon matPrefix>alternate_email</mat-icon>
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Password</mat-label>
         <input matInput formControlName="password" placeholder="Enter your password">
+        <mat-icon matPrefix>vpn_key</mat-icon>
       </mat-form-field>
       <button matButton="filled" type="submit" class="login-button">
         <mat-icon>login</mat-icon>
         Sign In
       </button>
-    </form>
-  </div>
-</div>
-
-<!-- 
-<div class="login-container">
-  <div class="login-card">
-    <div class="login-header">
-
-    </div>
-
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Username or Email</mat-label>
-        <input matInput formControlName="identifier" placeholder="Enter your username or email"
-          autocomplete="username" />
-        <mat-icon matPrefix>person</mat-icon>
-        @if(loginForm.get('identifier')?.hasError('required')) {
-        <mat-error>
-          Username or email is required
-        </mat-error>
-        }
-        @if (loginForm.get('identifier')?.hasError('minlength')) {
-        <mat-error>
-          Must be at least 3 characters
-        </mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Password</mat-label>
-        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
-          placeholder="Enter your password" autocomplete="current-password" />
-        <mat-icon matPrefix>lock</mat-icon>
-        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword"
-          [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
-          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
-        @if (loginForm.get('password')?.hasError('required')) {
-        <mat-error>
-          Password is required
-        </mat-error>
-        }
-        @if (loginForm.get('password')?.hasError('minlength')) {
-        <mat-error>
-          Password must be at least 6 characters
-        </mat-error>
-        }
-      </mat-form-field>
-
-      <button matButton="filled" type="submit" class="login-button">
-        <mat-icon>login</mat-icon>
-        Sign In
-      </button>
-
       <div class="login-footer">
         <p>Don't have an account?
-          <a routerLink="/auth/register" class="register-link">Sign up</a>
+          <a matButton="text" routerLink="/auth/register" class="register-link">Sign up</a>
         </p>
       </div>
     </form>
   </div>
-</div> -->
+</div>
