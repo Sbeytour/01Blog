@@ -19,7 +19,7 @@ public class AuthService {
     PasswordEncoder passwordEncoder;
 
     public User saveUser(RegisterRequestDto registerDto) {
-        if (userRespository.existsByEmail(registerDto.getUsername())
+        if (userRespository.existsByUsername(registerDto.getUsername())
                 || userRespository.existsByEmail(registerDto.getEmail())) {
             throw new UserAlreadyExistsException("username or email already exists");
         }
