@@ -9,6 +9,7 @@
         <mat-label>Username</mat-label>
         <input matInput formControlName="username" placeholder="Choose a unique username">
         <mat-icon matPrefix>account_circle</mat-icon>
+        <mat-error class="error">{{getFieldErrorMsg('username')}}</mat-error>
       </mat-form-field>
 
       <div class="name-row">
@@ -16,12 +17,14 @@
           <mat-label>First Name</mat-label>
           <input matInput formControlName="firstName" placeholder="First name" autocomplete="given-name">
           <mat-icon matPrefix>person</mat-icon>
+          <mat-error class="error">{{getFieldErrorMsg('firstName')}}</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="half-width">
           <mat-label>Last Name</mat-label>
           <input matInput formControlName="lastName" placeholder="Last name" autocomplete="family-name">
           <mat-icon matPrefix>person_outline</mat-icon>
+          <mat-error class="error">{{getFieldErrorMsg('lastName')}}</mat-error>
         </mat-form-field>
       </div>
 
@@ -29,19 +32,25 @@
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" placeholder="Enter your Email">
         <mat-icon matPrefix>alternate_email</mat-icon>
+        <mat-error class="error">{{getFieldErrorMsg('email')}}</mat-error>
       </mat-form-field>
 
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Password</mat-label>
-        <input matInput formControlName="password" placeholder="Choose a unique username">
+        <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'" placeholder="Choose a unique username">
         <mat-icon matPrefix>vpn_key</mat-icon>
+        <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+          <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+        <mat-error class="error">{{getFieldErrorMsg('password')}}</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Bio (Optional)</mat-label>
         <textarea matInput formControlName="bio" placeholder="Tell us about yourself" rows="3"
           maxlength="1000"></textarea>
+        <mat-error class="error">{{getFieldErrorMsg('bio')}}</mat-error>
       </mat-form-field>
 
       <button matButton="filled" type="submit" class="submit-button">
