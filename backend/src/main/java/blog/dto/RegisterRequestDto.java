@@ -25,7 +25,7 @@ public class RegisterRequestDto {
     @Size(min = 3, max = 30)
     private String password;
 
-    @Size(min = 3, max = 1000)
+    @Size(max = 1000)
     private String bio;
 
     @Size(max = 500)

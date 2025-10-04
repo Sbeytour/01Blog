@@ -25,15 +25,21 @@ public class AuthService {
         }
         try {
             User user = new User();
-    
+
             user.setUsername(registerDto.getUsername());
             user.setFirstName(registerDto.getFirstName());
             user.setLastName(registerDto.getLastName());
             user.setEmail(registerDto.getEmail());
             user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-            user.setBio(registerDto.getBio());
-            user.setProfileImgUrl(registerDto.getProfileImgUrl());
-    
+
+            if (registerDto.getBio() != null && !registerDto.getBio().trim().isEmpty()) {
+                user.setBio(registerDto.getBio());
+            }
+
+            if (registerDto.getProfileImgUrl() != null && !registerDto.getProfileImgUrl().trim().isEmpty()) {
+                user.setProfileImgUrl(registerDto.getProfileImgUrl());
+            }
+
             return userRespository.save(user);
         } catch (Exception e) {
             throw new SuccessException("Failed to register user. Please check your input and try again");
