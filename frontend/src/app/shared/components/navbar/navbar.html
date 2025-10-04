@@ -1,1 +1,60 @@
-<p>navbar works!</p>
+<mat-toolbar class="navbar">
+
+    <div class="navbar-left">
+        <a routerLink="/home" class="logo-link">
+            <h1 class="logo">01</h1>
+            <h1 class="title">Blog</h1>
+        </a>
+    </div>
+
+    <div class="navbar-right">
+        <button mat-flat-button color="primary" class="create-post-btn" (click)="navigateToCreatePost()">
+            <mat-icon>add</mat-icon>
+            <span>Create Post</span>
+        </button>
+
+        <!-- Notifications -->
+        <button mat-icon-button class="notification-btn">
+            <mat-icon>notifications</mat-icon>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button mat-icon-button (click)="toggleTheme()">
+            <mat-icon>{{ isDarkMode() ? 'dark_mode' : 'light_mode' }}</mat-icon>
+        </button>
+
+        <!-- User Menu -->
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-btn">
+            @if (authService.currentUser()?.profileImgUrl) {
+            <img [src]="authService.currentUser()?.profileImgUrl" [alt]="authService.currentUser()?.username"
+                class="user-avatar">
+            } @else {
+            <mat-icon class="default-avatar">account_circle</mat-icon>
+            }
+        </button>
+
+        <!-- User Dropdown Menu -->
+        <mat-menu #userMenu="matMenu" class="user-dropdown">
+            <button mat-menu-item (click)="navigateToProfile()">
+                <mat-icon>person</mat-icon>
+                <span>My Profile</span>
+            </button>
+
+            <!-- Admin Panel (Only for admins) -->
+            <!-- @if (authService.isAdmin()) { -->
+            <button mat-menu-item (click)="navigateToAdminPanel()">
+                <mat-icon>admin_panel_settings</mat-icon>
+                <span>Admin Panel</span>
+            </button>
+            <!-- } -->
+
+            <mat-divider></mat-divider>
+
+            <!-- Logout -->
+            <button mat-menu-item (click)="onLogout()" class="logout-btn">
+                <mat-icon>logout</mat-icon>
+                <span>Logout</span>
+            </button>
+        </mat-menu>
+    </div>
+</mat-toolbar>

@@ -80,7 +80,7 @@ export class Register implements OnInit {
 
   onSubmit(): void {
     if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched;
+      this.registerForm.markAllAsTouched();
       return;
     }
 
