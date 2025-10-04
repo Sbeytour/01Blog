@@ -103,7 +103,7 @@ export class Register implements OnInit {
   getFieldErrorMsg(fieldName: string) {
     const field = this.registerForm.get(fieldName);
 
-    if (!field || !field.errors || field.untouched) {
+    if (!field || !field.errors) {
       return;
     }
 

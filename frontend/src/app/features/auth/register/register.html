@@ -4,6 +4,14 @@
       <h1>Register</h1>
       <p>Join 01Blog and start sharing your journey</p>
     </div>
+
+    @if (errorMessage()) {
+    <mat-error class="error-alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </mat-error>
+    }
+
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Username</mat-label>
@@ -38,7 +46,8 @@
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Password</mat-label>
-        <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'" placeholder="Choose a unique username">
+        <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'"
+          placeholder="Choose a unique username">
         <mat-icon matPrefix>vpn_key</mat-icon>
         <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
           <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -52,7 +61,6 @@
           maxlength="1000"></textarea>
         <mat-error class="error">{{getFieldErrorMsg('bio')}}</mat-error>
       </mat-form-field>
-
       <button matButton="filled" type="submit" class="submit-button">
         <mat-icon>login</mat-icon>
         Create Account

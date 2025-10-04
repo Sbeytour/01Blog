@@ -4,6 +4,15 @@
       <h1>Login</h1>
       <p>Sign in to continue to 01Blog</p>
     </div>
+
+    @if (errorMessage()) {
+    <mat-error class="error-alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </mat-error>
+    }
+
+
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Username or Email</mat-label>
@@ -13,7 +22,8 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Password</mat-label>
-        <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'" placeholder="Enter your password">
+        <input matInput formControlName="password" [type]="hidePassword() ? 'password' : 'text'"
+          placeholder="Enter your password">
         <mat-icon matPrefix>vpn_key</mat-icon>
         <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
           <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
