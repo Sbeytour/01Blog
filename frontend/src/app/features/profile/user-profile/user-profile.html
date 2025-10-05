@@ -1,1 +1,173 @@
-<p>user-profile works!</p>
+<app-navbar></app-navbar>
+<div class="profile-container">
+  @if (profileUser()) {
+  
+  <!-- Profile Info Card -->
+  <mat-card class="profile-card">
+    <div class="profile-header">
+      <!-- Avatar Section -->
+      <div class="avatar-section">
+        @if (profileUser()?.profileImgUrl) {
+          <img [src]="profileUser()?.profileImgUrl" [alt]="profileUser()?.username" class="profile-avatar">
+        } @else {
+          <div class="default-avatar">
+            <mat-icon>account_circle</mat-icon>
+          </div>
+        }
+      </div>
+
+      <!-- Profile Info Section -->
+      <div class="profile-info">
+        <div class="profile-name-section">
+          <h1 class="profile-name">{{ profileUser()?.firstName }} {{ profileUser()?.lastName }}</h1>
+          <span class="profile-username">&#64;{{ profileUser()?.username }}</span>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="profile-stats">
+          <div class="stat-item">
+            <span class="stat-value">{{ postsCount() }}</span>
+            <span class="stat-label">Posts</span>
+          </div>
+          <mat-divider [vertical]="true"></mat-divider>
+          <div class="stat-item">
+            <span class="stat-value">{{ followersCount() }}</span>
+            <span class="stat-label">Followers</span>
+          </div>
+          <mat-divider [vertical]="true"></mat-divider>
+          <div class="stat-item">
+            <span class="stat-value">{{ followingCount() }}</span>
+            <span class="stat-label">Following</span>
+          </div>
+        </div>
+
+        <!-- Bio Section -->
+        @if (profileUser()?.bio) {
+          <p class="profile-bio">{{ profileUser()?.bio }}</p>
+        }
+
+        <!-- Action Buttons -->
+        <div class="profile-actions">
+          @if (isOwnProfile()) {
+            <button mat-flat-button color="primary" (click)="onEditProfile()" class="action-btn">
+              <mat-icon>edit</mat-icon>
+              Edit Profile
+            </button>
+          } @else {
+            <button mat-flat-button [color]="isFollowing() ? 'accent' : 'primary'" 
+                    (click)="onFollowToggle()" class="action-btn">
+              <mat-icon>{{ isFollowing() ? 'person_remove' : 'person_add' }}</mat-icon>
+              {{ isFollowing() ? 'Unfollow' : 'Follow' }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Mega Menu with Tabs -->
+  <mat-card class="content-card">
+    <mat-tab-group class="profile-tabs" animationDuration="300ms">
+      
+      <!-- Posts Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>grid_on</mat-icon>
+          <span>Posts</span>
+        </ng-template>
+        <div class="tab-content">
+          @if (posts().length > 0) {
+            <div class="posts-grid">
+              @for (post of posts(); track post.id) {
+                <div class="post-item" (click)="navigateToPost(post.id)">
+                  <img [src]="post.image" [alt]="post.title" class="post-image">
+                  <div class="post-overlay">
+                    <div class="post-stats">
+                      <span><mat-icon>favorite</mat-icon> 24</span>
+                      <span><mat-icon>comment</mat-icon> 8</span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state">
+              <mat-icon>image_not_supported</mat-icon>
+              <p>No posts yet</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Followers Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>people</mat-icon>
+          <span>Followers</span>
+        </ng-template>
+        <div class="tab-content">
+          @if (followers().length > 0) {
+            <div class="users-list">
+              @for (follower of followers(); track follower.id) {
+                <div class="user-item" (click)="navigateToUserProfile(follower.username)">
+                  <div class="user-avatar">
+                    @if (follower.profileImg) {
+                      <img [src]="follower.profileImg" [alt]="follower.username">
+                    } @else {
+                      <mat-icon>account_circle</mat-icon>
+                    }
+                  </div>
+                  <div class="user-info">
+                    <span class="user-name">{{ follower.username }}</span>
+                  </div>
+                  <button mat-button color="primary">View Profile</button>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state">
+              <mat-icon>people_outline</mat-icon>
+              <p>No followers yet</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Following Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>person_add</mat-icon>
+          <span>Following</span>
+        </ng-template>
+        <div class="tab-content">
+          @if (following().length > 0) {
+            <div class="users-list">
+              @for (user of following(); track user.id) {
+                <div class="user-item" (click)="navigateToUserProfile(user.username)">
+                  <div class="user-avatar">
+                    @if (user.profileImg) {
+                      <img [src]="user.profileImg" [alt]="user.username">
+                    } @else {
+                      <mat-icon>account_circle</mat-icon>
+                    }
+                  </div>
+                  <div class="user-info">
+                    <span class="user-name">{{ user.username }}</span>
+                  </div>
+                  <button mat-button color="primary">View Profile</button>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="empty-state">
+              <mat-icon>person_add_disabled</mat-icon>
+              <p>Not following anyone yet</p>
+            </div>
+          }
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+
+  }
+</div>
