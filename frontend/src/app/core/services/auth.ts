@@ -56,7 +56,15 @@ export class AuthService {
     return user?.role === 'ADMIN';
   }
 
-  private isTokenExpired(token: string): boolean {
+  public getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${environment.apiUrl}/auth/me`).pipe(tap(
+      (user) => {
+        this.currentUser.set(user);
+      }
+    ))
+  }
+
+  public isTokenExpired(token: string): boolean {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (!payload.exp) return false;
