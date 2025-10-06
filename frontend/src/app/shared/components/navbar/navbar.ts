@@ -36,7 +36,7 @@ export class Navbar {
     console.log(this.authService.currentUser());
     const username = this.authService.currentUser()?.username;
     if (username) {
-      this.router.navigate(['/profile', username]);
+      this.router.navigate(['/profile']);
     }
   }
 

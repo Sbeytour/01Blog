@@ -47,30 +47,34 @@ export class UserProfile implements OnInit {
     { id: 2, title: 'Second Post', image: 'https://picsum.photos/300/200?random=2' },
     { id: 3, title: 'Third Post', image: 'https://picsum.photos/300/200?random=3' },
   ]);
-  
+
   followers = signal<any[]>([
     { id: 1, username: 'user1', profileImg: null },
     { id: 2, username: 'user2', profileImg: null },
   ]);
-  
+
   following = signal<any[]>([
     { id: 1, username: 'user3', profileImg: null },
     { id: 2, username: 'user4', profileImg: null },
   ]);
 
   ngOnInit(): void {
-    this.loadProfile();
-  }
-
-  private loadProfile(): void {
-    const username = this.route.snapshot.paramMap.get('username');
     const currentUser = this.authService.currentUser();
 
-    // For now, using mock data. Replace with actual API call
+    this.route.paramMap.subscribe(params => {
+      const username = params.get('username');
+      if (username) {
+        this.loadUserProfile(username, currentUser);
+      } else {
+        this.loadCurrentUserProfile(currentUser);
+      }
+    });
+  }
+
+  loadUserProfile(username: string, currentUser: User | null): void {
     if (currentUser?.username === username) {
       console.log("fetch me")
-      this.profileUser.set(currentUser);
-      this.isOwnProfile.set(true);
+      this.router.navigate(['/profile']);
     } else {
       // TODO: Fetch other user's profile from API
       this.profileUser.set({
@@ -85,6 +89,11 @@ export class UserProfile implements OnInit {
       });
       this.isOwnProfile.set(false);
     }
+  }
+
+  loadCurrentUserProfile(currentUser: User | null) {
+    this.profileUser.set(currentUser);
+    this.isOwnProfile.set(true);
   }
 
   onEditProfile(): void {
