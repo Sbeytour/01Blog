@@ -38,10 +38,6 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children: [
             {
-                path: 'edit',
-                loadComponent: () => import('./features/profile/profile-edit/profile-edit').then(m => m.ProfileEdit)
-            },
-            {
                 path: '',
                 loadComponent: () => import('./features/profile/user-profile/user-profile').then(m => m.UserProfile)
             },
