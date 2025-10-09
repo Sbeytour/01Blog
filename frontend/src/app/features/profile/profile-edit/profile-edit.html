@@ -45,7 +45,7 @@
             Choose Image
           </button>
 
-          @if (selectedFile()) {
+          <!-- @if (selectedFile()) {
           <button mat-flat-button color="primary" (click)="onUploadImage()" [disabled]="isUploadingImage()">
             @if (isUploadingImage()) {
             <mat-spinner diameter="20"></mat-spinner>
@@ -54,7 +54,7 @@
             }
             Upload
           </button>
-          }
+          } -->
 
           @if (imagePreview() && !selectedFile()) {
           <button mat-stroked-button color="warn" (click)="onDeleteImage()" [disabled]="isUploadingImage()">

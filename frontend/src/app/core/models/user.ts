@@ -13,3 +13,13 @@ export enum UserRole {
   USER = 'USER',
   ADMIN = 'ADMIN'
 }
+
+export interface UpdateProfileRequest {
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+  bio?: string;
+  profileImgUrl?: string;
+}

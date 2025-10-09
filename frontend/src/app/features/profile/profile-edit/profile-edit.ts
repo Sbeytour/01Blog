@@ -13,6 +13,7 @@ import { UserService } from '../../../core/services/userService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Navbar } from '../../../shared/components/navbar/navbar';
 import { MatDividerModule } from '@angular/material/divider';
+import { UpdateProfileRequest } from '../../../core/models/user';
 
 @Component({
   selector: 'app-profile-edit',
@@ -59,8 +60,8 @@ export class ProfileEdit implements OnInit {
     this.profileForm = this.fb.group({
       username: ['', [
         Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(15),
+        Validators.minLength(4),
+        Validators.maxLength(12),
         Validators.pattern(/^[a-zA-Z0-9]+$/)
       ]],
       firstName: ['', [
@@ -106,89 +107,6 @@ export class ProfileEdit implements OnInit {
     }
   }
 
-  onFileSelect(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    console.log(input);
-    console.log(input.files);
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-
-      // Validate file size (5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        this.errorMessage.set('File size must be less than 5MB');
-        return;
-      }
-
-      // Validate file type
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-      if (!validTypes.includes(file.type)) {
-        this.errorMessage.set('Only JPG, PNG, and Gif images are allowed');
-        return;
-      }
-
-      this.selectedFile.set(file);
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.imagePreview.set(e.target?.result as string);
-      };
-
-      console.log("imagePreview", this.imagePreview)
-
-      reader.readAsDataURL(file);
-
-      this.errorMessage.set(null);
-    }
-  }
-
-  onUploadImage(): void {
-    const file = this.selectedFile();
-    if (!file) {
-      this.errorMessage.set('Please select an image first');
-      return;
-    }
-
-    this.isUploadingImage.set(true);
-    this.errorMessage.set(null);
-
-    this.userService.updateProfilePicture(file).subscribe({
-      next: (response) => {
-        this.authService.currentUser.set(response);
-        this.successMessage.set('Profile picture updated successfully!');
-        this.selectedFile.set(null);
-        this.isUploadingImage.set(false);
-
-        setTimeout(() => this.successMessage.set(null), 3000);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.handleError(error);
-        this.isUploadingImage.set(false);
-      }
-    });
-  }
-
-  onDeleteImage(): void {
-    if (confirm('Are you sure you want to delete your profile picture?')) {
-      this.isUploadingImage.set(true);
-
-      this.userService.deleteProfilePicture().subscribe({
-        next: (response) => {
-          this.authService.currentUser.set(response);
-          this.imagePreview.set(null);
-          this.selectedFile.set(null);
-          this.successMessage.set('Profile picture deleted successfully!');
-          this.isUploadingImage.set(false);
-
-          setTimeout(() => this.successMessage.set(null), 3000);
-        },
-        error: (error: HttpErrorResponse) => {
-          this.handleError(error);
-          this.isUploadingImage.set(false);
-        }
-      });
-    }
-  }
 
   onSubmit(): void {
     if (this.profileForm.invalid) {
@@ -201,7 +119,7 @@ export class ProfileEdit implements OnInit {
     this.successMessage.set(null);
 
     // Create update object (only send changed fields)
-    const updateData: any = {};
+    const updateData: UpdateProfileRequest = {};
     const formValue = this.profileForm.value;
 
     if (formValue.username) updateData.username = formValue.username;
@@ -213,6 +131,7 @@ export class ProfileEdit implements OnInit {
 
     this.userService.updateProfile(updateData).subscribe({
       next: (response) => {
+        console.log("response ", response)
         this.authService.currentUser.set(response);
         this.successMessage.set('Profile updated successfully!');
         this.isLoading.set(false);
