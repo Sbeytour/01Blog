@@ -67,7 +67,7 @@
 
 
   @if (isEditing() && isOwnProfile()) {
-  <app-profile-edit></app-profile-edit>
+  <app-profile-edit (cancelEdit)="onCancelEdit()"></app-profile-edit>
   } @else {
 
   <!-- Mega Menu with Tabs -->

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -31,6 +31,8 @@ import { MatDividerModule } from '@angular/material/divider';
   styleUrl: './profile-edit.scss'
 })
 export class ProfileEdit implements OnInit {
+  @Output() cancelEdit = new EventEmitter();
+
   private fb = inject(FormBuilder);
   private router = inject(Router);
   authService = inject(AuthService);
@@ -43,7 +45,6 @@ export class ProfileEdit implements OnInit {
   successMessage = signal<string | null>(null);
   isLoading = signal(false);
   isUploadingImage = signal(false);
-  cancelEdit = signal(false);
 
   // Image preview
   selectedFile = signal<File | null>(null);
@@ -236,7 +237,7 @@ export class ProfileEdit implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/profile']);
+    this.cancelEdit.emit();
   }
 
   getFieldErrorMsg(fieldName: string): string {

@@ -120,4 +120,8 @@ export class UserProfile implements OnInit {
   navigateToUserProfile(username: string): void {
     this.router.navigate(['/profile', username]);
   }
+
+  onCancelEdit(): void {
+    this.isEditing.set(false);
+  }
 }
