@@ -65,6 +65,11 @@
     </div>
   </mat-card>
 
+
+  @if (isEditing() && isOwnProfile()) {
+  <app-profile-edit></app-profile-edit>
+  } @else {
+
   <!-- Mega Menu with Tabs -->
   <mat-card class="content-card">
     <mat-tab-group class="profile-tabs" animationDuration="300ms">
@@ -168,4 +173,5 @@
       </mat-tab>
     </mat-tab-group>
   </mat-card>
+  }
 </div>

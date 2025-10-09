@@ -8,6 +8,8 @@
 
   @media (max-width: 768px) {
     padding: 16px;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
@@ -23,9 +25,10 @@
 
   @media (max-width: 768px) {
     padding: 20px;
+    margin-right: 0;
+    margin-bottom: 20px;
+    max-width: 600px;
   }
-
-
 }
 
 .profile-header {
@@ -210,6 +213,16 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
+
+    @media (max-width: 768px) {
+      width: 10rem;
+
+      mat-icon {
+      font-size: 15px;
+      width: 15px;
+      height: 15px;
+      }
+    }
   }
 }
 
@@ -223,6 +236,11 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: auto;
   scrollbar-width: none;
+
+  @media (max-width: 768px) {
+    max-width: 600px;
+    height: auto;
+  }
 }
 
 .profile-tabs {

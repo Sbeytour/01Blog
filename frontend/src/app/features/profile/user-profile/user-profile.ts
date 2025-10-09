@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../../core/services/auth';
 import { User } from '../../../core/models/user';
 import { Navbar } from '../../../shared/components/navbar/navbar';
+import { ProfileEdit } from '../profile-edit/profile-edit';
 
 @Component({
   selector: 'app-user-profile',
@@ -21,7 +22,8 @@ import { Navbar } from '../../../shared/components/navbar/navbar';
     MatCardModule,
     MatChipsModule,
     MatDividerModule,
-    Navbar
+    Navbar,
+    ProfileEdit,
   ],
   templateUrl: './user-profile.html',
   styleUrl: './user-profile.scss'
@@ -35,6 +37,7 @@ export class UserProfile implements OnInit {
   profileUser = signal<User | null>(null);
   isOwnProfile = signal(false);
   isFollowing = signal(false);
+  isEditing = signal(false);
 
   // Stats
   postsCount = signal(12);
@@ -97,7 +100,7 @@ export class UserProfile implements OnInit {
   }
 
   onEditProfile(): void {
-    this.router.navigate(['/profile/edit']);
+    this.isEditing.set(true);
   }
 
   onFollowToggle(): void {
