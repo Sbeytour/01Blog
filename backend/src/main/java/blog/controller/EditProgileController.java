@@ -1,8 +1,10 @@
 package blog.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,11 +25,17 @@ public class EditProgileController {
     private EditProfileService editService;
 
     @PutMapping
-    public UserResponseDto updateProfile(
-            @Valid @RequestBody UpdateProfileRequestDto updateDto,
+    public UserResponseDto updateProfile(@Valid @RequestBody UpdateProfileRequestDto updateDto,
             Authentication authentication) {
-        System.out.println("here i am ");
         User user = (User) authentication.getPrincipal();
         return editService.updateProfile(user.getId(), updateDto);
+    }
+
+    @PostMapping("/picture")
+    public UserResponseDto updateProfileImg(@Valid @RequestParam("file") MultipartFile file,
+            Authentication authentication) throws IOException {
+
+        User user = (User) authentication.getPrincipal();
+        return editService.updateProfileImg(user.getId(),file);
     }
 }

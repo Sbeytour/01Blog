@@ -45,23 +45,12 @@
             Choose Image
           </button>
 
-          <!-- @if (selectedFile()) {
-          <button mat-flat-button color="primary" (click)="onUploadImage()" [disabled]="isUploadingImage()">
-            @if (isUploadingImage()) {
-            <mat-spinner diameter="20"></mat-spinner>
-            } @else {
-            <mat-icon>upload</mat-icon>
-            }
-            Upload
-          </button>
-          } -->
-
-          @if (imagePreview() && !selectedFile()) {
+          <!-- @if (imagePreview() && !selectedFile()) {
           <button mat-stroked-button color="warn" (click)="onDeleteImage()" [disabled]="isUploadingImage()">
             <mat-icon>delete</mat-icon>
             Remove
           </button>
-          }
+          } -->
         </div>
 
         <p class="upload-hint">
@@ -75,13 +64,6 @@
     <!-- Profile Information Form -->
     <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
       <h2>Personal Information</h2>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Username</mat-label>
-        <input matInput formControlName="username" placeholder="Enter your username">
-        <mat-icon matPrefix>account_circle</mat-icon>
-        <mat-error>{{ getFieldErrorMsg('email') }}</mat-error>
-      </mat-form-field>
 
       <div class="form-row">
         <mat-form-field appearance="outline" class="half-width">

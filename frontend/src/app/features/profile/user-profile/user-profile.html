@@ -21,12 +21,12 @@
           <h1 class="profile-name">{{ profileUser()?.firstName }} {{ profileUser()?.lastName }}</h1>
           <span class="profile-username">&#64;{{ profileUser()?.username }}</span>
         </div>
-        
+
         <!-- Bio Section -->
         @if (profileUser()?.bio) {
         <p class="profile-bio">{{ profileUser()?.bio }}</p>
         }
-        
+
         <!-- Stats Section -->
         <div class="profile-stats">
           <div class="stat-item">
@@ -44,7 +44,6 @@
             <span class="stat-label">Following</span>
           </div>
         </div>
-
 
         <!-- Action Buttons -->
         <div class="profile-actions">
@@ -67,7 +66,7 @@
 
 
   @if (isEditing() && isOwnProfile()) {
-  <app-profile-edit (cancelEdit)="onCancelEdit()"></app-profile-edit>
+  <app-profile-edit (editCompleted)="onEditComplet($event)"></app-profile-edit>
   } @else {
 
   <!-- Mega Menu with Tabs -->

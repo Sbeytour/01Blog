@@ -1,5 +1,13 @@
 package blog.services;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,17 +28,10 @@ public class EditProfileService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private FileStorageService fileStorageService;
-
     public UserResponseDto updateProfile(Long userId, UpdateProfileRequestDto updateDto) {
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        // Update username
-        if (updateDto.getUsername() != null && !updateDto.getUsername().trim().isEmpty()) {
-            user.setUsername(updateDto.getUsername().trim());
-        }
 
         // Update firstName
         if (updateDto.getFirstName() != null && !updateDto.getFirstName().trim().isEmpty()) {
@@ -64,6 +65,25 @@ public class EditProfileService {
         }
 
         User updatedUser = userRepository.save(user);
+        return UserResponseDto.fromEntity(updatedUser);
+    }
+
+    public UserResponseDto updateProfileImg(Long userId, MultipartFile file) throws IOException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        String uploadsDir = "uploads";
+        File dir = new File(uploadsDir);
+
+        if (!dir.exists())
+            dir.mkdirs();
+
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        Path filePath = Paths.get(uploadsDir, fileName);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        user.setProfileImgUrl("/files/" + fileName);
+        User updatedUser = userRepository.save(user);
+
         return UserResponseDto.fromEntity(updatedUser);
     }
 }

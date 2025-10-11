@@ -103,6 +103,11 @@ export class UserProfile implements OnInit {
     this.isEditing.set(true);
   }
 
+  onEditComplet(updatedUser: User) {
+    this.profileUser.set(updatedUser);
+    this.isEditing.set(false);
+  }
+  
   onFollowToggle(): void {
     this.isFollowing.set(!this.isFollowing());
     // TODO: Call follow/unfollow API

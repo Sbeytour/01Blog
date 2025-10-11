@@ -1,6 +1,5 @@
-import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,7 +10,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth';
 import { UserService } from '../../../core/services/userService';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Navbar } from '../../../shared/components/navbar/navbar';
 import { MatDividerModule } from '@angular/material/divider';
 import { UpdateProfileRequest } from '../../../core/models/user';
 
@@ -31,11 +29,14 @@ import { UpdateProfileRequest } from '../../../core/models/user';
   templateUrl: './profile-edit.html',
   styleUrl: './profile-edit.scss'
 })
-export class ProfileEdit implements OnInit {
-  @Output() cancelEdit = new EventEmitter();
 
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
+export class ProfileEdit implements OnInit {
+  @Input() profileUser!: UpdateProfileRequest;
+  @Output() editCompleted = new EventEmitter();
+
+  private formbuilder = inject(FormBuilder);
+
+  // private router = inject(Router);
   authService = inject(AuthService);
   private userService = inject(UserService);
 
@@ -57,13 +58,7 @@ export class ProfileEdit implements OnInit {
   }
 
   private initializeForm(): void {
-    this.profileForm = this.fb.group({
-      username: ['', [
-        Validators.required,
-        Validators.minLength(4),
-        Validators.maxLength(12),
-        Validators.pattern(/^[a-zA-Z0-9]+$/)
-      ]],
+    this.profileForm = this.formbuilder.group({
       firstName: ['', [
         Validators.required,
         Validators.minLength(3),
@@ -94,7 +89,6 @@ export class ProfileEdit implements OnInit {
     const user = this.authService.currentUser();
     if (user) {
       this.profileForm.patchValue({
-        username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
@@ -107,6 +101,43 @@ export class ProfileEdit implements OnInit {
     }
   }
 
+  onFileSelect(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    this.selectedFile.set(file);
+
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview.set(reader.result as string)
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+
+  onSavingImage() {
+    if (!this.selectedFile()) return;
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile()!);
+
+    this.userService.updateProfileImg(formData).subscribe({
+      next: (response) => {
+        const user = this.authService.currentUser();
+        if (user) {
+          user.profileImgUrl = `http://localhost:8080/files${response.profileImgUrl}`;
+          this.imagePreview.set(`http://localhost:8080/files${response.profileImgUrl}`);
+        }
+      },
+      error: (err) => {
+        console.error('Upload failed', err);
+      }
+    })
+  }
 
   onSubmit(): void {
     if (this.profileForm.invalid) {
@@ -122,7 +153,6 @@ export class ProfileEdit implements OnInit {
     const updateData: UpdateProfileRequest = {};
     const formValue = this.profileForm.value;
 
-    if (formValue.username) updateData.username = formValue.username;
     if (formValue.firstName) updateData.firstName = formValue.firstName;
     if (formValue.lastName) updateData.lastName = formValue.lastName;
     if (formValue.email) updateData.email = formValue.email;
@@ -138,11 +168,8 @@ export class ProfileEdit implements OnInit {
 
         // Clear password field
         this.profileForm.patchValue({ password: '' });
-
         // Redirect to profile after 2 seconds
-        setTimeout(() => {
-          this.router.navigate(['/profile']);
-        }, 2000);
+        this.editCompleted.emit(response);
       },
       error: (error: HttpErrorResponse) => {
         this.handleError(error);
@@ -156,7 +183,7 @@ export class ProfileEdit implements OnInit {
   }
 
   onCancel(): void {
-    this.cancelEdit.emit();
+    this.editCompleted.emit(this.authService.currentUser());
   }
 
   getFieldErrorMsg(fieldName: string): string {

@@ -14,4 +14,8 @@ export class UserService {
   updateProfile(updateData: Partial<User>): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/profile`, updateData);
   }
+
+  updateProfileImg(formData: FormData): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/profile/picture`, formData);
+  }
 }
