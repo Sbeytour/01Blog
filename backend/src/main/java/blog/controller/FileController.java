@@ -11,19 +11,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/files")
 public class FileController {
     private String uploadDir = "uploads";
 
-    @GetMapping("/image/{filename}")
-    public Resource getProfileImage(@PathVariable String filename) throws Exception {
-        Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
-        Resource resource = new UrlResource(filePath.toUri());
+    @GetMapping("/{filename:.+}")
+    public Resource getFile(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
 
-        if (!resource.exists()) {
-            throw new Exception();
+            if (!resource.exists()) {
+                throw new Exception();
+            }
+
+            return resource;
+        } catch (Exception e) {
+            throw new RuntimeException("Error loading file: " + filename, e);
         }
 
-        return resource;
     }
 }

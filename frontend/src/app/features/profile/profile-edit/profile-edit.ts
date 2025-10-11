@@ -12,6 +12,7 @@ import { UserService } from '../../../core/services/userService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDividerModule } from '@angular/material/divider';
 import { UpdateProfileRequest } from '../../../core/models/user';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-profile-edit',
@@ -96,7 +97,7 @@ export class ProfileEdit implements OnInit {
       });
 
       if (user.profileImgUrl) {
-        this.imagePreview.set(`http://localhost:8080/files${user.profileImgUrl}`);
+        this.imagePreview.set(`${environment.apiUrl}${user.profileImgUrl}`);
       }
     }
   }
@@ -107,6 +108,18 @@ export class ProfileEdit implements OnInit {
     if (!input.files?.length) return;
 
     const file = input.files[0];
+
+    if (file.size > 5 * 1024 * 1024) {
+      this.errorMessage.set('File size must be less than 5MB');
+      return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+      this.errorMessage.set('Only JPG, PNG images are allowed');
+      return;
+    }
+
     this.selectedFile.set(file);
 
 
@@ -119,8 +132,11 @@ export class ProfileEdit implements OnInit {
   }
 
 
-  onSavingImage() {
+  onSavingImage(): void {
     if (!this.selectedFile()) return;
+
+    this.isUploadingImage.set(true);
+    this.errorMessage.set(null);
 
     const formData = new FormData();
     formData.append('file', this.selectedFile()!);
@@ -129,8 +145,9 @@ export class ProfileEdit implements OnInit {
       next: (response) => {
         const user = this.authService.currentUser();
         if (user) {
-          user.profileImgUrl = `http://localhost:8080/files${response.profileImgUrl}`;
-          this.imagePreview.set(`http://localhost:8080/files${response.profileImgUrl}`);
+          user.profileImgUrl = response.profileImgUrl;
+          this.authService.currentUser.set(user);
+          this.imagePreview.set(`${environment.apiUrl}${response.profileImgUrl}`);
         }
       },
       error: (err) => {
@@ -151,6 +168,10 @@ export class ProfileEdit implements OnInit {
 
     // Create update object (only send changed fields)
     const updateData: UpdateProfileRequest = {};
+    if (this.selectedFile()) {
+      this.onSavingImage()
+    }
+
     const formValue = this.profileForm.value;
 
     if (formValue.firstName) updateData.firstName = formValue.firstName;

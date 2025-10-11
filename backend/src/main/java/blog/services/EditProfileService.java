@@ -78,9 +78,22 @@ public class EditProfileService {
         if (!dir.exists())
             dir.mkdirs();
 
-        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String originalFilename = file.getOriginalFilename();
+        String extension = originalFilename != null && originalFilename.contains(".")
+                ? originalFilename.substring(originalFilename.lastIndexOf("."))
+                : ".jpg";
+
+        String fileName = UUID.randomUUID() + extension;
         Path filePath = Paths.get(uploadsDir, fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // ✅ Delete old profile picture if exists
+        if (user.getProfileImgUrl() != null && !user.getProfileImgUrl().isEmpty()) {
+            String oldFileName = user.getProfileImgUrl().replace("/files/", "");
+            Path oldFilePath = Paths.get(uploadsDir, oldFileName);
+            Files.deleteIfExists(oldFilePath);
+        }
+
         user.setProfileImgUrl("/files/" + fileName);
         User updatedUser = userRepository.save(user);
 
