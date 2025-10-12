@@ -7,13 +7,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
-import { AuthService } from '../../../core/services/auth';
-import { User } from '../../../core/models/user';
-import { Navbar } from '../../../shared/components/navbar/navbar';
-import { ProfileEdit } from '../profile-edit/profile-edit';
+import { AuthService } from '../../core/services/auth';
+import { User } from '../../core/models/user';
+import { Navbar } from '../../components/navbar/navbar';
+import { ProfileEdit } from '../../components/profile-edit/profile-edit';
 
 @Component({
-  selector: 'app-user-profile',
+  selector: 'app-profile',
   imports: [
     CommonModule,
     MatButtonModule,
@@ -25,8 +25,8 @@ import { ProfileEdit } from '../profile-edit/profile-edit';
     Navbar,
     ProfileEdit,
   ],
-  templateUrl: './user-profile.html',
-  styleUrl: './user-profile.scss'
+  templateUrl: './profile.html',
+  styleUrl: './profile.scss'
 })
 export class UserProfile implements OnInit {
   private route = inject(ActivatedRoute);
@@ -107,7 +107,7 @@ export class UserProfile implements OnInit {
     this.profileUser.set(updatedUser);
     this.isEditing.set(false);
   }
-  
+
   onFollowToggle(): void {
     this.isFollowing.set(!this.isFollowing());
     // TODO: Call follow/unfollow API

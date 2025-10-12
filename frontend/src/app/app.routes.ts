@@ -39,11 +39,11 @@ export const routes: Routes = [
         children: [
             {
                 path: '',
-                loadComponent: () => import('./features/profile/user-profile/user-profile').then(m => m.UserProfile)
+                loadComponent: () => import('./features/profile/profile').then(m => m.UserProfile)
             },
             {
                 path: ':username',
-                loadComponent: () => import('./features/profile/user-profile/user-profile').then(m => m.UserProfile)
+                loadComponent: () => import('./features/profile/profile').then(m => m.UserProfile)
             }
         ]
     },

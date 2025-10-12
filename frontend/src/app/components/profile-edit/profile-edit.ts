@@ -7,12 +7,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AuthService } from '../../../core/services/auth';
-import { UserService } from '../../../core/services/userService';
+import { AuthService } from '../../core/services/auth';
+import { UserService } from '../../core/services/userService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDividerModule } from '@angular/material/divider';
-import { UpdateProfileRequest } from '../../../core/models/user';
-import { environment } from '../../../../environments/environment';
+import { UpdateProfileRequest } from '../../core/models/user';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-profile-edit',
@@ -122,7 +122,6 @@ export class ProfileEdit implements OnInit {
 
     this.selectedFile.set(file);
 
-
     const reader = new FileReader();
     reader.onload = () => {
       this.imagePreview.set(reader.result as string)
@@ -130,7 +129,6 @@ export class ProfileEdit implements OnInit {
 
     reader.readAsDataURL(file);
   }
-
 
   onSavingImage(): void {
     if (!this.selectedFile()) return;
@@ -168,6 +166,7 @@ export class ProfileEdit implements OnInit {
 
     // Create update object (only send changed fields)
     const updateData: UpdateProfileRequest = {};
+    
     if (this.selectedFile()) {
       this.onSavingImage()
     }

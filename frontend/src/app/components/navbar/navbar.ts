@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
-import { AuthService } from '../../../core/services/auth';
+import { AuthService } from '../../core/services/auth';
 
 @Component({
   selector: 'app-navbar',
