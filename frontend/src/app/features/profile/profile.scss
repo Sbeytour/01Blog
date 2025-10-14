@@ -24,7 +24,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
-    padding: 20px;
+    padding: 15px;
     margin-right: 0;
     margin-bottom: 20px;
     max-width: 600px;
@@ -76,8 +76,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
     @media (max-width: 768px) {
-      width: 120px;
-      height: 120px;
+      width: 100px;
+      height: 100px;
     }
 
     mat-icon {
@@ -87,9 +87,9 @@
       color: var(--mat-sys-primary);
 
       @media (max-width: 768px) {
-        font-size: 80px;
-        width: 80px;
-        height: 80px;
+        font-size: 70px;
+        width:70px;
+        height: 70px;
       }
     }
   }
@@ -99,7 +99,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 .profile-name-section {
@@ -110,7 +110,7 @@
     color: var(--mat-sys-on-surface);
 
     @media (max-width: 768px) {
-      font-size: 24px;
+      font-size: 22px;
     }
   }
 
@@ -120,7 +120,7 @@
     font-weight: 500;
 
     @media (max-width: 768px) {
-      font-size: 16px;
+      font-size: 14px;
     }
   }
 }
@@ -158,7 +158,7 @@
       color: var(--mat-sys-primary);
 
       @media (max-width: 768px) {
-        font-size: 20px;
+        font-size: 17px;
       }
     }
 
@@ -166,6 +166,11 @@
       font-size: 14px;
       color: var(--mat-sys-on-surface-variant);
       margin-top: 4px;
+
+
+      @media (max-width: 768px) {
+        font-size: 13px;
+      }
     }
   }
 }
@@ -184,7 +189,7 @@
 
 .profile-actions {
   display: flex;
-  gap: 12px;
+  // gap: 12px;
   margin-top: 8px;
 
   @media (max-width: 768px) {
@@ -210,7 +215,7 @@
     }
 
     &:hover {
-      transform: translateY(-2px);
+      transform: translateY(0.5px);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
@@ -246,7 +251,6 @@
 .profile-tabs {
   ::ng-deep {
     .mat-mdc-tab-labels {
-      // padding: 0 16px;
       background-color: var(--mat-sys-surface-container);
     }
 

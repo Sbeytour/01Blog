@@ -21,12 +21,18 @@ import blog.exceptions.UserNotFoundException;
 import blog.repositories.UserRepository;
 
 @Service
-public class EditProfileService {
+public class UserService {
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public UserResponseDto getUserProfile(String username) {
+        User user = userRepository.findByUsernameOrEmail(username);
+
+        return UserResponseDto.fromEntity(user);
+    }
 
     public UserResponseDto updateProfile(Long userId, UpdateProfileRequestDto updateDto) {
 
@@ -95,6 +101,29 @@ public class EditProfileService {
         }
 
         user.setProfileImgUrl("/files/" + fileName);
+        User updatedUser = userRepository.save(user);
+
+        return UserResponseDto.fromEntity(updatedUser);
+    }
+
+    public UserResponseDto deleteProfileImg(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        String uploadsDir = "uploads";
+        String fileUrl = user.getProfileImgUrl();
+        if (fileUrl != null && !fileUrl.isEmpty()) {
+            try {
+                String fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+                System.out.println("filename: " + fileName);
+                Path filePath = Paths.get(uploadsDir).resolve(fileName).normalize();
+                Files.deleteIfExists(filePath);
+                user.setProfileImgUrl(null);
+            } catch (IOException e) {
+                System.err.println("Could not delete file: " + fileUrl);
+            }
+        }
+
         User updatedUser = userRepository.save(user);
 
         return UserResponseDto.fromEntity(updatedUser);

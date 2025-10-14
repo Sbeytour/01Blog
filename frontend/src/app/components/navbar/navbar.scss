@@ -54,9 +54,8 @@
     display: flex;
     align-items: center;
     border-radius: 12px;
-    // padding: 0 12px;
+    padding: 0 12px;
     font-weight: 600;
-    // text-transform: none;
     transition: all 0.3s ease;
 
     mat-icon {
@@ -64,7 +63,7 @@
     }
 
     &:hover {
-      transform: translateY(2px);
+      transform: translateY(0.5px);
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
@@ -76,7 +75,6 @@
 
       mat-icon {
         margin: 0px;
-        // padding-right: 22px;
       }
     }
 
@@ -102,32 +100,28 @@
   .theme-toggle-btn,
   .user-menu-btn {
     transition: all 0.2s ease;
+    height: 50px;
+    width: 50px;
 
-  }
-
-  .notification-btn {
     mat-icon {
-      font-size: 30px;
+      font-size: 32px;
+      height: 32px;
+      width: 32px;
     }
-  }
 
-  .theme-toggle-btn {
-    mat-icon {
-      font-size: 60px;
-    }
   }
 
   .user-menu-btn {
     .user-avatar {
-      width: 35Px;
-      height: 35px;
+      width: 32Px;
+      height: 32px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--mat-sys-primary);
     }
 
     .default-avatar {
-      font-size: 25px;
+      font-size: 32px;
       padding: 0;
       color: var(--mat-sys-primary);
     }
@@ -136,39 +130,6 @@
 
 // User Dropdown Menu
 ::ng-deep {
-  .navbar-right{
-    .create-post-btn{
-      .mat-mdc-button-persistent-ripple{
-        display: none;
-      }
-    }
-
-    .notification-btn{
-      
-    }
-  }
-  .mat-mdc-button-base {
-    .mat-mdc-button-persistent-ripple {
-      width: 50px;
-      height: 50px;
-    }
-
-    .mat-focus-indicator {
-      width: 50px;
-      height: 50px;
-    }
-
-    .mat-mdc-button-touch-target {
-      width: 60px;
-      height: 60px;
-    }
-
-    .mat-mdc-button-ripple {
-      width: 50px;
-      height: 50px;
-    }
-  }
-
   .cdk-overlay-pane {
     .mat-mdc-menu-panel {
       margin-top: 1rem;

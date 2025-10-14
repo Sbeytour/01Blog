@@ -10,6 +10,7 @@
   @media (max-width: 768px) {
     max-width: 600px;
     padding: 20px;
+    height: 47vh;
   }
 }
 
@@ -23,7 +24,7 @@
     color: var(--mat-sys-primary);
 
     @media (max-width: 768px) {
-      font-size: 24px;
+      font-size: 22px;
     }
   }
 
@@ -31,7 +32,12 @@
     font-size: 14px;
     color: var(--mat-sys-on-surface-variant);
     margin: 0;
+
+    @media (max-width: 768px) {
+      font-size: 12px;
+    }
   }
+
 }
 
 // Alert Messages
@@ -89,7 +95,13 @@
     font-weight: 600;
     margin: 0 0 20px 0;
     color: var(--mat-sys-on-surface);
+
+    @media (max-width: 768px) {
+      font-size: 16px;
+      font-weight: 400;
+    }
   }
+
 }
 
 .picture-upload-area {
@@ -102,7 +114,7 @@
   border-radius: 12px;
 
   @media (max-width: 768px) {
-    padding: 20px 16px;
+    padding: 15px 16px;
   }
 }
 
@@ -115,8 +127,8 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 
   @media (max-width: 768px) {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
   }
 
   .preview-image {
@@ -140,9 +152,9 @@
       color: var(--mat-sys-outline);
 
       @media (max-width: 768px) {
-        font-size: 90px;
-        width: 90px;
-        height: 90px;
+        font-size: 70px;
+        width: 70px;
+        height: 70px;
       }
     }
   }
@@ -173,6 +185,18 @@
     mat-spinner {
       margin-right: 8px;
     }
+
+    @media (max-width: 768px) {
+      gap: 4px;
+      padding: 0 15px;
+      height: 35px;
+
+      mat-icon {
+        font-size: 15px;
+        width: 15px;
+        height: 15px;
+      }
+    }
   }
 }
 
@@ -194,6 +218,11 @@ mat-divider {
     font-weight: 600;
     margin: 0 0 24px 0;
     color: var(--mat-sys-on-surface);
+
+    @media (max-width: 768px) {
+      font-size: 16px;
+      font-weight: 400;
+    }
   }
 }
 
@@ -247,12 +276,6 @@ mat-form-field {
     @media (max-width: 768px) {
       width: 100%;
       justify-content: center;
-    }
-
-    mat-icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
     }
 
     mat-spinner {

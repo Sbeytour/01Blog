@@ -11,6 +11,8 @@ import { AuthService } from '../../core/services/auth';
 import { User } from '../../core/models/user';
 import { Navbar } from '../../components/navbar/navbar';
 import { ProfileEdit } from '../../components/profile-edit/profile-edit';
+import { UserService } from '../../core/services/userService';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-profile',
@@ -32,6 +34,7 @@ export class UserProfile implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   authService = inject(AuthService);
+  userService = inject(UserService)
 
   // Profile data
   profileUser = signal<User | null>(null);
@@ -76,21 +79,17 @@ export class UserProfile implements OnInit {
 
   loadUserProfile(username: string, currentUser: User | null): void {
     if (currentUser?.username === username) {
-      console.log("fetch me")
       this.router.navigate(['/profile']);
     } else {
-      // TODO: Fetch other user's profile from API
-      this.profileUser.set({
-        id: 999,
-        username: username || 'unknown',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        bio: 'Software developer passionate about technology and learning. Building cool stuff with Angular and Spring Boot.',
-        profileImgUrl: undefined,
-        role: 'USER' as any,
-      });
-      this.isOwnProfile.set(false);
+      this.userService.getUserProfile(username).subscribe({
+        next: (response) => {
+          this.profileUser.set(response);
+          this.isOwnProfile.set(false);
+        }, 
+        error: (error : HttpErrorResponse) => {
+          console.log("error fetching profile : ", error);
+        }
+      })
     }
   }
 

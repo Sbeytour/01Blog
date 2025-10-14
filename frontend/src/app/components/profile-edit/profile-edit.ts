@@ -32,12 +32,10 @@ import { environment } from '../../../environments/environment';
 })
 
 export class ProfileEdit implements OnInit {
-  @Input() profileUser!: UpdateProfileRequest;
   @Output() editCompleted = new EventEmitter();
 
   private formbuilder = inject(FormBuilder);
 
-  // private router = inject(Router);
   authService = inject(AuthService);
   private userService = inject(UserService);
 
@@ -204,6 +202,27 @@ export class ProfileEdit implements OnInit {
 
   onCancel(): void {
     this.editCompleted.emit(this.authService.currentUser());
+  }
+
+  onDeleteImage() : void {
+    this.isUploadingImage.set(true);
+
+    this.userService.deletProfilePic().subscribe({
+      next: (resp) => {
+        this.authService.currentUser.set(resp);
+        this.imagePreview.set(null);
+        this.selectedFile.set(null)
+        this.successMessage.set('Profile picture deleted successfully');
+        this.isUploadingImage.set(false);
+
+        setTimeout(() => this.successMessage.set(null), 3000);
+      },
+
+      error: (error: HttpErrorResponse) => {
+        this.handleError(error);
+        this.isUploadingImage.set(false);
+      }
+    })
   }
 
   getFieldErrorMsg(fieldName: string): string {
