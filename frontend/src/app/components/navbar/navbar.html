@@ -41,12 +41,12 @@
             </button>
 
             <!-- Admin Panel (Only for admins) -->
-            <!-- @if (authService.isAdmin()) { -->
+            @if (authService.isAdmin()) {
             <button mat-menu-item (click)="navigateToAdminPanel()">
                 <mat-icon>admin_panel_settings</mat-icon>
                 <span>Admin Panel</span>
             </button>
-            <!-- } -->
+            }
 
             <mat-divider></mat-divider>
 
