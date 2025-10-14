@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import io.jsonwebtoken.security.SecurityException;
 import java.util.stream.*;
 
-import blog.dto.ErrorResponseDto;
+import blog.dto.response.ErrorResponseDto;
 import blog.exceptions.InvalidCredentialsException;
 import blog.exceptions.InvalidTokenException;
 import blog.exceptions.SuccessException;

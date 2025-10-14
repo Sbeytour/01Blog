@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import blog.dto.RegisterRequestDto;
+import blog.dto.request.RegisterRequestDto;
 import blog.entity.User;
 import blog.exceptions.SuccessException;
 import blog.exceptions.UserAlreadyExistsException;

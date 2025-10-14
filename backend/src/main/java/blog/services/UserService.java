@@ -13,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import blog.dto.UpdateProfileRequestDto;
-import blog.dto.UserResponseDto;
+import blog.dto.request.UpdateProfileRequestDto;
+import blog.dto.response.UserResponseDto;
 import blog.entity.User;
 import blog.exceptions.UserAlreadyExistsException;
 import blog.exceptions.UserNotFoundException;

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import blog.dto.AuthResponseDto;
-import blog.dto.LoginRequestDto;
-import blog.dto.RegisterRequestDto;
-import blog.dto.UserResponseDto;
+import blog.dto.request.LoginRequestDto;
+import blog.dto.request.RegisterRequestDto;
+import blog.dto.response.AuthResponseDto;
+import blog.dto.response.UserResponseDto;
 import blog.entity.User;
 import blog.exceptions.InvalidCredentialsException;
 import blog.security.JwtUtils;

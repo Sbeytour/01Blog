@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import blog.dto.UpdateProfileRequestDto;
-import blog.dto.UserResponseDto;
+import blog.dto.request.UpdateProfileRequestDto;
+import blog.dto.response.UserResponseDto;
 import blog.entity.User;
 import blog.services.UserService;
 import jakarta.validation.Valid;

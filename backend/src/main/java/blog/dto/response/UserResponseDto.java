@@ -1,4 +1,4 @@
-package blog.dto;
+package blog.dto.response;
 
 import blog.entity.Role;
 import blog.entity.User;

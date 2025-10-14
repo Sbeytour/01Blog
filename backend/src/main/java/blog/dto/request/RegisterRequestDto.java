@@ -1,45 +1,35 @@
-package blog.dto;
+package blog.dto.request;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class UpdateProfileRequestDto {
-
-    @Size(min = 3, max = 15, message = "username must be between 4 and 12 characters")
+public class RegisterRequestDto {
+    @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9]{4,12}$", message = "username must be between 4 and 12 characters and contain only characters and numbers")
     private String username;
 
-    @Size(min = 3, max = 15, message = "First name must be between 3 and 15 characters")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "First name can only contain letters and spaces")
+    @Size(min = 3, max = 15)
     private String firstName;
 
-    @Size(min = 3, max = 15, message = "Last name must be between 3 and 15 characters")
-    @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Last name can only contain letters and spaces")
+    @Size(min = 3, max = 15)
     private String lastName;
 
-    @Email(message = "Email format is invalid")
+    @Email
+    @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9]+\\.?[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-z]+$", message = "Email format is invalid")
     private String email;
 
-    @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
+    @NotBlank
+    @Size(min = 3, max = 30)
     private String password;
 
-    @Size(max = 1000, message = "Bio cannot exceed 1000 characters")
+    @Size(max = 1000)
     private String bio;
 
     @Size(max = 500)
     private String profileImgUrl;
-
-    // Getters and Setters
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getProfileImgUrl() {
         return profileImgUrl;
@@ -47,6 +37,14 @@ public class UpdateProfileRequestDto {
 
     public void setProfileImgUrl(String profileImgUrl) {
         this.profileImgUrl = profileImgUrl;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFirstName() {

@@ -1,4 +1,4 @@
-package blog.dto;
+package blog.dto.response;
 
 public class ErrorResponseDto {
     private String message;
