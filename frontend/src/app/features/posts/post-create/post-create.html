@@ -1,1 +1,78 @@
-<p>post-create works!</p>
+<app-navbar></app-navbar>
+
+<div class="create-post-container">
+    <mat-card class="create-post-card">
+        <div class="card-header">
+            <h1>Share your thoughts:</h1>
+        </div>
+
+        @if (errorMessage()) {
+        <div class="error-alert">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ errorMessage() }}</span>
+        </div>
+        }
+
+        <form [formGroup]="postForm" class="post-form">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>title:</mat-label>
+                <input matInput formControlName="title" placeholder="Give your post a catchy title">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width content-field">
+                <mat-label>thoughts:</mat-label>
+                <textarea matInput formControlName="content" placeholder="Share your thoughts, ideas, or experiences..."
+                    rows="8" maxlength="1000">
+                </textarea>
+                <mat-hint align="end">
+                    {{ postForm.get('content')?.value?.length || 0 }}/1000
+                </mat-hint>
+            </mat-form-field>
+
+            <div class="media-section">
+                <div class="media-preview-container">
+                    @for (preview of selectedFiles(); track preview.url) {
+                    <div class="media-preview-item">
+                        @if (preview.type === 'image') {
+                        <img [src]="preview.url" alt="Preview">
+                        } @else {
+                        <video [src]="preview.url" controls></video>
+                        }
+                        <button type="button" mat-icon-button class="remove-media-btn">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+                    }
+
+                </div>
+
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <input type="file" #fileInput accept="image/*,video/*" multiple style="display: none">
+
+                <button mat-stroked-button type="button" (click)="fileInput.click()" [disabled]="isLoading()">
+                    <mat-icon>add_photo_alternate</mat-icon>
+                    choose image
+                </button>
+
+                <div class="action-group">
+                    <button mat-stroked-button type="button" [disabled]="isLoading()">
+                        cancel
+                    </button>
+
+                    <button mat-flat-button color="primary" type="submit" [disabled]="isLoading() || postForm.invalid">
+                        @if (isLoading()) {
+                        <mat-spinner diameter="20"></mat-spinner>
+                        <span>Posting...</span>
+                        } @else {
+                        <span>post</span>
+                        }
+                    </button>
+                </div>
+            </div>
+        </form>
+    </mat-card>
+</div>

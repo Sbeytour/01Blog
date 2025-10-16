@@ -112,7 +112,7 @@ export class ProfileEdit implements OnInit {
       return;
     }
 
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
       this.errorMessage.set('Only JPG, PNG images are allowed');
       return;
@@ -164,7 +164,7 @@ export class ProfileEdit implements OnInit {
 
     // Create update object (only send changed fields)
     const updateData: UpdateProfileRequest = {};
-    
+
     if (this.selectedFile()) {
       this.onSavingImage()
     }
@@ -204,7 +204,7 @@ export class ProfileEdit implements OnInit {
     this.editCompleted.emit(this.authService.currentUser());
   }
 
-  onDeleteImage() : void {
+  onDeleteImage(): void {
     this.isUploadingImage.set(true);
 
     this.userService.deletProfilePic().subscribe({

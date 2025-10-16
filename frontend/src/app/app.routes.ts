@@ -48,6 +48,16 @@ export const routes: Routes = [
         ]
     },
     {
+        path: 'api/posts',
+        canActivate: [authGuard],
+        children: [
+            {
+                path: 'create',
+                loadComponent: () => import('./features/posts/post-create/post-create').then(m => m.PostCreate)
+            }
+        ]
+    },
+    {
         path: '**',
         redirectTo: '/auth/login'
     }

@@ -37,7 +37,7 @@
         </div>
 
         <div class="picture-actions">
-          <input type="file" #fileInput accept="image/jpeg,image/jpg,image/png,image/webp"
+          <input type="file" #fileInput accept="image/jpeg,image/jpg,image/png,image/gif"
             (change)="onFileSelect($event)" style="display: none">
 
           <button mat-stroked-button color="primary" (click)="fileInput.click()" [disabled]="isUploadingImage()">
@@ -54,7 +54,7 @@
         </div>
 
         <p class="upload-hint">
-          Accepted formats: JPG, PNG, WebP (Max 5MB)
+          Accepted formats: JPG, PNG, Gif (Max 5MB)
         </p>
       </div>
     </div>

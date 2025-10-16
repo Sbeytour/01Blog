@@ -45,7 +45,7 @@ export class Navbar {
   }
 
   navigateToCreatePost(): void {
-    this.router.navigate(['/posts/create']);
+    this.router.navigate(['/api/posts/create']);
   }
 
   toggleTheme() {
