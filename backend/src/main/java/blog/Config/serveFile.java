@@ -9,7 +9,8 @@ import org.springframework.lang.NonNull;
 public class serveFile implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/files/**")
-                .addResourceLocations("file:uploads/"); // local folder path
+        registry.addResourceHandler("/files/**").addResourceLocations("file:uploads/"); // local folder path
+
+        registry.addResourceHandler("/files/posts/**").addResourceLocations("file:uploads/posts/");
     }
 }

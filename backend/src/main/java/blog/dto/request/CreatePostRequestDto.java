@@ -1,0 +1,43 @@
+package blog.dto.request;
+
+import java.util.List;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public class CreatePostRequestDto {
+
+    @NotBlank(message = "Title is required")
+    @Size(min = 3, max = 150, message = "Title must be between 3 and 150 characters")
+    private String title;
+
+    @NotBlank(message = "Content is required")
+    @Size(min = 10, max = 5000, message = "Content must be between 10 and 5000 characters")
+    private String content;
+
+    private List<String> mediaUrls; // URLs of uploaded media files
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public List<String> getMediaUrls() {
+        return mediaUrls;
+    }
+
+    public void setMediaUrls(List<String> mediaUrls) {
+        this.mediaUrls = mediaUrls;
+    }
+}

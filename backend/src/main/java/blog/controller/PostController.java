@@ -1,0 +1,39 @@
+package blog.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import blog.dto.request.CreatePostRequestDto;
+import blog.dto.response.PostResponseDto;
+import blog.entity.User;
+import blog.services.PostService;
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/api/post")
+public class PostController {
+
+    @Autowired
+    private PostService postService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PostResponseDto createPost(@Valid @RequestParam String title, @Valid @RequestParam String content,
+            @RequestParam(value = "files") List<MultipartFile> files, Authentication authentication) {
+        CreatePostRequestDto createDto = new CreatePostRequestDto();
+        createDto.setTitle(title);
+        createDto.setContent(content);
+
+        User creator = (User) authentication.getPrincipal();
+        return postService.createPost(createDto, creator, files);
+    }
+}

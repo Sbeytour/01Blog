@@ -1,6 +1,7 @@
 package blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import blog.dto.request.LoginRequestDto;
@@ -36,6 +38,7 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     @PostMapping("/register")
+    @ResponseStatus(HttpStatus.CREATED)
     public AuthResponseDto register(@Valid @RequestBody RegisterRequestDto requestDto) {
         try {
             User savedUser = authService.saveUser(requestDto);
@@ -56,6 +59,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
     public AuthResponseDto login(@Valid @RequestBody LoginRequestDto loginDto) {
 
         try {
@@ -79,6 +83,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
     public UserResponseDto getCurrentUser(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return UserResponseDto.fromEntity(user);
