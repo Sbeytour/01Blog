@@ -6,6 +6,14 @@
             <h1>Share your thoughts:</h1>
         </div>
 
+        <!-- Success Message -->
+        @if (successMessage()) {
+        <div class="success-alert">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ successMessage() }}</span>
+        </div>
+        }
+
         @if (errorMessage()) {
         <div class="error-alert">
             <mat-icon>error_outline</mat-icon>
@@ -13,20 +21,22 @@
         </div>
         }
 
-        <form [formGroup]="postForm" class="post-form">
+        <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
             <mat-form-field appearance="outline" class="full-width">
-                <mat-label>title:</mat-label>
+                <mat-label>title</mat-label>
                 <input matInput formControlName="title" placeholder="Give your post a catchy title">
+                <mat-error>{{ getFieldErrorMsg('title') }}</mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-width content-field">
-                <mat-label>thoughts:</mat-label>
+                <mat-label>thoughts</mat-label>
                 <textarea matInput formControlName="content" placeholder="Share your thoughts, ideas, or experiences..."
                     rows="8" maxlength="1000">
                 </textarea>
                 <mat-hint align="end">
                     {{ postForm.get('content')?.value?.length || 0 }}/1000
                 </mat-hint>
+                <mat-error>{{ getFieldErrorMsg('content') }}</mat-error>
             </mat-form-field>
 
             <div class="media-section">
@@ -38,20 +48,18 @@
                         } @else {
                         <video [src]="preview.url" controls></video>
                         }
-                        <button type="button" mat-icon-button class="remove-media-btn">
+                        <button type="button" mat-icon-button (click)="removePicFile($index)" class="remove-media-btn">
                             <mat-icon>close</mat-icon>
                         </button>
                     </div>
                     }
-
                 </div>
-
-
             </div>
 
             <!-- Action Buttons -->
             <div class="form-actions">
-                <input type="file" #fileInput accept="image/*,video/*" multiple style="display: none">
+                <input type="file" #fileInput accept="image/*,video/*" multiple (change)="onFileSelect($event)"
+                    style="display: none">
 
                 <button mat-stroked-button type="button" (click)="fileInput.click()" [disabled]="isLoading()">
                     <mat-icon>add_photo_alternate</mat-icon>
@@ -59,7 +67,7 @@
                 </button>
 
                 <div class="action-group">
-                    <button mat-stroked-button type="button" [disabled]="isLoading()">
+                    <button mat-stroked-button type="button" [disabled]="isLoading()" (click)="onCancel()">
                         cancel
                     </button>
 

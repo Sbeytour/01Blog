@@ -28,7 +28,7 @@ public class PostController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PostResponseDto createPost(@Valid @RequestParam String title, @Valid @RequestParam String content,
-            @RequestParam(value = "files") List<MultipartFile> files, Authentication authentication) {
+            @RequestParam(value = "files", required = false) List<MultipartFile> files, Authentication authentication) {
         CreatePostRequestDto createDto = new CreatePostRequestDto();
         createDto.setTitle(title);
         createDto.setContent(content);

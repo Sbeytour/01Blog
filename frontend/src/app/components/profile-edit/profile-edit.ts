@@ -13,6 +13,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatDividerModule } from '@angular/material/divider';
 import { UpdateProfileRequest } from '../../core/models/user';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog';
 
 @Component({
   selector: 'app-profile-edit',
@@ -38,6 +41,8 @@ export class ProfileEdit implements OnInit {
 
   authService = inject(AuthService);
   private userService = inject(UserService);
+  private dialog = inject(MatDialog);
+
 
   profileForm!: FormGroup;
 
@@ -200,8 +205,22 @@ export class ProfileEdit implements OnInit {
     this.hidePassword.set(!this.hidePassword());
   }
 
+  hasUnsavedChanges() {
+    return this.profileForm.dirty || this.selectedFile.length > 0;
+  }
+
   onCancel(): void {
-    this.editCompleted.emit(this.authService.currentUser());
+    if (this.hasUnsavedChanges()) {
+      const dialogRef = this.dialog.open(DialogComponent);
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.editCompleted.emit(this.authService.currentUser());
+        }
+      })
+    } else {
+      this.editCompleted.emit(this.authService.currentUser());
+
+    }
   }
 
   onDeleteImage(): void {
