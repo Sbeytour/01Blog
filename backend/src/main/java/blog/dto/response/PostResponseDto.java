@@ -12,6 +12,10 @@ public class PostResponseDto {
     private String content;
     private UserResponseDto creator;
     private List<MediaResponseDto> media;
+    private int commentsCount;
+    private int likesCount;
+    private boolean isLikedByCurrentUser;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -59,6 +63,30 @@ public class PostResponseDto {
 
     public void setCreator(UserResponseDto creator) {
         this.creator = creator;
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
+    }
+
+    public int getLikesCount() {
+        return likesCount;
+    }
+
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
+    }
+
+    public boolean isLikedByCurrentUser() {
+        return isLikedByCurrentUser;
+    }
+
+    public void setLikedByCurrentUser(boolean isLikedByCurrentUser) {
+        this.isLikedByCurrentUser = isLikedByCurrentUser;
     }
 
     public List<MediaResponseDto> getMedia() {
