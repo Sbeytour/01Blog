@@ -28,8 +28,17 @@ public class PostResponseDto {
         dto.media = post.getMediaList().stream()
                 .map(MediaResponseDto::fromEntity)
                 .collect(Collectors.toList());
+        dto.commentsCount = post.getComments() != null ? post.getComments().size() : 0;
+        dto.likesCount = post.getLikes() != null ? post.getLikes().size() : 0;
         dto.createdAt = post.getCreatedAt();
         dto.updatedAt = post.getUpdatedAt();
+        return dto;
+    }
+
+    public static PostResponseDto fromEntity(Post post, Long currentUserId) {
+        PostResponseDto dto = fromEntity(post);
+        dto.isLikedByCurrentUser = post.getLikes() != null &&
+                post.getLikes().stream().anyMatch(like -> like.getUser().getId() == (currentUserId));
         return dto;
     }
 

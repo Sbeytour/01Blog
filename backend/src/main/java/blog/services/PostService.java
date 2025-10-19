@@ -20,14 +20,19 @@ import blog.entity.Media;
 import blog.entity.MediaType;
 import blog.entity.Post;
 import blog.entity.User;
+import blog.exceptions.UserNotFoundException;
 import blog.repositories.MediaRepository;
 import blog.repositories.PostRepository;
+import blog.repositories.UserRepository;
 
 @Service
 public class PostService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private MediaRepository mediaRepository;
@@ -81,5 +86,67 @@ public class PostService {
         }
 
         return PostResponseDto.fromEntity(post);
+    }
+
+    public List<PostResponseDto> getAllPosts(Long currentUser) {
+        List<Post> posts = postRepository.findAll();
+        return posts.stream()
+                .map(post -> PostResponseDto.fromEntity(post, currentUser))
+                .toList();
+    }
+
+    public List<PostResponseDto> getPostsByUser(Long userId, Long currentUserId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        List<Post> posts = postRepository.findAll().stream().filter(post -> post.getCreator().getId() == userId)
+                .toList();
+
+        return posts.stream().map(post -> PostResponseDto.fromEntity(post, currentUserId)).toList();
+    }
+
+    public PostResponseDto getSinglePost(Long postId, Long currentUserId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+
+        return PostResponseDto.fromEntity(post, currentUserId);
+    }
+
+    public PostResponseDto updatePost(Long postId, CreatePostRequestDto updateRequest, Long currentUserId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (post.getCreator().getId() != currentUserId) {
+            throw new RuntimeException("You are not authorized to update this post");
+        }
+
+        post.setTitle(updateRequest.getTitle());
+        post.setContent(updateRequest.getContent());
+
+        Post updatedPost = postRepository.save(post);
+        return PostResponseDto.fromEntity(updatedPost, currentUserId);
+    }
+
+    public void deletePost(Long postId, Long currentUserId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+
+        if (post.getCreator().getId() != (currentUserId)) {
+            throw new RuntimeException("You are not authorized to delete this post");
+        }
+
+        // Delete associated media files
+        if (post.getMediaList() != null && !post.getMediaList().isEmpty()) {
+            for (Media media : post.getMediaList()) {
+                try {
+                    String fileName = media.getUrl().substring(media.getUrl().lastIndexOf('/') + 1);
+                    Path filePath = Paths.get(uploadsDir).resolve(fileName).normalize();
+                    Files.deleteIfExists(filePath);
+                } catch (IOException e) {
+                    System.err.println("Could not delete media file: " + media.getUrl());
+                }
+            }
+        }
+
+        postRepository.delete(post);
     }
 }
