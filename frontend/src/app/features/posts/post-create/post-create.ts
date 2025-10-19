@@ -9,11 +9,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { FilePreview } from '../../../core/models/post';
-import { Router } from '@angular/router';
+import { FilePreview, Post } from '../../../core/models/post';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../../components/dialog/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-post-create',
@@ -34,6 +35,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class PostCreate {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute)
   private dialog = inject(MatDialog);
   private postService = inject(PostService);
 
@@ -44,12 +46,24 @@ export class PostCreate {
   errorMessage = signal<string | null>(null);
   successMessage = signal<string | null>(null);
 
+  inEditMode = signal(false);
+  postId?: number;
+
   maxToUpload = 5;
   maxFileSize = 50 * 1024 * 1024;
 
 
   ngOnInit(): void {
     this.initializeForm();
+
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.inEditMode.set(true);
+        this.postId = Number(id);
+        this.loadPostData(this.postId);
+      }
+    })
   }
 
   private initializeForm(): void {
@@ -64,6 +78,30 @@ export class PostCreate {
         Validators.minLength(10),
         Validators.maxLength(1000)
       ]]
+    })
+  }
+
+  loadPostData(postId: number) {
+    this.postService.getSinglePost(postId).subscribe({
+      next: (post: Post) => {
+        this.postForm.patchValue({
+          title: post.title,
+          content: post.content
+        });
+
+        const mediaPreview = post.media.map(media => ({
+          file: null,
+          url: media.url,
+          type: media.type
+        }));
+
+        this.selectedFiles.set(mediaPreview);
+        this.isLoading.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.handleError(error);
+        this.isLoading.set(false)
+      }
     })
   }
 
@@ -93,7 +131,7 @@ export class PostCreate {
       const newFiles: FilePreview = {
         file,
         url: URL.createObjectURL(file),
-        type: file.type.startsWith('video') ? 'video' : 'image'
+        type: file.type.startsWith('VIDEO') ? 'VIDEO' : 'IMAGE'
       }
 
       this.selectedFiles.set([...currentFiles, newFiles]);
@@ -135,18 +173,35 @@ export class PostCreate {
     formData.append('title', this.postForm.value.title);
     formData.append('content', this.postForm.value.content);
 
-    this.selectedFiles().forEach(preview => formData.append('files', preview.file));
-
-    this.postService.createPost(formData).subscribe({
-      next: () => {
-        this.successMessage.set("Post was created successfuly");
-        this.router.navigate(['/home']);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.handleError(error);
-        this.isLoading.set(false);
+    this.selectedFiles().forEach(preview => {
+      if (preview.file) {
+        formData.append('files', preview.file);
       }
-    })
+    });
+
+    if (this.inEditMode()) {
+      this.postService.updatePost(this.postId!, formData).subscribe({
+        next: () => {
+          this.successMessage.set("Post was created successfuly");
+          this.router.navigate(['/home']);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.handleError(error);
+          this.isLoading.set(false);
+        }
+      })
+    } else {
+      this.postService.createPost(formData).subscribe({
+        next: () => {
+          this.successMessage.set("Post was created successfuly");
+          this.router.navigate(['/home']);
+        },
+        error: (error: HttpErrorResponse) => {
+          this.handleError(error);
+          this.isLoading.set(false);
+        }
+      })
+    }
   }
 
   getFieldErrorMsg(fieldName: string) {

@@ -3,7 +3,9 @@
 <div class="create-post-container">
     <mat-card class="create-post-card">
         <div class="card-header">
-            <h1>Share your thoughts:</h1>
+            <h1>
+                {{ inEditMode()? 'Update your post' : 'Share your thoughts:'}}
+            </h1>
         </div>
 
         <!-- Success Message -->
@@ -43,7 +45,7 @@
                 <div class="media-preview-container">
                     @for (preview of selectedFiles(); track preview.url) {
                     <div class="media-preview-item">
-                        @if (preview.type === 'image') {
+                        @if (preview.type === 'IMAGE') {
                         <img [src]="preview.url" alt="Preview">
                         } @else {
                         <video [src]="preview.url" controls></video>
@@ -63,7 +65,7 @@
 
                 <button mat-stroked-button type="button" (click)="fileInput.click()" [disabled]="isLoading()">
                     <mat-icon>add_photo_alternate</mat-icon>
-                    choose image
+                    {{inEditMode()? 'Add more media' : 'choose image'}}
                 </button>
 
                 <div class="action-group">
@@ -74,9 +76,9 @@
                     <button mat-flat-button color="primary" type="submit" [disabled]="isLoading() || postForm.invalid">
                         @if (isLoading()) {
                         <mat-spinner diameter="20"></mat-spinner>
-                        <span>Posting...</span>
+                        <span>{{ inEditMode() ? 'Updating...' : 'Posting...' }}</span>
                         } @else {
-                        <span>post</span>
+                        <span>{{ inEditMode() ? 'Confirm' : 'Post' }}</span>
                         }
                     </button>
                 </div>

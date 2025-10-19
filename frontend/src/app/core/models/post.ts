@@ -10,6 +10,9 @@ export interface Post {
         profileImgUrl?: string;
     };
     media: Media[];
+    likesCount: number;
+    commentsCount: number;
+    isLikedByCurrentUser: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -26,7 +29,7 @@ export interface CreatePostRequest {
 }
 
 export interface FilePreview {
-    file: File;
+    file: File | null;
     url: string;
-    type: 'image' | 'video';
+    type: 'IMAGE' | 'VIDEO';
 }
