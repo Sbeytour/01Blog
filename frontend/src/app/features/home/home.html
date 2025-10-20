@@ -3,46 +3,46 @@
 <div class="home-container">
   <!-- Loading State -->
   @if (isLoading()) {
-    <div class="loading-container">
-      <mat-spinner diameter="60"></mat-spinner>
-      <p class="loading-text">Loading posts...</p>
-    </div>
+  <div class="loading-container">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p class="loading-text">Loading posts...</p>
+  </div>
   }
 
   <!-- Error State -->
   @else if (errorMessage()) {
-    <div class="error-container">
-      <mat-icon class="error-icon">error_outline</mat-icon>
-      <h2>Oops! Something went wrong</h2>
-      <p>{{ errorMessage() }}</p>
-      <button mat-raised-button color="primary" (click)="onRetry()">
-        <mat-icon>refresh</mat-icon>
-        Try Again
-      </button>
-    </div>
+  <div class="error-container">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h2>Oops! Something went wrong</h2>
+    <p>{{ errorMessage() }}</p>
+    <button mat-raised-button color="primary" (click)="onRetry()">
+      <mat-icon>refresh</mat-icon>
+      Try Again
+    </button>
+  </div>
   }
 
   <!-- Empty State -->
   @else if (posts().length === 0) {
-    <div class="empty-container">
-      <mat-icon class="empty-icon">post_add</mat-icon>
-      <h2>No posts yet</h2>
-      <p>Be the first to share something with the community!</p>
-      <button mat-raised-button color="primary" routerLink="/post/create">
-        <mat-icon>add</mat-icon>
-        Create Post
-      </button>
-    </div>
+  <div class="empty-container">
+    <mat-icon class="empty-icon">post_add</mat-icon>
+    <h2>No posts yet</h2>
+    <p>Be the first to share something with the community!</p>
+    <button mat-raised-button color="primary" routerLink="/post/create">
+      <mat-icon>add</mat-icon>
+      Create Post
+    </button>
+  </div>
   }
 
   <!-- Posts List -->
   @else {
-    <div class="posts-scroll-container">
-      <div class="posts-list">
-        @for (post of posts(); track post.id) {
-          <app-post-card [post]="post"></app-post-card>
-        }
-      </div>
+  <div class="posts-scroll-container">
+    <div class="posts-list">
+      @for (post of posts(); track post.id) {
+      <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)"></app-post-card>
+      }
     </div>
+  </div>
   }
 </div>

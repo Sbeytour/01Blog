@@ -48,6 +48,12 @@ export class Home implements OnInit {
     });
   }
 
+  onPostDeleted(postId: number): void {
+    this.posts.update(currentPosts =>
+      currentPosts.filter(post => post.id !== postId)
+    );
+  }
+
   onRetry(): void {
     this.loadAllPosts();
   }
