@@ -89,7 +89,7 @@ public class PostService {
     }
 
     public List<PostResponseDto> getAllPosts(Long currentUser) {
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = postRepository.findAllPosts();
         return posts.stream()
                 .map(post -> PostResponseDto.fromEntity(post, currentUser))
                 .toList();
