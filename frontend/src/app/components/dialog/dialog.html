@@ -1,8 +1,9 @@
-<h2 mat-dialog-title>Discard changes?</h2>
+<h2 mat-dialog-title>{{ dialogData.title || 'Confirm Action' }}</h2>
+
 <mat-dialog-content>
-    <p>You have unsaved changes. Are you sure you want to cancel?</p>
+    <p>{{ dialogData.message || 'Are you sure you want to proceed?' }}</p>
 </mat-dialog-content>
 <mat-dialog-actions align="end" class="buttons">
-    <button mat-stroked-button color="primary" (click)="close(false)">Stay</button>
-    <button mat-flat-button  (click)="close(true)">Discard</button>
+    <button mat-stroked-button color="primary" (click)="close(false)">Close</button>
+    <button mat-flat-button (click)="close(true)">Confirm</button>
 </mat-dialog-actions>
