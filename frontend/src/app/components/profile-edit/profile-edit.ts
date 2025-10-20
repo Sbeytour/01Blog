@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -13,7 +13,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatDividerModule } from '@angular/material/divider';
 import { UpdateProfileRequest } from '../../core/models/user';
 import { environment } from '../../../environments/environment';
-import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog';
 
@@ -212,8 +211,8 @@ export class ProfileEdit implements OnInit {
   onCancel(): void {
     if (this.hasUnsavedChanges()) {
       const dialogRef = this.dialog.open(DialogComponent);
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
+      dialogRef.afterClosed().subscribe(confirm => {
+        if (confirm) {
           this.editCompleted.emit(this.authService.currentUser());
         }
       })
