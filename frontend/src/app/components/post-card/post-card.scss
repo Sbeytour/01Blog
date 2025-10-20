@@ -1,0 +1,160 @@
+.post-card {
+    cursor: pointer;
+    padding: 15px;
+    .post-header {
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+
+            .header-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                // flex: 1;
+
+
+                .user-pic {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    border: 1px solid var(--mat-sys-surface-tint);
+
+                    .profile-pic {
+                        width: 100%;
+                        height: 100%;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    }
+
+                    .default-avatar {
+                        font-size: 45px;
+                        width: 45px;
+                        height: 45px;
+                    }
+                }
+
+                .user-details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+
+                    .full-name {
+                        font-size: 16px;
+                        margin: 0;
+                        color: var(--mat-sys-on-surface);
+                    }
+
+                    .username {
+                        font-size: 14px;
+                        color: var(--mat-sys-inverse-surface);
+                        margin: 0;
+                    }
+                }
+            }
+
+            .post-menu {
+                button {
+                    background: none;
+                    border: 0px;
+                    color: var(--mat-sys-on-secondary-container);
+                }
+            }
+        }
+    }
+
+    .post-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 20px 0;
+        padding: 0 20px;
+        color: var(--mat-sys-on-surface);
+        line-height: 1.4;
+    }
+
+    .post-content {
+        .text-content {
+            p {
+                font-size: 15px;
+                line-height: 1.6;
+                color: var(--mat-sys-inverse-surface);
+                margin: 0 0 16px 0;
+            }
+        }
+
+        .content-divider {
+            margin: 16px 0;
+            background-color: var(--mat-sys-on-surface);
+        }
+
+        // Media Preview Section
+        .media-preview {
+            // margin-top: 16px;
+
+            .media-grid {
+                display: grid;
+                gap: 8px;
+                border-radius: 8px;
+                overflow: hidden;
+
+                &.single-media {
+
+                    .media-item {
+                        max-height: 500px;
+                    }
+                }
+
+                &.two-media {
+                    grid-template-columns: repeat(2, 1fr);
+
+                    .media-item {
+                        max-height: 400px;
+                    }
+                }
+
+                &.three-plus-media {
+                    grid-template-columns: repeat(3, 1fr);
+
+                    .media-item {
+                        max-height: 300px;
+                    }
+                }
+
+                .media-item {
+                    position: relative;
+                    overflow: hidden;
+                    background-color: #f5f5f5;
+                    border-radius: 4px;
+
+                    .media-image,
+                    .media-video {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        display: block;
+                    }
+
+                    .media-video {
+                        cursor: pointer;
+                    }
+
+                    .more-media-overlay {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: #00000099;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-size: 25px;
+                        font-weight: 550;
+                    }
+                }
+            }
+        }
+    }
+}

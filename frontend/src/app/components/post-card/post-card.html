@@ -1,1 +1,84 @@
-<p>post-card works!</p>
+<mat-card class="post-card" (click)="navigateToPost($event)">
+    <mat-card-header class="post-header" (click)="navigateToProfile($event)">
+        <div class="header-container">
+            <div class="header-info">
+                <div class="user-pic">
+                    @if (profilePic()) {
+                    <img [src]="profilePic()" alt="profilepic" class="profile-pic">
+                    } @else {
+                    <div class="default-avatar">
+                        <mat-icon>account_circle</mat-icon>
+                    </div>
+                    }
+                </div>
+
+                <div class="user-details">
+                    <h3 class="full-name">{{ fullName() }}</h3>
+                    <p class="username">@{{ post.creator.username }}</p>
+                </div>
+            </div>
+
+            @if (isOwnPost()) {
+            <div class="post-menu" (click)="$event.stopPropagation()">
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Post options">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="onEdit($event)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit</span>
+                    </button>
+                    <button mat-menu-item (click)="onDelete($event)" class="delete-post">
+                        <mat-icon>delete</mat-icon>
+                        <span>Delete</span>
+                    </button>
+                </mat-menu>
+            </div>
+            }
+        </div>
+    </mat-card-header>
+
+    <!-- Title section -->
+    <mat-card-title class="post-title">
+        {{post.title}}
+    </mat-card-title>
+
+    <mat-card-content class="post-content">
+        <div class="text-content">
+            <p>{{post.content}}</p>
+        </div>
+
+        @if (post.media && post.media.length > 0) {
+        <mat-divider class="content-divider"></mat-divider>
+
+        <!-- Media Preview Section -->
+        <div class="media-preview">
+            <div class="media-grid" [class.single-media]="post.media.length === 1"
+                [class.two-media]="post.media.length === 2" [class.three-plus-media]="post.media.length >= 3">
+                @for (media of post.media.slice(0, 3); track $index) {
+                <div class="media-item">
+                    <!-- Image -->
+                    @if (media.type === 'IMAGE') {
+
+                    <img [src]="media.url" [alt]="'Post image ' + ($index + 1)" class="media-image" />
+                    }
+
+                    <!-- Video -->
+                    @if (media.type === 'VIDEO'){
+                    <video [src]="media.url" class="media-video" controls (click)="$event.stopPropagation()"></video>
+                    }
+
+                    <!-- Show +N overlay for additional media -->
+                    @if ($index === 2 && post.media.length > 3) {
+
+                    <div class="more-media-overlay">
+                        <span>+{{ post.media.length - 3 }}</span>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+        }
+    </mat-card-content>
+</mat-card>

@@ -1,11 +1,93 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { PostService } from '../../core/services/postService';
+import { AuthService } from '../../core/services/auth';
+import { Post } from '../../core/models/post';
+import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { DialogComponent } from '../dialog/dialog';
 
 @Component({
   selector: 'app-post-card',
-  imports: [],
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule
+
+  ],
   templateUrl: './post-card.html',
   styleUrl: './post-card.scss'
 })
 export class PostCard {
+  @Input({ required: true }) post!: Post;
+  @Output() postDeleted = new EventEmitter<number>();
 
+  private authService = inject(AuthService);
+  private postService = inject(PostService);
+  private router = inject(Router);
+  private dialog = inject(MatDialog);
+
+  isDeleting = signal(false);
+
+  isOwnPost(): boolean {
+    const currentUser = this.authService.currentUser();
+    return currentUser?.id === this.post.creator.id;
+  }
+
+  fullName(): string {
+    return `${this.post.creator.firstName} ${this.post.creator.lastName}`
+  }
+
+  profilePic(): string | undefined {
+    return this.post.creator.profileImgUrl;
+  }
+
+  navigateToPost(event: Event): void {
+    const target = event.target as HTMLElement;
+
+    if (target.closest('button') || target.closest('a') || target.closest('.post-header')) {
+      return
+    }
+
+    this.router.navigate(['/api/posts', this.post.creator.username]);
+  }
+
+  navigateToProfile(event: Event): void {
+    event.stopPropagation();
+    this.router.navigate(['/profile', this.post.creator.username]);
+  }
+
+  onEdit(event: Event) {
+
+  }
+
+  onDelete(event: Event) {
+    event.stopPropagation();
+
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Delete Post',
+        message: 'Are you sure you want to delete this post?'
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(confirm => {
+      if (confirm) {
+        this.postService.deletePost(this.post.id).subscribe({
+          next: () => {
+            this.postDeleted.emit(this.post.id);
+            this.isDeleting.set(true);
+          },
+          error: (error) => {
+            console.log('Error deleting the post: ', error);
+            this.isDeleting.set(false);
+          }
+        })
+      }
+    })
+  }
 }
