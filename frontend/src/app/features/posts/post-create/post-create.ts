@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Inject, OnInit, Optional, signal } from '@angular/core';
 import { Navbar } from '../../../components/navbar/navbar';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PostService } from '../../../core/services/postService';
@@ -11,14 +11,20 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FilePreview, Post } from '../../../core/models/post';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { DialogComponent } from '../../../components/dialog/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Title } from '@angular/platform-browser';
+
+export interface PostEditData {
+  editMode: boolean;
+  postId: number;
+}
 
 @Component({
   selector: 'app-post-create',
-  imports: [Navbar,
+  standalone: true,
+  imports: [
+    Navbar,
     CommonModule,
     ReactiveFormsModule,
     MatCardModule,
@@ -26,19 +32,24 @@ import { Title } from '@angular/platform-browser';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    // MatDialog,
+    MatDialogModule,
     MatProgressSpinnerModule,
   ],
   templateUrl: './post-create.html',
   styleUrl: './post-create.scss'
 })
-export class PostCreate {
+export class PostCreate implements OnInit {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
-  private route = inject(ActivatedRoute)
+  private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
   private postService = inject(PostService);
 
+  //Allow the component to close itself when its opened as a dialog
+  private dialogRef = inject(MatDialogRef<PostCreate>, { optional: true });
+
+  //Data to affiche in the card comming from the post card component
+  private dialogData = inject<PostEditData | null>(MAT_DIALOG_DATA, { optional: true });
 
   postForm!: FormGroup;
   selectedFiles = signal<FilePreview[]>([]);
@@ -47,23 +58,31 @@ export class PostCreate {
   successMessage = signal<string | null>(null);
 
   inEditMode = signal(false);
+  isDialog = signal(false); // Track if opened as dialog
   postId?: number;
 
   maxToUpload = 5;
   maxFileSize = 50 * 1024 * 1024;
 
-
   ngOnInit(): void {
     this.initializeForm();
 
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
-      if (id) {
-        this.inEditMode.set(true);
-        this.postId = Number(id);
-        this.loadPostData(this.postId);
-      }
-    })
+    //opning the edit mode via dialog
+    if (this.dialogData?.postId) {
+      this.isDialog.set(true);
+      this.inEditMode.set(true);
+      this.postId = this.dialogData.postId;
+      this.loadPostData(this.postId);
+    } else { //opning the edit mode via url
+      this.route.paramMap.subscribe(params => {
+        const id = params.get('id');
+        if (id) {
+          this.inEditMode.set(true);
+          this.postId = Number(id);
+          this.loadPostData(this.postId);
+        }
+      });
+    }
   }
 
   private initializeForm(): void {
@@ -78,10 +97,11 @@ export class PostCreate {
         Validators.minLength(10),
         Validators.maxLength(1000)
       ]]
-    })
+    });
   }
 
-  loadPostData(postId: number) {
+  loadPostData(postId: number): void {
+    this.isLoading.set(true);
     this.postService.getSinglePost(postId).subscribe({
       next: (post: Post) => {
         this.postForm.patchValue({
@@ -100,14 +120,14 @@ export class PostCreate {
       },
       error: (error: HttpErrorResponse) => {
         this.handleError(error);
-        this.isLoading.set(false)
+        this.isLoading.set(false);
       }
-    })
+    });
   }
 
   onFileSelect(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (!input.files?.length) return
+    if (!input.files?.length) return;
 
     const currentFiles = this.selectedFiles();
     if (currentFiles.length >= this.maxToUpload) {
@@ -138,29 +158,58 @@ export class PostCreate {
     });
   }
 
-  removePicFile(index: number) {
-    URL.revokeObjectURL(this.selectedFiles()[index].url)
+  removePicFile(index: number): void {
+    const fileToRemove = this.selectedFiles()[index];
+    if (fileToRemove.file) {
+      URL.revokeObjectURL(fileToRemove.url);
+    }
     this.selectedFiles.update(files => files.filter((_, i) => i !== index));
   }
 
-  hasUnsavedChanges() {
-    return this.postForm.dirty || this.selectedFiles.length > 0;
+  hasUnsavedChanges(): boolean {
+    return this.postForm.dirty || this.selectedFiles().length > 0;
   }
 
-  onCancel() {
-    if (this.hasUnsavedChanges()) {
-      const dialogRef = this.dialog.open(DialogComponent);
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.router.navigate(['/home']);
-        }
-      })
-    } else {
-      this.router.navigate(['/home']);
+  onCancel(): void {
+    // If opened as dialog
+    if (this.isDialog() && this.dialogRef) {
+      if (this.hasUnsavedChanges()) {
+        const confirmDialogRef = this.dialog.open(DialogComponent, {
+          data: {
+            title: 'Discard Changes?',
+            message: 'You have unsaved changes. Are you sure you want to discard them?'
+          }
+        });
+        confirmDialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.dialogRef?.close({ success: false });
+          }
+        });
+      } else {
+        this.dialogRef.close({ success: false });
+      }
+    }
+    // If opened as page
+    else {
+      if (this.hasUnsavedChanges()) {
+        const dialogRef = this.dialog.open(DialogComponent, {
+          data: {
+            title: 'Discard Changes?',
+            message: 'You have unsaved changes. Are you sure you want to discard them?'
+          }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.router.navigate(['/home']);
+          }
+        });
+      } else {
+        this.router.navigate(['/home']);
+      }
     }
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.postForm.invalid) {
       this.postForm.markAllAsTouched();
       return;
@@ -182,33 +231,44 @@ export class PostCreate {
     if (this.inEditMode()) {
       this.postService.updatePost(this.postId!, formData).subscribe({
         next: () => {
-          this.successMessage.set("Post was created successfuly");
-          this.router.navigate(['/home']);
+          this.successMessage.set("Post was updated successfully");
+          this.handleSuccess();
         },
         error: (error: HttpErrorResponse) => {
           this.handleError(error);
           this.isLoading.set(false);
         }
-      })
+      });
     } else {
       this.postService.createPost(formData).subscribe({
         next: () => {
-          this.successMessage.set("Post was created successfuly");
-          this.router.navigate(['/home']);
+          this.successMessage.set("Post was created successfully");
+          this.handleSuccess();
         },
         error: (error: HttpErrorResponse) => {
           this.handleError(error);
           this.isLoading.set(false);
         }
-      })
+      });
     }
   }
 
-  getFieldErrorMsg(fieldName: string) {
+  private handleSuccess(): void {
+    if (this.isDialog() && this.dialogRef) {
+      // If dialog, close with success flag
+      this.dialogRef.close({ success: true });
+      this.router.navigate(['/home']);
+    } else {
+      // If page, navigate to home
+      this.router.navigate(['/home']);
+    }
+  }
+
+  getFieldErrorMsg(fieldName: string): string | undefined {
     const field = this.postForm.get(fieldName);
 
-    if (!field || !field.errors || field.untouched) {
-      return;
+    if (!field || !field.errors || !field.touched) {
+      return undefined;
     }
 
     const errors = field.errors;
@@ -231,6 +291,10 @@ export class PostCreate {
       this.errorMessage.set('Network error. Please check your connection.');
     } else if (error.status === 400) {
       this.errorMessage.set(error.error?.message || 'Invalid input. Please check your data.');
+    } else if (error.status === 403) {
+      this.errorMessage.set('You do not have permission to edit this post.');
+    } else if (error.status === 404) {
+      this.errorMessage.set('Post not found.');
     } else if (error.status === 500) {
       this.errorMessage.set('Server error. Please try again later.');
     } else {
