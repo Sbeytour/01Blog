@@ -1,7 +1,7 @@
 <mat-card class="post-card" (click)="navigateToPost($event)">
-    <mat-card-header class="post-header" (click)="navigateToProfile($event)">
+    <mat-card-header class="post-header">
         <div class="header-container">
-            <div class="header-info">
+            <div class="header-info" (click)="navigateToProfile($event)">
                 <div class="user-pic">
                     @if (profilePic()) {
                     <img [src]="profilePic()" alt="profilepic" class="profile-pic">

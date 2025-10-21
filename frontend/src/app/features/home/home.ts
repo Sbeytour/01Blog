@@ -48,6 +48,10 @@ export class Home implements OnInit {
     });
   }
 
+  onPostEdited(editedPost: Post) : void {
+    this.posts.update(oldPosts => oldPosts.map(oldPost => oldPost.id === editedPost.id ? editedPost : oldPost))
+  }
+  
   onPostDeleted(postId: number): void {
     this.posts.update(currentPosts =>
       currentPosts.filter(post => post.id !== postId)

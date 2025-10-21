@@ -39,50 +39,17 @@ public class PostService {
 
     private String uploadsDir = "uploads/posts";
 
-    public PostResponseDto createPost(CreatePostRequestDto createRequest, User creator, List<MultipartFile> files) {
+    public PostResponseDto createPost(CreatePostRequestDto createDto, User creator) {
         Post post = new Post();
-        post.setTitle(createRequest.getTitle());
-        post.setContent(createRequest.getContent());
+        post.setTitle(createDto.getTitle());
+        post.setContent(createDto.getContent());
         post.setCreator(creator);
 
         post = postRepository.save(post);
 
+        List<MultipartFile> files = createDto.getFiles();
         if (files != null && !files.isEmpty()) {
-            List<Media> mediaList = new ArrayList<>();
-
-            File dir = new File(uploadsDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
-            for (MultipartFile file : files) {
-                String orgFileName = file.getOriginalFilename();
-                String extension = orgFileName != null && orgFileName.contains(".")
-                        ? orgFileName.substring(orgFileName.lastIndexOf("."))
-                        : "";
-                String fileName = UUID.randomUUID() + extension;
-                Path filePath = Paths.get(uploadsDir, fileName);
-
-                try {
-                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    throw new RuntimeException("Failed to save file: " + fileName, e);
-                }
-
-                String contentType = file.getContentType();
-                MediaType mediaType = contentType != null && contentType.startsWith("image") ? MediaType.IMAGE
-                        : MediaType.VIDEO;
-
-                Media media = new Media();
-                media.setUrl("/files/posts/" + fileName);
-                media.setType(mediaType);
-                media.setPost(post);
-
-                mediaList.add(media);
-            }
-
-            mediaRepository.saveAll(mediaList);
-            post.setMediaList(mediaList);
+            post.setMediaList(saveMediaFiles(files, post));
         }
 
         return PostResponseDto.fromEntity(post);
@@ -122,6 +89,14 @@ public class PostService {
         post.setTitle(updateRequest.getTitle());
         post.setContent(updateRequest.getContent());
 
+        List<MultipartFile> files = updateRequest.getFiles();
+        if (files != null && !files.isEmpty()) {
+            // Delete old media
+            deleteOldMedia(post);
+            // Save new media
+            post.setMediaList(saveMediaFiles(files, post));
+        }
+
         Post updatedPost = postRepository.save(post);
         return PostResponseDto.fromEntity(updatedPost, currentUserId);
     }
@@ -133,8 +108,50 @@ public class PostService {
         if (post.getCreator().getId() != (currentUserId)) {
             throw new RuntimeException("You are not authorized to delete this post");
         }
+        
+        deleteOldMedia(post);
+        postRepository.delete(post);
+    }
 
-        // Delete associated media files
+    private List<Media> saveMediaFiles(List<MultipartFile> files, Post post) {
+        List<Media> mediaList = new ArrayList<>();
+
+        File dir = new File(uploadsDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        for (MultipartFile file : files) {
+            String orgFileName = file.getOriginalFilename();
+            String extension = orgFileName != null && orgFileName.contains(".")
+                    ? orgFileName.substring(orgFileName.lastIndexOf("."))
+                    : "";
+            String fileName = UUID.randomUUID() + extension;
+            Path filePath = Paths.get(uploadsDir, fileName);
+
+            try {
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to save file: " + fileName, e);
+            }
+
+            String contentType = file.getContentType();
+            MediaType mediaType = contentType != null && contentType.startsWith("image")
+                    ? MediaType.IMAGE
+                    : MediaType.VIDEO;
+
+            Media media = new Media();
+            media.setUrl("/files/posts/" + fileName);
+            media.setType(mediaType);
+            media.setPost(post);
+
+            mediaList.add(media);
+        }
+
+        return mediaRepository.saveAll(mediaList);
+    }
+
+    private void deleteOldMedia(Post post) {
         if (post.getMediaList() != null && !post.getMediaList().isEmpty()) {
             for (Media media : post.getMediaList()) {
                 try {
@@ -142,11 +159,11 @@ public class PostService {
                     Path filePath = Paths.get(uploadsDir).resolve(fileName).normalize();
                     Files.deleteIfExists(filePath);
                 } catch (IOException e) {
-                    System.err.println("Could not delete media file: " + media.getUrl());
+                    System.err.println("Could not delete old media file: " + media.getUrl());
                 }
             }
+            mediaRepository.deleteAll(post.getMediaList());
+            post.getMediaList().clear();
         }
-
-        postRepository.delete(post);
     }
 }

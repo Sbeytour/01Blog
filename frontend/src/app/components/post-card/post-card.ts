@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { DialogComponent } from '../dialog/dialog';
+import { PostCreate } from '../../features/posts/post-create/post-create';
 
 @Component({
   selector: 'app-post-card',
@@ -25,13 +26,12 @@ import { DialogComponent } from '../dialog/dialog';
 export class PostCard {
   @Input({ required: true }) post!: Post;
   @Output() postDeleted = new EventEmitter<number>();
+  @Output() postEdited = new EventEmitter<Post>();
 
   private authService = inject(AuthService);
   private postService = inject(PostService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
-
-  isDeleting = signal(false);
 
   isOwnPost(): boolean {
     const currentUser = this.authService.currentUser();
@@ -49,7 +49,7 @@ export class PostCard {
   navigateToPost(event: Event): void {
     const target = event.target as HTMLElement;
 
-    if (target.closest('button') || target.closest('a') || target.closest('.post-header')) {
+    if (target.closest('button') || target.closest('a') || target.closest('.header-info')) {
       return
     }
 
@@ -62,7 +62,23 @@ export class PostCard {
   }
 
   onEdit(event: Event) {
+    event.stopPropagation();
 
+    const dialogRef = this.dialog.open(PostCreate, {
+      width: '700px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+      data: {
+        editMode: true,
+        postId: this.post.id
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result.confirm && result.editedPost) {
+        this.postEdited.emit(result.editedPost);
+      }
+    })
   }
 
   onDelete(event: Event) {
@@ -80,11 +96,9 @@ export class PostCard {
         this.postService.deletePost(this.post.id).subscribe({
           next: () => {
             this.postDeleted.emit(this.post.id);
-            this.isDeleting.set(true);
           },
           error: (error) => {
             console.log('Error deleting the post: ', error);
-            this.isDeleting.set(false);
           }
         })
       }

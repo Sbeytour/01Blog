@@ -2,6 +2,8 @@ package blog.dto.request;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -15,7 +17,7 @@ public class CreatePostRequestDto {
     @Size(min = 10, max = 5000, message = "Content must be between 10 and 5000 characters")
     private String content;
 
-    private List<String> mediaUrls; // URLs of uploaded media files
+    private List<MultipartFile> files;
 
     public String getTitle() {
         return title;
@@ -33,11 +35,11 @@ public class CreatePostRequestDto {
         this.content = content;
     }
 
-    public List<String> getMediaUrls() {
-        return mediaUrls;
+    public List<MultipartFile> getFiles() {
+        return files;
     }
 
-    public void setMediaUrls(List<String> mediaUrls) {
-        this.mediaUrls = mediaUrls;
+    public void setFiles(List<MultipartFile> files) {
+        this.files = files;
     }
 }

@@ -230,9 +230,9 @@ export class PostCreate implements OnInit {
 
     if (this.inEditMode()) {
       this.postService.updatePost(this.postId!, formData).subscribe({
-        next: () => {
+        next: (editedPost) => {
           this.successMessage.set("Post was updated successfully");
-          this.handleSuccess();
+          this.handleSuccess(editedPost);
         },
         error: (error: HttpErrorResponse) => {
           this.handleError(error);
@@ -241,9 +241,9 @@ export class PostCreate implements OnInit {
       });
     } else {
       this.postService.createPost(formData).subscribe({
-        next: () => {
+        next: (createdPost) => {
           this.successMessage.set("Post was created successfully");
-          this.handleSuccess();
+          this.handleSuccess(createdPost);
         },
         error: (error: HttpErrorResponse) => {
           this.handleError(error);
@@ -253,10 +253,10 @@ export class PostCreate implements OnInit {
     }
   }
 
-  private handleSuccess(): void {
+  private handleSuccess(editedPost: Post): void {
     if (this.isDialog() && this.dialogRef) {
-      // If dialog, close with success flag
-      this.dialogRef.close({ success: true });
+      // If dialog was confirmed
+      this.dialogRef.close({ confirm: true, editedPost: editedPost });
       this.router.navigate(['/home']);
     } else {
       // If page, navigate to home

@@ -1,6 +1,7 @@
 .post-card {
     cursor: pointer;
     padding: 15px;
+
     .post-header {
         .header-container {
             display: flex;
@@ -29,9 +30,13 @@
                     }
 
                     .default-avatar {
-                        font-size: 45px;
-                        width: 45px;
-                        height: 45px;
+                        mat-icon {
+                            font-size: 39px;
+                            height: 39px;
+                            width: 39px;
+                            color: var(--mat-sys-primary);
+
+                        }
                     }
                 }
 

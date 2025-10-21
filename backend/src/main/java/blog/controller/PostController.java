@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import blog.dto.request.CreatePostRequestDto;
 import blog.dto.response.PostResponseDto;
@@ -32,14 +31,10 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PostResponseDto createPost(@Valid @RequestParam String title, @Valid @RequestParam String content,
-            @RequestParam(value = "files", required = false) List<MultipartFile> files, Authentication authentication) {
-        CreatePostRequestDto createDto = new CreatePostRequestDto();
-        createDto.setTitle(title);
-        createDto.setContent(content);
+    public PostResponseDto createPost(@Valid @RequestParam String title, @Valid @ModelAttribute CreatePostRequestDto createDto, Authentication authentication) {
 
         User creator = (User) authentication.getPrincipal();
-        return postService.createPost(createDto, creator, files);
+        return postService.createPost(createDto, creator);
     }
 
     @GetMapping
@@ -65,7 +60,7 @@ public class PostController {
 
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public PostResponseDto updatePost(@PathVariable Long postId, @ModelAttribute CreatePostRequestDto updateDto,
+    public PostResponseDto updatePost(@PathVariable Long postId,@Valid @ModelAttribute CreatePostRequestDto updateDto,
             Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
         return postService.updatePost(postId, updateDto, currentUser.getId());

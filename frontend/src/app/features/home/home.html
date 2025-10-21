@@ -40,7 +40,7 @@
   <div class="posts-scroll-container">
     <div class="posts-list">
       @for (post of posts(); track post.id) {
-      <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)"></app-post-card>
+      <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)" (postEdited)="onPostEdited($event)"></app-post-card>
       }
     </div>
   </div>
