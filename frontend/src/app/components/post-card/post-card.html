@@ -20,7 +20,7 @@
 
             @if (isOwnPost()) {
             <div class="post-menu" (click)="$event.stopPropagation()">
-                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Post options">
+                <button matIconButton [matMenuTriggerFor]="menu" aria-label="Post options">
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
@@ -81,4 +81,24 @@
         </div>
         }
     </mat-card-content>
+
+    <mat-divider class="content-divider"></mat-divider>
+
+    <mat-card-footer class="post-footer">
+        <div class="footer-stats">
+            <div class="stat-item likes">
+                <mat-icon [class.liked]="post.isLikedByCurrentUser">favorite</mat-icon>
+                <span>{{ post.likesCount }} {{ post.likesCount === 1 ? 'like' : 'likes' }}</span>
+            </div>
+
+            <div class="stat-item comments">
+                <mat-icon>comment</mat-icon>
+                <span>{{ post.commentsCount }} {{ post.commentsCount === 1 ? 'comment' : 'comments' }}</span>
+            </div>
+
+            <div class="post-date">
+                <span>{{ formatDate(post.createdAt) }}</span>
+            </div>
+        </div>
+    </mat-card-footer>
 </mat-card>

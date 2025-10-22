@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import blog.dto.request.CreatePostRequestDto;
 import blog.dto.response.PostResponseDto;
 import blog.entity.Media;
@@ -36,6 +39,9 @@ public class PostService {
 
     @Autowired
     private MediaRepository mediaRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private String uploadsDir = "uploads/posts";
 
@@ -89,16 +95,57 @@ public class PostService {
         post.setTitle(updateRequest.getTitle());
         post.setContent(updateRequest.getContent());
 
+        // Delete specific media (only what was removed)
+        String deleteMediaIdsJson = updateRequest.getDeleteMediaIds();
+        if (deleteMediaIdsJson != null && !deleteMediaIdsJson.isEmpty()) {
+            try {
+                // convert the Json data to a list ,using jackson(convert json text into a java
+                // object)
+                List<Long> deletedIds = objectMapper.readValue(deleteMediaIdsJson, new TypeReference<List<Long>>() {
+                });
+
+                deleteSpecificMedia(post, deletedIds);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to parse JSon data");
+            }
+        }
+
+        // add new apploads media
+
         List<MultipartFile> files = updateRequest.getFiles();
         if (files != null && !files.isEmpty()) {
-            // Delete old media
-            deleteOldMedia(post);
             // Save new media
-            post.setMediaList(saveMediaFiles(files, post));
+            // post.setMediaList(saveMediaFiles(files, post));
+            List<Media> newMedia = saveMediaFiles(files, post);
+            for (Media media : newMedia) {
+                post.getMediaList().add(media);
+            }
         }
 
         Post updatedPost = postRepository.save(post);
         return PostResponseDto.fromEntity(updatedPost, currentUserId);
+    }
+
+    private void deleteSpecificMedia(Post post, List<Long> deletedIds) {
+        List<Media> mediaToDelete = post.getMediaList().stream().filter(media -> deletedIds.contains(media.getId()))
+                .toList();
+
+        for (Media media : mediaToDelete) {
+            // Delete file from disk
+            try {
+                String fileName = media.getUrl().substring(media.getUrl().lastIndexOf('/') + 1);
+                Path filePath = Paths.get(uploadsDir).resolve(fileName).normalize();
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                System.err.println("Could not delete media file: " + media.getUrl());
+            }
+
+            // Remove from post's media list
+            post.getMediaList().removeAll(mediaToDelete);
+        }
+
+        // Delete from database
+        mediaRepository.deleteAll(mediaToDelete);
     }
 
     public void deletePost(Long postId, Long currentUserId) {
@@ -108,7 +155,7 @@ public class PostService {
         if (post.getCreator().getId() != (currentUserId)) {
             throw new RuntimeException("You are not authorized to delete this post");
         }
-        
+
         deleteOldMedia(post);
         postRepository.delete(post);
     }

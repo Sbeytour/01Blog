@@ -19,6 +19,8 @@ public class CreatePostRequestDto {
 
     private List<MultipartFile> files;
 
+    private String deleteMediaIds;
+
     public String getTitle() {
         return title;
     }
@@ -41,5 +43,13 @@ public class CreatePostRequestDto {
 
     public void setFiles(List<MultipartFile> files) {
         this.files = files;
+    }
+
+    public String getDeleteMediaIds() {
+        return deleteMediaIds;
+    }
+
+    public void setDeleteMediaIds(String deleteMediaIds) {
+        this.deleteMediaIds = deleteMediaIds;
     }
 }

@@ -29,6 +29,7 @@ export interface CreatePostRequest {
 }
 
 export interface FilePreview {
+    mediaId?: number;
     file: File | null;
     url: string;
     type: 'IMAGE' | 'VIDEO';

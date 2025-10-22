@@ -60,6 +60,7 @@ export class PostCreate implements OnInit {
   inEditMode = signal(false);
   isDialog = signal(false); // Track if opened as dialog
   postId?: number;
+  originalMediaIds: number[] = [];
 
   maxToUpload = 5;
   maxFileSize = 50 * 1024 * 1024;
@@ -109,7 +110,10 @@ export class PostCreate implements OnInit {
           content: post.content
         });
 
+        this.originalMediaIds = post.media.map(media => media.id);
+
         const mediaPreview = post.media.map(media => ({
+          mediaId: media.id,
           file: null,
           url: media.url,
           type: media.type
@@ -149,9 +153,10 @@ export class PostCreate implements OnInit {
       }
 
       const newFiles: FilePreview = {
+        mediaId: undefined,
         file,
         url: URL.createObjectURL(file),
-        type: file.type.startsWith('VIDEO') ? 'VIDEO' : 'IMAGE'
+        type: file.type.startsWith('video') ? 'VIDEO' : 'IMAGE'
       }
 
       this.selectedFiles.set([...currentFiles, newFiles]);
@@ -222,13 +227,24 @@ export class PostCreate implements OnInit {
     formData.append('title', this.postForm.value.title);
     formData.append('content', this.postForm.value.content);
 
-    this.selectedFiles().forEach(preview => {
-      if (preview.file) {
-        formData.append('files', preview.file);
-      }
-    });
-
     if (this.inEditMode()) {
+
+      //get media ids from posts in edit mode
+      const currentMediaIds = this.selectedFiles().filter(preview => preview.mediaId !== undefined).map(preview => preview.mediaId!);
+
+      //compare the original media ids from the creation with the current post media in edit mode
+      const deletedMedia = this.originalMediaIds.length > 0 ? this.delatedMediaIds(currentMediaIds) : [];
+
+      if (deletedMedia.length > 0) {
+        formData.append('deletedMediaIds', JSON.stringify(deletedMedia));
+      }
+
+      this.selectedFiles().forEach(preview => {
+        if (preview.file && preview.mediaId === undefined) {
+          formData.append('files', preview.file);
+        }
+      });
+
       this.postService.updatePost(this.postId!, formData).subscribe({
         next: (editedPost) => {
           this.successMessage.set("Post was updated successfully");
@@ -240,6 +256,12 @@ export class PostCreate implements OnInit {
         }
       });
     } else {
+      this.selectedFiles().forEach(preview => {
+        if (preview.file) {
+          formData.append('files', preview.file);
+        }
+      });
+
       this.postService.createPost(formData).subscribe({
         next: (createdPost) => {
           this.successMessage.set("Post was created successfully");
@@ -253,10 +275,14 @@ export class PostCreate implements OnInit {
     }
   }
 
+  private delatedMediaIds(currentMediaIds: number[]): number[] {
+    return this.originalMediaIds.filter(id => !currentMediaIds.includes(id));
+  }
+
   private handleSuccess(editedPost: Post): void {
     if (this.isDialog() && this.dialogRef) {
       // If dialog was confirmed
-      this.dialogRef.close({ confirm: true, editedPost: editedPost });
+      this.dialogRef.close({ success: true, editedPost: editedPost });
       this.router.navigate(['/home']);
     } else {
       // If page, navigate to home
