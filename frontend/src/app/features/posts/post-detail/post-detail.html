@@ -1,1 +1,145 @@
-<p>post-detail works!</p>
+<app-navbar></app-navbar>
+<div class="post-details-container">
+    <div class="back-button">
+        <button matButton="elevated" (click)="goBack()">
+            Back Home
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+    </div>
+    @if (post()) {
+    <mat-card class="post-card">
+        <mat-card-header class="post-header">
+            <div class="header-container">
+                <div class="header-info" (click)="navigateToProfile($event)">
+                    <div class="user-pic">
+                        @if (profilePic()) {
+                        <img [src]="profilePic()" alt="profilepic" class="profile-pic">
+                        } @else {
+                        <div class="default-avatar">
+                            <mat-icon>account_circle</mat-icon>
+                        </div>
+                        }
+                    </div>
+
+                    <div class="user-details">
+                        <h3 class="full-name">{{ fullName() }}</h3>
+                        <p class="username">@{{ post()?.creator?.username }}</p>
+                    </div>
+                </div>
+            </div>
+        </mat-card-header>
+
+        <mat-card-content>
+
+            <!-- Title -->
+            <h1 class="post-title">{{ post()!.title }}</h1>
+
+            <!-- Content -->
+            <div class="post-content">
+                <p>{{ post()!.content }}</p>
+            </div>
+
+
+            <!-- Media Section -->
+            @if (post()!.media && post()!.media.length > 0) {
+            <mat-divider></mat-divider>
+            <div class="media-section">
+                <div class="media-gallery">
+                    @for (media of post()!.media; track $index) {
+                    <div class="media-item">
+                        @if (media.type === 'IMAGE') {
+                        <img [src]="media.url" [alt]="'Post image'" class="media-content" />
+                        }
+                        @if (media.type === 'VIDEO'){
+                        <video [src]="media.url" class="media-content" controls></video>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+        </mat-card-content>
+    </mat-card>
+    }
+</div>
+
+
+
+
+<!-- <div class="post-detail-container"> -->
+<!-- @if (post() && !isLoading() && !errorMessage()) { -->
+<!-- Post Content -->
+<!-- <div class="post-detail-content"> -->
+<!-- <mat-card class="post-card"> -->
+<!-- Back Button -->
+<!-- <div class="back-button"> -->
+<!-- <button mat-icon-button (click)="goBack()"> -->
+<!-- <mat-icon>arrow_back</mat-icon> -->
+<!-- </button> -->
+<!-- </div> -->
+
+<!-- Header -->
+<!-- <mat-card-header class="post-header"> -->
+<!-- <div class="user-info" (click)="navigateToProfile()"> -->
+<!-- @if (profilePic()) { -->
+<!-- <img [src]="profilePic()" alt="profilepic" class="profile-pic"> -->
+<!-- } @else { -->
+<!-- <div class="default-avatar"> -->
+<!-- <mat-icon>account_circle</mat-icon> -->
+<!-- </div> -->
+<!-- } -->
+<!-- <mat-card-title>{{ fullName() }}</mat-card-title> -->
+<!-- <mat-card-subtitle>@{{ post()!.creator.username }}</mat-card-subtitle> -->
+<!-- </div> -->
+<!-- </mat-card-header> -->
+
+<!-- Title -->
+<!-- <mat-card-content> -->
+<!-- <h1 class="post-title">{{ post()!.title }}</h1> -->
+
+<!-- Content -->
+<!-- <div class="post-content"> -->
+<!-- <p>{{ post()!.content }}</p> -->
+<!-- </div> -->
+
+<!-- Media Section -->
+<!-- <div class="media-section" *ngIf="post()!.media && post()!.media.length > 0"> -->
+<!-- <mat-divider></mat-divider> -->
+<!--  -->
+<!-- <div class="media-gallery"> -->
+<!-- <div class="media-item" *ngFor="let media of post()!.media"> -->
+<!-- <img *ngIf="media.type === 'IMAGE'" [src]="media.url" [alt]="'Post image'" -->
+<!-- class="media-content" /> -->
+<!-- <video *ngIf="media.type === 'VIDEO'" [src]="media.url" class="media-content" -->
+<!-- controls></video> -->
+<!-- </div> -->
+<!-- </div> -->
+<!-- </div> -->
+<!--  -->
+<!-- <mat-divider></mat-divider> -->
+
+<!-- Post Stats -->
+<!-- <div class="post-stats"> -->
+<!-- <div class="stat-item"> -->
+<!-- <mat-icon [class.liked]="post()!.isLikedByCurrentUser">favorite</mat-icon> -->
+<!-- <span>{{ post()!.likesCount }} {{ post()!.likesCount === 1 ? 'like' : 'likes' }}</span> -->
+<!-- </div> -->
+
+<!-- <div class="stat-item"> -->
+<!-- <mat-icon>comment</mat-icon> -->
+<!-- <span>{{ post()!.commentsCount }} {{ post()!.commentsCount === 1 ? 'comment' : 'comments' -->
+<!-- }}</span> -->
+<!-- </div> -->
+
+<!-- <div class="post-date"> -->
+<!-- <mat-icon>schedule</mat-icon> -->
+<!-- <span>{{ formatDate(post()!.createdAt) }}</span> -->
+<!-- </div>
+                </div>
+            </mat-card-content> -->
+
+<!-- TODO: Add like button and comments section here -->
+<!-- </mat-card> -->
+<!-- </div> -->
+<!-- } -->
+<!-- </div> -->
