@@ -88,8 +88,17 @@
 
     <mat-card-footer class="post-footer">
         <div class="footer-stats">
-            <div class="stat-item likes">
-                <mat-icon [class.liked]="post.isLikedByCurrentUser">favorite</mat-icon>
+            <div class="stat-item likes" (click)="onLikeToggle($event)">
+                <button
+                    matIconButton
+                    [disabled]="isLiking()"
+                    class="like-button"
+                    aria-label="Like post"
+                >
+                    <mat-icon [class.liked]="post.isLikedByCurrentUser">
+                        {{ post.isLikedByCurrentUser ? 'favorite' : 'favorite_border' }}
+                    </mat-icon>
+                </button>
                 <span>{{ post.likesCount }} {{ post.likesCount === 1 ? 'like' : 'likes' }}</span>
             </div>
 

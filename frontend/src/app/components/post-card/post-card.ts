@@ -1,6 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { PostService } from '../../core/services/postService';
+import { LikeService } from '../../core/services/likeService';
 import { AuthService } from '../../core/services/auth';
 import { Post } from '../../core/models/post';
 import { Router } from '@angular/router';
@@ -8,8 +9,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
 import { DialogComponent } from '../dialog/dialog';
 import { PostCreate } from '../../features/posts/post-create/post-create';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-post-card',
@@ -17,8 +20,8 @@ import { PostCreate } from '../../features/posts/post-create/post-create';
     MatCardModule,
     MatIconModule,
     MatMenuModule,
-    MatDividerModule
-
+    MatDividerModule,
+    MatButtonModule
   ],
   templateUrl: './post-card.html',
   styleUrl: './post-card.scss'
@@ -31,8 +34,11 @@ export class PostCard {
 
   private authService = inject(AuthService);
   private postService = inject(PostService);
+  private likeService = inject(LikeService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
+
+  isLiking = signal(false);
 
   isOwnPost(): boolean {
     const currentUser = this.authService.currentUser();
@@ -104,6 +110,27 @@ export class PostCard {
         })
       }
     })
+  }
+
+  onLikeToggle(event: Event): void {
+    event.stopPropagation();
+
+    if (this.isLiking()) return;
+
+    this.isLiking.set(true);
+
+    this.likeService.toggleLike(this.post.id).subscribe({
+      next: (response) => {
+        // Update post with new like state and count
+        this.post.isLikedByCurrentUser = response.isLiked;
+        this.post.likesCount = response.likesCount;
+        this.isLiking.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error toggling like:', error);
+        this.isLiking.set(false);
+      }
+    });
   }
 
   formatDate(dateString: string): string {

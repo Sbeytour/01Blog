@@ -11,6 +11,7 @@ import { Post } from '../../../core/models/post';
 import { Comment } from '../../../core/models/comment';
 import { PostService } from '../../../core/services/postService';
 import { CommentService } from '../../../core/services/commentService';
+import { LikeService } from '../../../core/services/likeService';
 import { AuthService } from '../../../core/services/auth';
 import { Navbar } from '../../../components/navbar/navbar';
 import { MatDialog } from '@angular/material/dialog';
@@ -45,6 +46,7 @@ export class PostDetail implements OnInit {
   private router = inject(Router);
   private postService = inject(PostService);
   private commentService = inject(CommentService);
+  private likeService = inject(LikeService);
   private authService = inject(AuthService);
   private dialog = inject(MatDialog);
 
@@ -57,6 +59,9 @@ export class PostDetail implements OnInit {
   comments = signal<Comment[]>([]);
   isLoadingComments = signal(false);
   isSubmittingComment = signal(false);
+
+  // Like-related signal
+  isLiking = signal(false);
 
   isOwnPost(): boolean {
     const currentUser = this.authService.currentUser();
@@ -190,6 +195,33 @@ export class PostDetail implements OnInit {
 
   getCurrentUserId(): number | undefined {
     return this.authService.currentUser()?.id;
+  }
+
+  onLikeToggle(event: Event): void {
+    event.stopPropagation();
+
+    if (this.isLiking() || !this.postId) return;
+
+    this.isLiking.set(true);
+
+    this.likeService.toggleLike(this.postId).subscribe({
+      next: (response) => {
+        // Update post with new like state and count
+        if (this.post()) {
+          const currentPost = this.post()!;
+          this.post.set({
+            ...currentPost,
+            isLikedByCurrentUser: response.isLiked,
+            likesCount: response.likesCount
+          });
+        }
+        this.isLiking.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error toggling like:', error);
+        this.isLiking.set(false);
+      }
+    });
   }
 
   fullName(): string {

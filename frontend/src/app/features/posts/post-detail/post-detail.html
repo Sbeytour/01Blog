@@ -29,9 +29,17 @@
             </div>
             <div class="header-container-right">
                 <div class="post-stats">
-                    <div class="stat-item">
-                        <button matIconButton>
-                            <mat-icon [class.liked]="post()!.isLikedByCurrentUser">favorite</mat-icon>
+                    <div class="stat-item like-item">
+                        <button
+                            matIconButton
+                            (click)="onLikeToggle($event)"
+                            [disabled]="isLiking()"
+                            class="like-button"
+                            aria-label="Like post"
+                        >
+                            <mat-icon [class.liked]="post()!.isLikedByCurrentUser">
+                                {{ post()!.isLikedByCurrentUser ? 'favorite' : 'favorite_border' }}
+                            </mat-icon>
                         </button>
                         <span>{{ post()!.likesCount }}</span>
                     </div>

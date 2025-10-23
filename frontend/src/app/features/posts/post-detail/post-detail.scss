@@ -82,9 +82,37 @@
           .stat-item {
             display: flex;
             align-items: center;
+
+            &.like-item {
+              cursor: pointer;
+              transition: transform 0.2s ease;
+
+              &:hover {
+                transform: scale(1.05);
+              }
+
+              &:active {
+                transform: scale(0.95);
+              }
+
+              .like-button {
+                mat-icon {
+                  transition: all 0.3s ease;
+
+                  &.liked {
+                    color: var(--mat-sys-surface-tint);
+                    animation: likeAnimation 0.4s ease;
+                  }
+                }
+
+                &:disabled {
+                  opacity: 0.6;
+                  cursor: not-allowed;
+                }
+              }
+            }
           }
         }
-
 
         button mat-icon {
           font-size: 20px;
@@ -272,5 +300,18 @@
         margin: 16px 0;
       }
     }
+  }
+}
+
+// Like animation
+@keyframes likeAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
   }
 }
