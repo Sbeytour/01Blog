@@ -25,6 +25,7 @@ import { PostCreate } from '../../features/posts/post-create/post-create';
 })
 export class PostCard {
   @Input({ required: true }) post!: Post;
+  @Input() layout: 'default' | 'detail' = 'default';
   @Output() postDeleted = new EventEmitter<number>();
   @Output() postEdited = new EventEmitter<Post>();
 
@@ -75,7 +76,7 @@ export class PostCard {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result.confirm && result.editedPost) {
+      if (result?.success && result.editedPost) {
         this.postEdited.emit(result.editedPost);
       }
     })

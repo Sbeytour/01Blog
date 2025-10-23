@@ -11,6 +11,13 @@ import { Post } from '../../../core/models/post';
 import { PostService } from '../../../core/services/postService';
 import { AuthService } from '../../../core/services/auth';
 import { Navbar } from '../../../components/navbar/navbar';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../../../components/dialog/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { PostCreate } from '../post-create/post-create';
+import { PostCard } from '../../../components/post-card/post-card';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-post-detail',
@@ -18,6 +25,9 @@ import { Navbar } from '../../../components/navbar/navbar';
   imports: [
     CommonModule,
     Navbar,
+    MatMenuModule,
+    MatFormField,
+    MatInputModule,
     MatCardModule,
     MatIconModule,
     MatButtonModule,
@@ -32,6 +42,9 @@ export class PostDetail implements OnInit {
   private router = inject(Router);
   private postService = inject(PostService);
   private authService = inject(AuthService);
+
+  private dialog = inject(MatDialog);
+
 
   post = signal<Post | null>(null);
   postId?: number;
@@ -86,12 +99,60 @@ export class PostDetail implements OnInit {
     if (target.closest('button') || target.closest('a')) {
       return
     }
-    
+
     this.router.navigate(['/profile', this.post()?.creator.username]);
   }
 
   goBack(): void {
     this.router.navigate(['/home']);
+  }
+
+
+  onEdit(event: Event) {
+    event.stopPropagation();
+
+    const dialogRef = this.dialog.open(PostCreate, {
+      width: '700px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+      data: {
+        editMode: true,
+        postId: this.post()!.id
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog closed with:', result);
+      if (result?.success && result.editedPost) {
+        console.log('Reloading post...');
+        this.loadPost(result.editedPost.id);
+      }
+    })
+  }
+
+  onDelete(event: Event) {
+    event.stopPropagation();
+
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Delete Post',
+        message: 'Are you sure you want to delete this post?'
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(confirm => {
+      if (confirm) {
+        this.postService.deletePost(this.post()!.id).subscribe({
+          next: () => {
+            this.router.navigate(['home']);
+          },
+          error: (error) => {
+            this.handleError(error);
+            console.log('Error deleting the post: ', error);
+          }
+        })
+      }
+    })
   }
 
   formatDate(dateString: string): string {

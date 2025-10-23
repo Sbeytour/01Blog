@@ -283,7 +283,6 @@ export class PostCreate implements OnInit {
     if (this.isDialog() && this.dialogRef) {
       // If dialog was confirmed
       this.dialogRef.close({ success: true, editedPost: editedPost });
-      this.router.navigate(['/home']);
     } else {
       // If page, navigate to home
       this.router.navigate(['/home']);

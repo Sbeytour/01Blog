@@ -59,12 +59,15 @@
                 }
             }
 
-            .post-menu {
-                button {
-                    background: none;
-                    border: 0px;
-                    color: var(--mat-sys-on-secondary-container);
-                }
+        }
+
+        .post-menu {
+            button {
+                padding-left: 0;
+                margin-right: 0;
+                background: none;
+                border: 0px;
+                color: var(--mat-sys-on-secondary-container);
             }
         }
     }

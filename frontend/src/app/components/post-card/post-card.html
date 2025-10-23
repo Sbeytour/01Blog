@@ -17,7 +17,9 @@
                     <p class="username">@{{ post.creator.username }}</p>
                 </div>
             </div>
+        </div>
 
+        <div class="header-container-right">
             @if (isOwnPost()) {
             <div class="post-menu" (click)="$event.stopPropagation()">
                 <button matIconButton [matMenuTriggerFor]="menu" aria-label="Post options">
