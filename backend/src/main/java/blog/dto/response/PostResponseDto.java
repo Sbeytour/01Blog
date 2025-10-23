@@ -12,6 +12,7 @@ public class PostResponseDto {
     private String content;
     private UserResponseDto creator;
     private List<MediaResponseDto> media;
+    private List<CommentResponseDto> comments;
     private int commentsCount;
     private int likesCount;
     private boolean isLikedByCurrentUser;
@@ -28,6 +29,11 @@ public class PostResponseDto {
         dto.media = post.getMediaList().stream()
                 .map(MediaResponseDto::fromEntity)
                 .collect(Collectors.toList());
+        dto.comments = post.getComments() != null
+                ? post.getComments().stream()
+                    .map(CommentResponseDto::fromEntity)
+                    .collect(Collectors.toList())
+                : List.of();
         dto.commentsCount = post.getComments() != null ? post.getComments().size() : 0;
         dto.likesCount = post.getLikes() != null ? post.getLikes().size() : 0;
         dto.createdAt = post.getCreatedAt();
@@ -104,6 +110,14 @@ public class PostResponseDto {
 
     public void setMedia(List<MediaResponseDto> media) {
         this.media = media;
+    }
+
+    public List<CommentResponseDto> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentResponseDto> comments) {
+        this.comments = comments;
     }
 
     public LocalDateTime getCreatedAt() {
