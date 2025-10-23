@@ -1,3 +1,5 @@
+import { Comment } from './comment';
+
 export interface Post {
     id: number;
     title: string;
@@ -10,6 +12,7 @@ export interface Post {
         profileImgUrl?: string;
     };
     media: Media[];
+    comments?: Comment[];
     likesCount: number;
     commentsCount: number;
     isLikedByCurrentUser: boolean;

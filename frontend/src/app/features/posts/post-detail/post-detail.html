@@ -120,7 +120,25 @@
             </div>
         </mat-card-content>
     </mat-card>
-    }
 
-    <mat-divider></mat-divider>
+    <!-- Comments Section -->
+    @if (post()) {
+    <div class="comments-section">
+        <h2 class="comments-title">
+            <mat-icon>comment</mat-icon>
+            Comments ({{ post()!.commentsCount }})
+        </h2>
+
+        <!-- Comment Input (WhatsApp Style) -->
+        <app-comment-input [postId]="postId!" [isLoading]="isSubmittingComment()"
+            (commentSubmitted)="onCommentSubmit($event)"></app-comment-input>
+
+        <mat-divider class="comments-divider"></mat-divider>
+
+        <!-- Comment List -->
+        <app-comment-list [comments]="comments()" [isLoading]="isLoadingComments()" [currentUserId]="getCurrentUserId()"
+            (commentDeleted)="onCommentDelete($event)" (commentEdited)="onCommentEdit($event)"></app-comment-list>
+    </div>
+    }
+    }
 </div>

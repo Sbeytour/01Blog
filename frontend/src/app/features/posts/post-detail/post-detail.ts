@@ -8,16 +8,18 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Post } from '../../../core/models/post';
+import { Comment } from '../../../core/models/comment';
 import { PostService } from '../../../core/services/postService';
+import { CommentService } from '../../../core/services/commentService';
 import { AuthService } from '../../../core/services/auth';
 import { Navbar } from '../../../components/navbar/navbar';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../../components/dialog/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { PostCreate } from '../post-create/post-create';
-import { PostCard } from '../../../components/post-card/post-card';
-import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { CommentInput } from '../../../components/comment-input/comment-input';
+import { CommentList } from '../../../components/comment-list/comment-list';
 
 @Component({
   selector: 'app-post-detail',
@@ -26,13 +28,14 @@ import { MatInputModule } from '@angular/material/input';
     CommonModule,
     Navbar,
     MatMenuModule,
-    MatFormField,
     MatInputModule,
     MatCardModule,
     MatIconModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatDividerModule
+    MatDividerModule,
+    CommentInput,
+    CommentList
   ],
   templateUrl: './post-detail.html',
   styleUrl: './post-detail.scss'
@@ -41,15 +44,19 @@ export class PostDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private postService = inject(PostService);
+  private commentService = inject(CommentService);
   private authService = inject(AuthService);
-
   private dialog = inject(MatDialog);
-
 
   post = signal<Post | null>(null);
   postId?: number;
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
+
+  // Comment-related signals
+  comments = signal<Comment[]>([]);
+  isLoadingComments = signal(false);
+  isSubmittingComment = signal(false);
 
   isOwnPost(): boolean {
     const currentUser = this.authService.currentUser();
@@ -76,6 +83,11 @@ export class PostDetail implements OnInit {
       next: (post) => {
         this.post.set(post);
         this.isLoading.set(false);
+        if (post.comments) {
+          this.comments.set(post.comments);
+        } else {
+          this.loadComments(postId);
+        }
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error loading post:', error);
@@ -83,6 +95,101 @@ export class PostDetail implements OnInit {
         this.isLoading.set(false);
       }
     });
+  }
+
+  private loadComments(postId: number): void {
+    this.isLoadingComments.set(true);
+
+    this.commentService.getCommentsByPostId(postId).subscribe({
+      next: (comments) => {
+        this.comments.set(comments);
+        this.isLoadingComments.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error loading comments:', error);
+        this.isLoadingComments.set(false);
+      }
+    });
+  }
+
+  onCommentSubmit(content: string): void {
+    if (!this.postId) return;
+
+    this.isSubmittingComment.set(true);
+
+    this.commentService.createComment(this.postId, { content }).subscribe({
+      next: (newComment) => {
+        // Add new comment to the beginning of the list
+        this.comments.update(comments => [newComment, ...comments]);
+
+        // Update comment count in post
+        if (this.post()) {
+          const currentPost = this.post()!;
+          this.post.set({
+            ...currentPost,
+            commentsCount: currentPost.commentsCount + 1
+          });
+        }
+
+        this.isSubmittingComment.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error creating comment:', error);
+        this.isSubmittingComment.set(false);
+      }
+    });
+  }
+
+  onCommentEdit(comment: { id: number; content: string }): void {
+    this.commentService.updateComment(comment.id, { content: comment.content }).subscribe({
+      next: (updatedComment) => {
+        // Update the comment in the list
+        this.comments.update(comments =>
+          comments.map(coment => coment.id === updatedComment.id ? updatedComment : coment)
+        );
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error updating comment:', error);
+      }
+    });
+  }
+
+  onCommentDelete(commentId: number): void {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Delete Comment',
+        message: 'Are you sure you want to delete this comment?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirm => {
+      if (confirm) {
+        this.commentService.deleteComment(commentId).subscribe({
+          next: () => {
+            // Remove comment from the list
+            this.comments.update(comments =>
+              comments.filter(c => c.id !== commentId)
+            );
+
+            // Update comment count in post
+            if (this.post()) {
+              const currentPost = this.post()!;
+              this.post.set({
+                ...currentPost,
+                commentsCount: Math.max(0, currentPost.commentsCount - 1)
+              });
+            }
+          },
+          error: (error: HttpErrorResponse) => {
+            console.error('Error deleting comment:', error);
+          }
+        });
+      }
+    });
+  }
+
+  getCurrentUserId(): number | undefined {
+    return this.authService.currentUser()?.id;
   }
 
   fullName(): string {

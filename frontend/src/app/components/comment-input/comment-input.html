@@ -1,0 +1,18 @@
+<div class="comment-input-container">
+  <div class="input-wrapper">
+    <mat-form-field class="comment-field" appearance="outline">
+      <input class="input" matInput type="text" placeholder="Type a comment..." [(ngModel)]="commentContent"
+        [disabled]="isLoading" [maxlength]="maxLength" (keypress)="onKeyPress($event)" autocomplete="off" />
+      @if (commentContent().length > 0) {
+      <mat-hint class="char-counter" [class.warning]="getRemainingChars() < 100">
+        {{ getRemainingChars() }} characters remaining
+      </mat-hint>
+      }
+    </mat-form-field>
+
+    <button mat-fab color="primary" class="send-button" [disabled]="isSubmitDisabled()" (click)="onSubmit()"
+      aria-label="Send comment">
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>
