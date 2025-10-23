@@ -1,0 +1,93 @@
+<div class="comment-list-container">
+  @if (isLoading) {
+    <div class="loading-state">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading comments...</p>
+    </div>
+  } @else if (comments.length === 0) {
+    <div class="empty-state">
+      <mat-icon>comment</mat-icon>
+      <p>No comments yet</p>
+      <span>Be the first to comment!</span>
+    </div>
+  } @else {
+    <div class="comments-wrapper">
+      @for (comment of comments; track comment.id) {
+        <mat-card class="comment-card">
+          <div class="comment-header">
+            <div class="user-info">
+              <div class="user-avatar">
+                @if (comment.user.profileImgUrl) {
+                  <img [src]="comment.user.profileImgUrl" [alt]="getFullName(comment)" class="avatar-img">
+                } @else {
+                  <div class="default-avatar">
+                    <mat-icon>account_circle</mat-icon>
+                  </div>
+                }
+              </div>
+
+              <div class="user-details">
+                <h4 class="user-name">{{ getFullName(comment) }}</h4>
+                <span class="username">@{{ comment.user.username }}</span>
+              </div>
+            </div>
+
+            <div class="comment-actions">
+              <span class="comment-time">{{ formatDate(comment.createdAt) }}</span>
+
+              @if (isOwnComment(comment)) {
+                <button matIconButton [matMenuTriggerFor]="menu" aria-label="Comment options">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="startEdit(comment)">
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit</span>
+                  </button>
+                  <button mat-menu-item (click)="onDelete(comment.id)" class="delete-action">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                </mat-menu>
+              }
+            </div>
+          </div>
+
+          <div class="comment-content">
+            @if (editingCommentId() === comment.id) {
+              <div class="edit-mode">
+                <mat-form-field class="edit-field" appearance="outline">
+                  <textarea
+                    matInput
+                    [(ngModel)]="editContent"
+                    [maxlength]="maxLength"
+                    rows="3"
+                    placeholder="Edit your comment..."
+                    cdkTextareaAutosize
+                  ></textarea>
+                  <mat-hint [class.warning]="getRemainingChars() < 100">
+                    {{ getRemainingChars() }} characters remaining
+                  </mat-hint>
+                </mat-form-field>
+
+                <div class="edit-actions">
+                  <button mat-button (click)="cancelEdit()">Cancel</button>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="saveEdit(comment.id)"
+                    [disabled]="!editContent().trim() || editContent().length > maxLength"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <p class="comment-text">{{ comment.content }}</p>
+            }
+          </div>
+        </mat-card>
+      }
+    </div>
+  }
+</div>
