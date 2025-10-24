@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import blog.entity.Post;
 
 public class PostResponseDto {
@@ -15,6 +17,7 @@ public class PostResponseDto {
     private List<CommentResponseDto> comments;
     private int commentsCount;
     private int likesCount;
+    @JsonProperty("isLikedByCurrentUser")
     private boolean isLikedByCurrentUser;
 
     private LocalDateTime createdAt;

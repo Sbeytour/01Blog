@@ -1,6 +1,9 @@
 package blog.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class LikeResponseDto {
+    @JsonProperty("isLiked")
     private boolean isLiked;
     private long likesCount;
 
