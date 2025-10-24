@@ -1,11 +1,12 @@
 <app-navbar></app-navbar>
+<div class="back-button">
+    <button matButton="elevated" (click)="goBack()">
+        Back Home
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+</div>
 <div class="post-details-container">
-    <div class="back-button">
-        <button matButton="elevated" (click)="goBack()">
-            Back Home
-            <mat-icon>arrow_back</mat-icon>
-        </button>
-    </div>
+
     @if (post()) {
     <mat-card class="post-card">
         <mat-card-header class="post-header">
@@ -30,13 +31,8 @@
             <div class="header-container-right">
                 <div class="post-stats">
                     <div class="stat-item like-item">
-                        <button
-                            matIconButton
-                            (click)="onLikeToggle($event)"
-                            [disabled]="isLiking()"
-                            class="like-button"
-                            aria-label="Like post"
-                        >
+                        <button matIconButton (click)="onLikeToggle($event)" [disabled]="isLiking()" class="like-button"
+                            aria-label="Like post">
                             <mat-icon [class.liked]="post()!.isLikedByCurrentUser">
                                 {{ post()!.isLikedByCurrentUser ? 'favorite' : 'favorite_border' }}
                             </mat-icon>
