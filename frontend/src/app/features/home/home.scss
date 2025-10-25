@@ -101,10 +101,9 @@
 
 // Posts Scroll Container
 .posts-scroll-container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   max-height: calc(100vh - 112px);
-  overflow-y: auto;
   padding-right: 8px;
 
   // Custom scrollbar styling
