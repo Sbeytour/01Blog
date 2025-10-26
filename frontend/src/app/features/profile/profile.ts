@@ -13,6 +13,8 @@ import { Navbar } from '../../components/navbar/navbar';
 import { ProfileEdit } from '../../components/profile-edit/profile-edit';
 import { UserService } from '../../core/services/userService';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PostService } from '../../core/services/postService';
+import { PostCard } from '../../components/post-card/post-card';
 import { SubscriptionService } from '../../core/services/subscription.service';
 
 @Component({
@@ -27,6 +29,7 @@ import { SubscriptionService } from '../../core/services/subscription.service';
     MatDividerModule,
     Navbar,
     ProfileEdit,
+    PostCard,
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.scss'
@@ -36,7 +39,11 @@ export class UserProfile implements OnInit {
   private router = inject(Router);
   authService = inject(AuthService);
   userService = inject(UserService);
-  subscriptionService = inject(SubscriptionService);
+  subscriptionService = inject(SubscriptionService);;
+  postService = inject(PostService);
+
+  isLoading = signal(false)
+  errorMessage = signal<string | null>(null);
 
   // Profile data
   profileUser = signal<User | null>(null);
@@ -46,26 +53,12 @@ export class UserProfile implements OnInit {
   isFollowLoading = signal(false);
 
   // Stats
-  postsCount = signal(0);
+  postsCount = signal<number | null>(null);
   followersCount = signal(0);
   followingCount = signal(0);
 
   // Tab data
-  posts = signal<any[]>([
-    { id: 1, title: 'First Post', image: 'https://picsum.photos/300/200?random=1' },
-    { id: 2, title: 'Second Post', image: 'https://picsum.photos/300/200?random=2' },
-    { id: 3, title: 'Third Post', image: 'https://picsum.photos/300/200?random=3' },
-  ]);
-
-  followers = signal<any[]>([
-    { id: 1, username: 'user1', profileImg: null },
-    { id: 2, username: 'user2', profileImg: null },
-  ]);
-
-  following = signal<any[]>([
-    { id: 1, username: 'user3', profileImg: null },
-    { id: 2, username: 'user4', profileImg: null },
-  ]);
+  posts = signal<any[]>([]);
 
   ngOnInit(): void {
     const currentUser = this.authService.currentUser();
@@ -88,17 +81,41 @@ export class UserProfile implements OnInit {
         next: (response) => {
           this.profileUser.set(response);
           this.isOwnProfile.set(false);
-
+          this.loadUserPosts(response.id);
           // Update stats from backend
           this.followersCount.set(response.followersCount || 0);
           this.followingCount.set(response.followingCount || 0);
           this.isFollowing.set(response.isFollowedByCurrentUser || false);
         },
-        error: (error : HttpErrorResponse) => {
+        error: (error: HttpErrorResponse) => {
           console.log("error fetching profile : ", error);
         }
       })
     }
+  }
+
+  loadUserPosts(userId: number | undefined) {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    if (userId === undefined) {
+      this.isLoading.set(false);
+      this.errorMessage.set('User ID is missing');
+      return;
+    }
+
+    this.postService.getPostsByUser(userId).subscribe({
+      next: (posts) => {
+        this.posts.set(posts);
+        this.postsCount.set(posts.length);
+        this.isLoading.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error loading posts:', error);
+        this.errorMessage.set('Failed to load posts. Please try again later.');
+        this.isLoading.set(false);
+      }
+    })
   }
 
   loadCurrentUserProfile(currentUser: User | null) {
@@ -108,7 +125,7 @@ export class UserProfile implements OnInit {
         next: (response) => {
           this.profileUser.set(response);
           this.isOwnProfile.set(true);
-
+          this.loadUserPosts(response.id);
           // Update stats from backend
           this.followersCount.set(response.followersCount || 0);
           this.followingCount.set(response.followingCount || 0);
@@ -117,6 +134,7 @@ export class UserProfile implements OnInit {
           console.log("error fetching own profile : ", error);
           // Fallback to cached user data
           this.profileUser.set(currentUser);
+          this.loadUserPosts(currentUser?.id);
           this.isOwnProfile.set(true);
         }
       });
@@ -178,5 +196,18 @@ export class UserProfile implements OnInit {
 
   onCancelEdit(): void {
     this.isEditing.set(false);
+  }
+
+  onPostDeleted(postId: number): void {
+    const updatedPosts = this.posts().filter(post => post.id !== postId);
+    this.posts.set(updatedPosts);
+    this.postsCount.set(updatedPosts.length);
+  }
+
+  onPostEdited(editedPost: any): void {
+    const updatedPosts = this.posts().map(post =>
+      post.id === editedPost.id ? editedPost : post
+    );
+    this.posts.set(updatedPosts);
   }
 }
