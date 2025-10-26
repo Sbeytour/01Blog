@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import blog.dto.request.CreatePostRequestDto;
@@ -30,50 +30,67 @@ public class PostController {
     private PostService postService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public PostResponseDto createPost(@Valid @RequestParam String title, @Valid @ModelAttribute CreatePostRequestDto createDto, Authentication authentication) {
+    public ResponseEntity<PostResponseDto> createPost(
+            @Valid @RequestParam String title,
+            @Valid @ModelAttribute CreatePostRequestDto createDto,
+            Authentication authentication) {
 
         User creator = (User) authentication.getPrincipal();
-        return postService.createPost(createDto, creator);
+        PostResponseDto response = postService.createPost(createDto, creator);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<PostResponseDto> getAllPosts(Authentication authentication) {
+    public ResponseEntity<List<PostResponseDto>> getAllPosts(Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
-        return postService.getAllPosts(currentUser.getId());
+        List<PostResponseDto> posts = postService.getAllPosts(currentUser.getId());
+
+        return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/user/{userId}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<PostResponseDto> getPostsByUser(@PathVariable Long userId, Authentication authentication) {
+    public ResponseEntity<List<PostResponseDto>> getPostsByUser(
+            @PathVariable Long userId,
+            Authentication authentication) {
+
         User currentUser = (User) authentication.getPrincipal();
-        return postService.getPostsByUser(userId, currentUser.getId());
+        List<PostResponseDto> posts = postService.getPostsByUser(userId, currentUser.getId());
+
+        return ResponseEntity.ok(posts);
     }
 
-    @GetMapping("{postId}")
-    @ResponseStatus(HttpStatus.OK)
-    public PostResponseDto getSinglePost(@PathVariable Long postId, Authentication authentication) {
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponseDto> getSinglePost(
+            @PathVariable Long postId,
+            Authentication authentication) {
+
         User currentUser = (User) authentication.getPrincipal();
-        return postService.getSinglePost(postId, currentUser.getId());
+        PostResponseDto post = postService.getSinglePost(postId, currentUser.getId());
+
+        return ResponseEntity.ok(post);
     }
 
     @PutMapping("/{postId}")
-    @ResponseStatus(HttpStatus.OK)
-    public PostResponseDto updatePost(@PathVariable Long postId,@Valid @ModelAttribute CreatePostRequestDto updateDto,
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId,
+            @Valid @ModelAttribute CreatePostRequestDto updateDto,
             Authentication authentication) {
+
         User currentUser = (User) authentication.getPrincipal();
-        return postService.updatePost(postId, updateDto, currentUser.getId());
+        PostResponseDto updatedPost = postService.updatePost(postId, updateDto, currentUser.getId());
+
+        return ResponseEntity.ok(updatedPost);
     }
 
     @DeleteMapping("/{postId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deletePost(
+    public ResponseEntity<Void> deletePost(
             @PathVariable Long postId,
             Authentication authentication) {
 
         User currentUser = (User) authentication.getPrincipal();
         postService.deletePost(postId, currentUser.getId());
+
+        return ResponseEntity.noContent().build();
     }
 
 }

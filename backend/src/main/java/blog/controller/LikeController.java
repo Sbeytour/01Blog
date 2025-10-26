@@ -2,11 +2,11 @@ package blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import blog.dto.response.LikeResponseDto;
@@ -21,9 +21,11 @@ public class LikeController {
     private LikeService likeService;
 
     @PostMapping("/{postId}/like")
-    @ResponseStatus(HttpStatus.OK)
-    public LikeResponseDto toggleLike(@PathVariable Long postId, Authentication authentication) {
+    public ResponseEntity<LikeResponseDto> toggleLike(@PathVariable Long postId,Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
-        return likeService.toggleLike(postId, currentUser);
+        LikeResponseDto response = likeService.toggleLike(postId, currentUser);
+
+        HttpStatus status = response.isLiked() ? HttpStatus.CREATED : HttpStatus.OK;
+        return ResponseEntity.status(status).body(response);
     }
 }
