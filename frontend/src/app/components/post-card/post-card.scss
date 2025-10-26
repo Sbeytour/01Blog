@@ -68,6 +68,11 @@
                 background: none;
                 border: 0px;
                 color: var(--mat-sys-on-secondary-container);
+                mat-icon {
+                    font-size: 21px;
+                    width: 14px;
+                    height: 14px;
+                }
             }
         }
     }
