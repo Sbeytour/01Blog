@@ -1,9 +1,29 @@
+// Back Button
+.back-button {
+  margin: 10px 24px;
+
+  @media (max-width: 780px) {
+    margin: 10px 16px;
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateX(-4px);
+    }
+  }
+}
+
 .profile-container {
   display: flex; // Arrange items side by side
   justify-content: center; // Center horizontally
-  margin: 15px auto;
+  margin: 8px auto;
   max-width: 1400px;
-  padding: 24px;
+  padding: 4px 24px;
   max-height: 100vh;
 
   @media (max-width: 768px) {
@@ -88,7 +108,7 @@
 
       @media (max-width: 768px) {
         font-size: 70px;
-        width:70px;
+        width: 70px;
         height: 70px;
       }
     }
@@ -223,9 +243,9 @@
       width: 10rem;
 
       mat-icon {
-      font-size: 15px;
-      width: 15px;
-      height: 15px;
+        font-size: 15px;
+        width: 15px;
+        height: 15px;
       }
     }
   }
@@ -263,7 +283,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
-       
+
         mat-icon {
           font-size: 20px;
           width: 20px;
@@ -420,7 +440,7 @@
 // Posts Section
 .posts-section {
   padding: 24px;
-  
+
   @media (max-width: 768px) {
     padding: 16px;
   }
@@ -462,8 +482,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 // Error State

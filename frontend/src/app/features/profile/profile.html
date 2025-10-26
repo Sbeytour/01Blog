@@ -1,4 +1,10 @@
 <app-navbar></app-navbar>
+<div class="back-button">
+  <button matButton="elevated" (click)="goBack()">
+    Back Home
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</div>
 <div class="profile-container">
 
   <!-- Profile Info Card -->
@@ -68,48 +74,45 @@
     @if (isEditing() && isOwnProfile()) {
     <app-profile-edit (editCompleted)="onEditComplet($event)"></app-profile-edit>
     } @else {
-      <!-- Posts Section -->
-      <div class="posts-section">
-        <h2 class="section-title">My Posts :</h2>
+    <!-- Posts Section -->
+    <div class="posts-section">
+      <h2 class="section-title">My Posts :</h2>
 
-        <!-- Loading State -->
-        @if (isLoading()) {
-          <div class="loading-container">
-            <mat-icon class="loading-spinner">refresh</mat-icon>
-            <p>Loading posts...</p>
-          </div>
-        }
+      <!-- Loading State -->
+      @if (isLoading()) {
+      <div class="loading-container">
+        <mat-icon class="loading-spinner">refresh</mat-icon>
+        <p>Loading posts...</p>
+      </div>
+      }
 
-        <!-- Error State -->
-        @if (errorMessage()) {
-          <div class="error-container">
-            <mat-icon color="warn">error_outline</mat-icon>
-            <p>{{ errorMessage() }}</p>
-          </div>
-        }
+      <!-- Error State -->
+      @if (errorMessage()) {
+      <div class="error-container">
+        <mat-icon color="warn">error_outline</mat-icon>
+        <p>{{ errorMessage() }}</p>
+      </div>
+      }
 
-        <!-- Posts Grid -->
-        @if (!isLoading() && !errorMessage()) {
-          @if (posts().length > 0) {
-            <div class="posts-grid">
-              @for (post of posts(); track post.id) {
-                <app-post-card
-                  [post]="post"
-                  (postDeleted)="onPostDeleted($event)"
-                  (postEdited)="onPostEdited($event)"
-                ></app-post-card>
-              }
-            </div>
-          } @else {
-            <!-- Empty State -->
-            <div class="empty-state">
-              <mat-icon>post_add</mat-icon>
-              <h3>No posts yet</h3>
-              <p>{{ isOwnProfile() ? "You haven't created any posts yet." : "This user hasn't posted anything yet." }}</p>
-            </div>
-          }
+      <!-- Posts Grid -->
+      @if (!isLoading() && !errorMessage()) {
+      @if (posts().length > 0) {
+      <div class="posts-grid">
+        @for (post of posts(); track post.id) {
+        <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)"
+          (postEdited)="onPostEdited($event)"></app-post-card>
         }
       </div>
+      } @else {
+      <!-- Empty State -->
+      <div class="empty-state">
+        <mat-icon>post_add</mat-icon>
+        <h3>No posts yet</h3>
+        <p>{{ isOwnProfile() ? "You haven't created any posts yet." : "This user hasn't posted anything yet." }}</p>
+      </div>
+      }
+      }
+    </div>
     }
   </div>
 </div>

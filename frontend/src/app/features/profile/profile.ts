@@ -15,7 +15,7 @@ import { UserService } from '../../core/services/userService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PostService } from '../../core/services/postService';
 import { PostCard } from '../../components/post-card/post-card';
-import { SubscriptionService } from '../../core/services/subscription.service';
+import { SubscriptionService } from '../../core/services/subscription';
 
 @Component({
   selector: 'app-profile',
@@ -209,5 +209,9 @@ export class UserProfile implements OnInit {
       post.id === editedPost.id ? editedPost : post
     );
     this.posts.set(updatedPosts);
+  }
+
+  goBack(): void {
+    this.router.navigate(['/home']);
   }
 }
