@@ -1,5 +1,7 @@
 package blog.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import blog.entity.Role;
 import blog.entity.User;
 
@@ -15,7 +17,9 @@ public class UserResponseDto {
     private Role role;
     private Long followersCount;
     private Long followingCount;
-    private Boolean isFollowedByCurrentUser;
+    
+    @JsonProperty("isFollowing")
+    private Boolean isFollowing;
 
     public UserResponseDto() {
     }
@@ -113,11 +117,11 @@ public class UserResponseDto {
         this.followingCount = followingCount;
     }
 
-    public Boolean getIsFollowedByCurrentUser() {
-        return isFollowedByCurrentUser;
+    public Boolean getIsFollowing() {
+        return isFollowing;
     }
 
-    public void setIsFollowedByCurrentUser(Boolean isFollowedByCurrentUser) {
-        this.isFollowedByCurrentUser = isFollowedByCurrentUser;
+    public void setIsFollowing(Boolean isFollowing) {
+        this.isFollowing = isFollowing;
     }
 }

@@ -42,11 +42,10 @@ public class UserService {
 
         // Check if current user follows this user
         if (currentUserId != null && !currentUserId.equals(user.getId())) {
-            userResponse.setIsFollowedByCurrentUser(
-                subscriptionService.isFollowing(currentUserId, user.getId())
-            );
+            userResponse.setIsFollowing(
+                    subscriptionService.isFollowing(currentUserId, user.getId()));
         } else {
-            userResponse.setIsFollowedByCurrentUser(false);
+            userResponse.setIsFollowing(false);
         }
 
         return userResponse;

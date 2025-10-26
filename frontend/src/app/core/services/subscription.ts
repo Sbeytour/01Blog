@@ -14,26 +14,18 @@ export interface FollowResponse {
 })
 export class SubscriptionService {
   private http = inject(HttpClient);
-  private apiUrl = environment.apiUrl;
+  private apiUrl = `${environment.apiUrl}/api/users`;
 
-  /**
-   * Follow a user
-   */
   followUser(userId: number): Observable<FollowResponse> {
-    return this.http.post<FollowResponse>(`${this.apiUrl}/api/users/${userId}/follow`, {});
+    return this.http.post<FollowResponse>(`${this.apiUrl}/${userId}/follow`, {});
   }
 
-  /**
-   * Unfollow a user
-   */
   unfollowUser(userId: number): Observable<FollowResponse> {
-    return this.http.delete<FollowResponse>(`${this.apiUrl}/api/users/${userId}/unfollow`);
+    return this.http.delete<FollowResponse>(`${this.apiUrl}/${userId}/unfollow`);
   }
 
-  /**
-   * Check if current user follows a specific user
-   */
+  //Check if current user follows a specific user
   isFollowing(userId: number): Observable<{ isFollowing: boolean }> {
-    return this.http.get<{ isFollowing: boolean }>(`${this.apiUrl}/api/users/${userId}/is-following`);
+    return this.http.get<{ isFollowing: boolean }>(`${this.apiUrl}/${userId}/isfollowing`);
   }
 }

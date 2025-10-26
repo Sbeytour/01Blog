@@ -11,15 +11,14 @@ import blog.entity.Post;
 import blog.entity.User;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long>{
-    //find all posts ordered by created Date
+public interface PostRepository extends JpaRepository<Post, Long> {
+    // find all posts ordered by created Date
     @Query("SELECT p FROM Post p ORDER BY p.createdAt DESC")
     List<Post> findAllPosts();
 
-    // Find posts from users that the current user follows
-    @Query("SELECT p FROM Post p WHERE p.creator IN " +
-           "(SELECT s.following FROM Subscription s WHERE s.follower = :currentUser) " +
-           "ORDER BY p.createdAt DESC")
+    // Find posts from users that the current user follows and current user posts
+    @Query("SELECT p FROM Post p WHERE p.creator = :currentUser OR p.creator IN " +
+            "(SELECT s.following FROM Subscription s WHERE s.follower = :currentUser) " +
+            "ORDER BY p.createdAt DESC")
     List<Post> findPostsByFollowedUsers(@Param("currentUser") User currentUser);
 }
-
