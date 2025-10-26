@@ -133,8 +133,16 @@
         <mat-divider class="comments-divider"></mat-divider>
 
         <!-- Comment List -->
-        <app-comment-list [comments]="comments()" [isLoading]="isLoadingComments()" [currentUserId]="getCurrentUserId()"
-            (commentDeleted)="onCommentDelete($event)" (commentEdited)="onCommentEdit($event)"></app-comment-list>
+        <app-comment-list
+            [comments]="comments()"
+            [isLoading]="isLoadingComments()"
+            [isLoadingMore]="isLoadingMoreComments()"
+            [hasMore]="hasMoreComments()"
+            [currentUserId]="getCurrentUserId()"
+            (commentDeleted)="onCommentDelete($event)"
+            (commentEdited)="onCommentEdit($event)"
+            (loadMore)="loadMoreComments()">
+        </app-comment-list>
     </div>
     }
     }

@@ -79,7 +79,7 @@ public class PostService {
             throw new UserNotFoundException("User not found");
         }
 
-        List<Post> posts = postRepository.findAll().stream().filter(post -> post.getCreator().getId() == userId)
+        List<Post> posts = postRepository.findAllPosts().stream().filter(post -> post.getCreator().getId() == userId)
                 .toList();
 
         return posts.stream().map(post -> PostResponseDto.fromEntity(post, currentUserId)).toList();

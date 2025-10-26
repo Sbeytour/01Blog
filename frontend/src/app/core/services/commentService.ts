@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { Comment, CreateCommentRequest } from '../models/comment';
+import { Comment, CreateCommentRequest, PagedCommentResponse } from '../models/comment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +16,12 @@ export class CommentService {
     return this.http.post<Comment>(`${this.apiUrl}/posts/${postId}/comments`, request);
   }
 
-  // Get all comments for a specific post
-  getCommentsByPostId(postId: number): Observable<Comment[]> {
-    return this.http.get<Comment[]>(`${this.apiUrl}/posts/${postId}/comments`);
+  // Get paginated comments for a specific post
+  getCommentsByPostId(postId: number, page: number = 0, size: number = 5): Observable<PagedCommentResponse> {
+    const url = `${this.apiUrl}/posts/${postId}/comments`;
+    const params = { page: page.toString(), size: size.toString() };
+
+    return this.http.get<PagedCommentResponse>(url, { params });
   }
 
   // Update a comment

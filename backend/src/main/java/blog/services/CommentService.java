@@ -1,12 +1,15 @@
 package blog.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import blog.dto.request.CreateCommentRequestDto;
 import blog.dto.response.CommentResponseDto;
+import blog.dto.response.PagedCommentResponseDto;
 import blog.entity.Comment;
 import blog.entity.Post;
 import blog.entity.User;
@@ -59,14 +62,13 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-    public List<CommentResponseDto> getCommentsByPostId(Long postId) {
+    public PagedCommentResponseDto getCommentsByPostId(Long postId, int page, int size) {
         if (!postRepository.existsById(postId)) {
             throw new RuntimeException("Post not found with id: " + postId);
         }
 
-        List<Comment> comments = commentRepository.findByPostId(postId);
-        return comments.stream()
-                .map(CommentResponseDto::fromEntity)
-                .toList();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Comment> commentPage = commentRepository.findByPostId(postId, pageable);
+        return PagedCommentResponseDto.fromPage(commentPage);
     }
 }

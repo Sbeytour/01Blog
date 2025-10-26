@@ -59,8 +59,11 @@ export class PostDetail implements OnInit {
   comments = signal<Comment[]>([]);
   isLoadingComments = signal(false);
   isSubmittingComment = signal(false);
+  isLoadingMoreComments = signal(false);
+  hasMoreComments = signal(true);
+  currentPage = signal(0);
+  totalComments = signal(0);
 
-  // Like-related signal
   isLiking = signal(false);
 
   isOwnPost(): boolean {
@@ -88,11 +91,7 @@ export class PostDetail implements OnInit {
       next: (post) => {
         this.post.set(post);
         this.isLoading.set(false);
-        if (post.comments) {
-          this.comments.set(post.comments);
-        } else {
-          this.loadComments(postId);
-        }
+        this.loadComments(postId);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error loading post:', error);
@@ -102,17 +101,56 @@ export class PostDetail implements OnInit {
     });
   }
 
-  private loadComments(postId: number): void {
+  loadComments(postId: number): void {
     this.isLoadingComments.set(true);
+    this.currentPage.set(0);
+    this.comments.set([]);
+    this.fetchComments(postId, 0);
+  }
 
-    this.commentService.getCommentsByPostId(postId).subscribe({
-      next: (comments) => {
-        this.comments.set(comments);
-        this.isLoadingComments.set(false);
+  loadMoreComments(): void {
+    if (!this.postId || this.isLoadingMoreComments() || !this.hasMoreComments()) {
+      return;
+    }
+
+    this.isLoadingMoreComments.set(true);
+    const nextPage = this.currentPage() + 1;
+    this.fetchComments(this.postId, nextPage);
+
+  }
+
+
+  private fetchComments(postId: number, page: number): void {
+    this.commentService.getCommentsByPostId(postId, page, 5).subscribe({
+      next: (response) => {
+        const newComments = response?.comments || [];
+        const hasMore = response?.hasMore || false;
+        const currentPageNum = response?.currentPage ?? page;
+
+        if (page === 0) {
+          //first 5
+          this.comments.set(newComments);
+          this.isLoadingComments.set(false);
+        } else {
+          // Load more
+          this.comments.update(current => [...current, ...newComments]);
+          this.isLoadingMoreComments.set(false);
+        }
+
+        this.hasMoreComments.set(hasMore);
+        this.currentPage.set(currentPageNum);
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error loading comments:', error);
-        this.isLoadingComments.set(false);
+        console.error('[fetchComments] ERROR:', error);
+
+        if (page === 0) {
+          this.comments.set([]);
+          this.isLoadingComments.set(false);
+        } else {
+          this.isLoadingMoreComments.set(false);
+        }
+
+        this.hasMoreComments.set(false);
       }
     });
   }
@@ -126,6 +164,8 @@ export class PostDetail implements OnInit {
       next: (newComment) => {
         // Add new comment to the beginning of the list
         this.comments.update(comments => [newComment, ...comments]);
+
+        this.totalComments.update(count => count + 1);
 
         // Update comment count in post
         if (this.post()) {
@@ -176,6 +216,8 @@ export class PostDetail implements OnInit {
               comments.filter(c => c.id !== commentId)
             );
 
+            this.totalComments.update(count => Math.max(0, count - 1));
+
             // Update comment count in post
             if (this.post()) {
               const currentPost = this.post()!;
@@ -206,7 +248,6 @@ export class PostDetail implements OnInit {
 
     this.likeService.toggleLike(this.postId).subscribe({
       next: (response) => {
-        // Update post with new like state and count
         if (this.post()) {
           const currentPost = this.post()!;
           this.post.set({
@@ -245,7 +286,6 @@ export class PostDetail implements OnInit {
   goBack(): void {
     this.router.navigate(['/home']);
   }
-
 
   onEdit(event: Event) {
     event.stopPropagation();

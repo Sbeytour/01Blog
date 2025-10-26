@@ -4,7 +4,7 @@
       <mat-spinner diameter="40"></mat-spinner>
       <p>Loading comments...</p>
     </div>
-  } @else if (comments.length === 0) {
+  } @else if (!comments || comments.length === 0) {
     <div class="empty-state">
       <mat-icon>comment</mat-icon>
       <p>No comments yet</p>
@@ -87,6 +87,24 @@
             }
           </div>
         </mat-card>
+      }
+
+      <!-- Scroll sentinel for infinite scroll -->
+      <div #scrollSentinel class="scroll-sentinel"></div>
+
+      <!-- Loading more spinner -->
+      @if (isLoadingMore) {
+        <div class="loading-more">
+          <mat-spinner diameter="30"></mat-spinner>
+          <p>Loading more comments...</p>
+        </div>
+      }
+
+      <!-- No more comments message -->
+      @if (!hasMore && !isLoadingMore && comments && comments.length > 0) {
+        <div class="no-more-comments">
+          <p>No more comments</p>
+        </div>
       }
     </div>
   }
