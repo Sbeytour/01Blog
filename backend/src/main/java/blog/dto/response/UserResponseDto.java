@@ -13,6 +13,9 @@ public class UserResponseDto {
     private String bio;
     private String profileImgUrl;
     private Role role;
+    private Long followersCount;
+    private Long followingCount;
+    private Boolean isFollowedByCurrentUser;
 
     public UserResponseDto() {
     }
@@ -92,5 +95,29 @@ public class UserResponseDto {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Long getFollowersCount() {
+        return followersCount;
+    }
+
+    public void setFollowersCount(Long followersCount) {
+        this.followersCount = followersCount;
+    }
+
+    public Long getFollowingCount() {
+        return followingCount;
+    }
+
+    public void setFollowingCount(Long followingCount) {
+        this.followingCount = followingCount;
+    }
+
+    public Boolean getIsFollowedByCurrentUser() {
+        return isFollowedByCurrentUser;
+    }
+
+    public void setIsFollowedByCurrentUser(Boolean isFollowedByCurrentUser) {
+        this.isFollowedByCurrentUser = isFollowedByCurrentUser;
     }
 }

@@ -35,8 +35,9 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public UserResponseDto getUserProfile(@PathVariable String username) {
-        return userService.getUserProfile(username);
+    public UserResponseDto getUserProfile(@PathVariable String username, Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        return userService.getUserProfile(username, currentUser.getId());
     }
 
     @PostMapping("/picture")

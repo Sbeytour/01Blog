@@ -28,10 +28,28 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserResponseDto getUserProfile(String username) {
+    @Autowired
+    private SubscriptionService subscriptionService;
+
+    public UserResponseDto getUserProfile(String username, Long currentUserId) {
         User user = userRepository.findByUsernameOrEmail(username);
 
-        return UserResponseDto.fromEntity(user);
+        UserResponseDto userResponse = UserResponseDto.fromEntity(user);
+
+        // Add follow statistics
+        userResponse.setFollowersCount(subscriptionService.getFollowersCount(user.getId()));
+        userResponse.setFollowingCount(subscriptionService.getFollowingCount(user.getId()));
+
+        // Check if current user follows this user
+        if (currentUserId != null && !currentUserId.equals(user.getId())) {
+            userResponse.setIsFollowedByCurrentUser(
+                subscriptionService.isFollowing(currentUserId, user.getId())
+            );
+        } else {
+            userResponse.setIsFollowedByCurrentUser(false);
+        }
+
+        return userResponse;
     }
 
     public UserResponseDto updateProfile(Long userId, UpdateProfileRequestDto updateDto) {

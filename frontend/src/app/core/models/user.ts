@@ -7,6 +7,9 @@ export interface User {
     bio?: string;
     profileImgUrl?:string;
     role: UserRole;
+    followersCount?: number;
+    followingCount?: number;
+    isFollowedByCurrentUser?: boolean;
 }
 
 export enum UserRole {

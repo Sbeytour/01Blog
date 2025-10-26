@@ -61,10 +61,16 @@ public class PostService {
         return PostResponseDto.fromEntity(post);
     }
 
-    public List<PostResponseDto> getAllPosts(Long currentUser) {
-        List<Post> posts = postRepository.findAllPosts();
+    public List<PostResponseDto> getAllPosts(Long currentUserId) {
+        // Get current user
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Get posts from followed users only
+        List<Post> posts = postRepository.findPostsByFollowedUsers(currentUser);
+
         return posts.stream()
-                .map(post -> PostResponseDto.fromEntity(post, currentUser))
+                .map(post -> PostResponseDto.fromEntity(post, currentUserId))
                 .toList();
     }
 

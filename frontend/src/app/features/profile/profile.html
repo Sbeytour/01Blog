@@ -54,9 +54,9 @@
           </button>
           } @else {
           <button mat-flat-button [color]="isFollowing() ? 'accent' : 'primary'" (click)="onFollowToggle()"
-            class="action-btn">
+            [disabled]="isFollowLoading()" class="action-btn">
             <mat-icon>{{ isFollowing() ? 'person_remove' : 'person_add' }}</mat-icon>
-            {{ isFollowing() ? 'Unfollow' : 'Follow' }}
+            {{ isFollowLoading() ? 'Loading...' : (isFollowing() ? 'Unfollow' : 'Follow') }}
           </button>
           }
         </div>

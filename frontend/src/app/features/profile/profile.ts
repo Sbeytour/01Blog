@@ -13,6 +13,7 @@ import { Navbar } from '../../components/navbar/navbar';
 import { ProfileEdit } from '../../components/profile-edit/profile-edit';
 import { UserService } from '../../core/services/userService';
 import { HttpErrorResponse } from '@angular/common/http';
+import { SubscriptionService } from '../../core/services/subscription.service';
 
 @Component({
   selector: 'app-profile',
@@ -34,18 +35,20 @@ export class UserProfile implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   authService = inject(AuthService);
-  userService = inject(UserService)
+  userService = inject(UserService);
+  subscriptionService = inject(SubscriptionService);
 
   // Profile data
   profileUser = signal<User | null>(null);
   isOwnProfile = signal(false);
   isFollowing = signal(false);
   isEditing = signal(false);
+  isFollowLoading = signal(false);
 
   // Stats
-  postsCount = signal(12);
-  followersCount = signal(245);
-  followingCount = signal(183);
+  postsCount = signal(0);
+  followersCount = signal(0);
+  followingCount = signal(0);
 
   // Tab data
   posts = signal<any[]>([
@@ -85,7 +88,12 @@ export class UserProfile implements OnInit {
         next: (response) => {
           this.profileUser.set(response);
           this.isOwnProfile.set(false);
-        }, 
+
+          // Update stats from backend
+          this.followersCount.set(response.followersCount || 0);
+          this.followingCount.set(response.followingCount || 0);
+          this.isFollowing.set(response.isFollowedByCurrentUser || false);
+        },
         error: (error : HttpErrorResponse) => {
           console.log("error fetching profile : ", error);
         }
@@ -94,8 +102,25 @@ export class UserProfile implements OnInit {
   }
 
   loadCurrentUserProfile(currentUser: User | null) {
-    this.profileUser.set(currentUser);
-    this.isOwnProfile.set(true);
+    if (currentUser) {
+      // Load full profile data to get stats
+      this.userService.getUserProfile(currentUser.username).subscribe({
+        next: (response) => {
+          this.profileUser.set(response);
+          this.isOwnProfile.set(true);
+
+          // Update stats from backend
+          this.followersCount.set(response.followersCount || 0);
+          this.followingCount.set(response.followingCount || 0);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log("error fetching own profile : ", error);
+          // Fallback to cached user data
+          this.profileUser.set(currentUser);
+          this.isOwnProfile.set(true);
+        }
+      });
+    }
   }
 
   onEditProfile(): void {
@@ -108,12 +133,38 @@ export class UserProfile implements OnInit {
   }
 
   onFollowToggle(): void {
-    this.isFollowing.set(!this.isFollowing());
-    // TODO: Call follow/unfollow API
-    if (this.isFollowing()) {
-      this.followersCount.set(this.followersCount() + 1);
+    const userId = this.profileUser()?.id;
+    if (!userId || this.isFollowLoading()) return;
+
+    this.isFollowLoading.set(true);
+    const wasFollowing = this.isFollowing();
+
+    if (wasFollowing) {
+      // Unfollow
+      this.subscriptionService.unfollowUser(userId).subscribe({
+        next: (response) => {
+          this.isFollowing.set(response.isFollowing);
+          this.followersCount.set(response.followersCount);
+          this.isFollowLoading.set(false);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error unfollowing user:', error);
+          this.isFollowLoading.set(false);
+        }
+      });
     } else {
-      this.followersCount.set(this.followersCount() - 1);
+      // Follow
+      this.subscriptionService.followUser(userId).subscribe({
+        next: (response) => {
+          this.isFollowing.set(response.isFollowing);
+          this.followersCount.set(response.followersCount);
+          this.isFollowLoading.set(false);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error following user:', error);
+          this.isFollowLoading.set(false);
+        }
+      });
     }
   }
 

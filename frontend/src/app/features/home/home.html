@@ -25,13 +25,10 @@
   <!-- Empty State -->
   @else if (posts().length === 0) {
   <div class="empty-container">
-    <mat-icon class="empty-icon">post_add</mat-icon>
-    <h2>No posts yet</h2>
-    <p>Be the first to share something with the community!</p>
-    <button mat-raised-button color="primary" routerLink="/post/create">
-      <mat-icon>add</mat-icon>
-      Create Post
-    </button>
+    <mat-icon class="empty-icon">people_outline</mat-icon>
+    <h2>Your feed is empty</h2>
+    <p>Start following users to see their posts in your feed!</p>
+    <p class="empty-subtitle">Discover and connect with others to build your personalized feed.</p>
   </div>
   }
 
