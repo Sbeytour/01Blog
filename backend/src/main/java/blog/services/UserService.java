@@ -42,10 +42,10 @@ public class UserService {
 
         // Check if current user follows this user
         if (currentUserId != null && !currentUserId.equals(user.getId())) {
-            userResponse.setIsFollowing(
+            userResponse.setIsFollowedByCurrentUser(
                     subscriptionService.isFollowing(currentUserId, user.getId()));
         } else {
-            userResponse.setIsFollowing(false);
+            userResponse.setIsFollowedByCurrentUser(false);
         }
 
         return userResponse;
@@ -110,7 +110,7 @@ public class UserService {
         Path filePath = Paths.get(uploadsDir, fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // ✅ Delete old profile picture if exists
+        //Delete old profile picture if exists
         if (user.getProfileImgUrl() != null && !user.getProfileImgUrl().isEmpty()) {
             String oldFileName = user.getProfileImgUrl().replace("/files/", "");
             Path oldFilePath = Paths.get(uploadsDir, oldFileName);

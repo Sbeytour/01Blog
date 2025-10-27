@@ -56,13 +56,13 @@
           @if (isOwnProfile()) {
           <button mat-flat-button color="primary" (click)="onEditProfile()" class="action-btn">
             <mat-icon>edit</mat-icon>
-            Edit Profile
+            <p>Edit Profile</p>
           </button>
           } @else {
-          <button mat-flat-button [color]="isFollowing() ? 'accent' : 'primary'" (click)="onFollowToggle()"
+          <button mat-flat-button [color]="isFollowedByCurrentUser() ? 'accent' : 'primary'" (click)="onFollowToggle()"
             [disabled]="isFollowLoading()" class="action-btn">
-            <mat-icon>{{ isFollowing() ? 'person_remove' : 'person_add' }}</mat-icon>
-            {{ isFollowLoading() ? 'Loading...' : (isFollowing() ? 'Unfollow' : 'Follow') }}
+            <mat-icon>{{ isFollowedByCurrentUser() ? 'person_remove' : 'person_add' }}</mat-icon>
+            <p>{{ isFollowLoading() ? 'Loading...' : (isFollowedByCurrentUser() ? 'Unfollow' : 'Follow') }}</p>
           </button>
           }
         </div>

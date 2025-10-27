@@ -9,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 public class SubscriptionService {
 
@@ -45,9 +42,9 @@ public class SubscriptionService {
                 subscription.setFollowing(following);
                 subscriptionRepository.save(subscription);
 
-                // Prepare response
-                UserResponseDto response = new UserResponseDto();
-                response.setIsFollowing(true);
+                // Prepare response - return full user data for the user being followed
+                UserResponseDto response = UserResponseDto.fromEntity(following);
+                response.setIsFollowedByCurrentUser(true);
                 response.setFollowersCount(subscriptionRepository.countByFollowing(following));
                 response.setFollowingCount(subscriptionRepository.countByFollower(follower));
 
@@ -68,11 +65,11 @@ public class SubscriptionService {
 
                 subscriptionRepository.delete(subscription);
 
-                // Prepare response
-                UserResponseDto response = new UserResponseDto();
-                response.setIsFollowing(false);
+                // Prepare response - return full user data for the user being unfollowed
+                UserResponseDto response = UserResponseDto.fromEntity(following);
+                response.setIsFollowedByCurrentUser(false);
                 response.setFollowersCount(subscriptionRepository.countByFollowing(following));
-                response.setFollowingCount(subscriptionRepository.countByFollower(follower));
+                response.setFollowingCount(subscriptionRepository.countByFollower(following));
 
                 return response;
         }
@@ -100,14 +97,4 @@ public class SubscriptionService {
 
                 return subscriptionRepository.countByFollower(user);
         }
-
-        // /**
-        // * Get all users that a user follows (for feed filtering)
-        // */
-        // public List<User> getFollowingUsers(Long userId) {
-        // User user = userRepository.findById(userId)
-        // .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // return subscriptionRepository.findFollowingUsers(user);
-        // }
 }

@@ -17,9 +17,7 @@ public class UserResponseDto {
     private Role role;
     private Long followersCount;
     private Long followingCount;
-    
-    @JsonProperty("isFollowing")
-    private Boolean isFollowing;
+    private Boolean isFollowedByCurrentUser;
 
     public UserResponseDto() {
     }
@@ -117,11 +115,11 @@ public class UserResponseDto {
         this.followingCount = followingCount;
     }
 
-    public Boolean getIsFollowing() {
-        return isFollowing;
+    public Boolean getIsFollowedByCurrentUser() {
+        return isFollowedByCurrentUser;
     }
 
-    public void setIsFollowing(Boolean isFollowing) {
-        this.isFollowing = isFollowing;
+    public void setIsFollowedByCurrentUser(Boolean isFollowedByCurrentUser) {
+        this.isFollowedByCurrentUser = isFollowedByCurrentUser;
     }
 }

@@ -48,12 +48,14 @@ export class UserProfile implements OnInit {
   // Profile data
   profileUser = signal<User | null>(null);
   isOwnProfile = signal(false);
-  isFollowing = signal(false);
   isEditing = signal(false);
+
+  isFollowedByCurrentUser = signal(false);
   isFollowLoading = signal(false);
 
   // Stats
   postsCount = signal<number | null>(null);
+
   followersCount = signal(0);
   followingCount = signal(0);
 
@@ -82,10 +84,10 @@ export class UserProfile implements OnInit {
           this.profileUser.set(response);
           this.isOwnProfile.set(false);
           this.loadUserPosts(response.id);
-          // Update stats from backend
+
           this.followersCount.set(response.followersCount || 0);
           this.followingCount.set(response.followingCount || 0);
-          this.isFollowing.set(response.isFollowedByCurrentUser || false);
+          this.isFollowedByCurrentUser.set(response.isFollowedByCurrentUser || false);
         },
         error: (error: HttpErrorResponse) => {
           console.log("error fetching profile : ", error);
@@ -120,19 +122,17 @@ export class UserProfile implements OnInit {
 
   loadCurrentUserProfile(currentUser: User | null) {
     if (currentUser) {
-      // Load full profile data to get stats
       this.userService.getUserProfile(currentUser.username).subscribe({
         next: (response) => {
           this.profileUser.set(response);
           this.isOwnProfile.set(true);
           this.loadUserPosts(response.id);
-          // Update stats from backend
+
           this.followersCount.set(response.followersCount || 0);
           this.followingCount.set(response.followingCount || 0);
         },
         error: (error: HttpErrorResponse) => {
           console.log("error fetching own profile : ", error);
-          // Fallback to cached user data
           this.profileUser.set(currentUser);
           this.loadUserPosts(currentUser?.id);
           this.isOwnProfile.set(true);
@@ -155,13 +155,13 @@ export class UserProfile implements OnInit {
     if (!userId || this.isFollowLoading()) return;
 
     this.isFollowLoading.set(true);
-    const wasFollowing = this.isFollowing();
+    const wasFollowedByCurrentUser = this.isFollowedByCurrentUser();
 
-    if (wasFollowing) {
+    if (wasFollowedByCurrentUser) {
       // Unfollow
       this.subscriptionService.unfollowUser(userId).subscribe({
         next: (response) => {
-          this.isFollowing.set(response.isFollowing);
+          this.isFollowedByCurrentUser.set(response.isFollowedByCurrentUser);
           this.followersCount.set(response.followersCount);
           this.isFollowLoading.set(false);
         },
@@ -174,7 +174,7 @@ export class UserProfile implements OnInit {
       // Follow
       this.subscriptionService.followUser(userId).subscribe({
         next: (response) => {
-          this.isFollowing.set(response.isFollowing);
+          this.isFollowedByCurrentUser.set(response.isFollowedByCurrentUser);
           this.followersCount.set(response.followersCount);
           this.isFollowLoading.set(false);
         },

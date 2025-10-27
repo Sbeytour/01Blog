@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface FollowResponse {
-  isFollowing: boolean;
+  isFollowedByCurrentUser: boolean;
   followersCount: number;
   followingCount: number;
 }
