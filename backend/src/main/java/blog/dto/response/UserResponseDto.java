@@ -1,7 +1,5 @@
 package blog.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import blog.entity.Role;
 import blog.entity.User;
 
