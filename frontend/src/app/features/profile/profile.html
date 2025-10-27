@@ -64,6 +64,10 @@
             <mat-icon>{{ isFollowedByCurrentUser() ? 'person_remove' : 'person_add' }}</mat-icon>
             <p>{{ isFollowLoading() ? 'Loading...' : (isFollowedByCurrentUser() ? 'Unfollow' : 'Follow') }}</p>
           </button>
+          <button mat-stroked-button color="warn" (click)="onReportUser()" class="action-btn report-btn">
+            <mat-icon>flag</mat-icon>
+            <p>Report User</p>
+          </button>
           }
         </div>
       </div>

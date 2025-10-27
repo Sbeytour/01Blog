@@ -7,6 +7,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../core/services/auth';
 import { User } from '../../core/models/user';
 import { Navbar } from '../../components/navbar/navbar';
@@ -16,6 +17,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { PostService } from '../../core/services/postService';
 import { PostCard } from '../../components/post-card/post-card';
 import { SubscriptionService } from '../../core/services/subscription';
+import { ReportDialogComponent } from '../../components/report-dialog/report-dialog';
+import { ReportedType } from '../../core/models/report';
 
 @Component({
   selector: 'app-profile',
@@ -37,6 +40,7 @@ import { SubscriptionService } from '../../core/services/subscription';
 export class UserProfile implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
   authService = inject(AuthService);
   userService = inject(UserService);
   subscriptionService = inject(SubscriptionService);;
@@ -213,5 +217,26 @@ export class UserProfile implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/home']);
+  }
+
+  onReportUser(): void {
+    const user = this.profileUser();
+    if (!user) return;
+
+    const dialogRef = this.dialog.open(ReportDialogComponent, {
+      width: '500px',
+      maxWidth: '95vw',
+      data: {
+        entityType: ReportedType.USER,
+        entityId: user.id,
+        entityName: `@${user.username}`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.success) {
+        console.log('Report submitted for user:', user.username);
+      }
+    });
   }
 }

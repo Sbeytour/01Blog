@@ -13,6 +13,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { DialogComponent } from '../dialog/dialog';
 import { PostCreate } from '../../features/posts/post-create/post-create';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ReportDialogComponent } from '../report-dialog/report-dialog';
+import { ReportedType } from '../../core/models/report';
 
 @Component({
   selector: 'app-post-card',
@@ -110,6 +112,28 @@ export class PostCard {
         })
       }
     })
+  }
+
+  onReport(event: Event) {
+    event.stopPropagation();
+
+    const dialogRef = this.dialog.open(ReportDialogComponent, {
+      width: '700px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+      data: {
+        entityType: ReportedType.POST,
+        entityId: this.post.id,
+        entityName: this.post.title
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.success) {
+        // Report submitted successfully - dialog already shows snackbar
+        console.log('Report submitted for post:', this.post.id);
+      }
+    });
   }
 
   onLikeToggle(event: Event): void {

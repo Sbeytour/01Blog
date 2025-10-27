@@ -209,11 +209,12 @@
 
 .profile-actions {
   display: flex;
-  // gap: 12px;
+  gap: 12px;
   margin-top: 8px;
 
   @media (max-width: 768px) {
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .action-btn {
@@ -251,6 +252,17 @@
         width: 15px;
         height: 15px;
       }
+    }
+  }
+
+  .report-btn {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 140px;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      max-width: 300px;
     }
   }
 }

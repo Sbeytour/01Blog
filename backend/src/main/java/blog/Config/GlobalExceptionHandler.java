@@ -14,8 +14,10 @@ import io.jsonwebtoken.security.SecurityException;
 import java.util.stream.*;
 
 import blog.dto.response.ErrorResponseDto;
+import blog.exceptions.DuplicateReportException;
 import blog.exceptions.InvalidCredentialsException;
 import blog.exceptions.InvalidTokenException;
+import blog.exceptions.ReportNotFoundException;
 import blog.exceptions.SuccessException;
 import blog.exceptions.UserAlreadyExistsException;
 import blog.exceptions.UserNotFoundException;
@@ -41,6 +43,22 @@ public class GlobalExceptionHandler {
         logger.warn("user not found: {}", exception.getMessage());
 
         return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND.value());
+    }
+
+    @ExceptionHandler(ReportNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseDto handleReportNotFound(ReportNotFoundException exception) {
+        logger.warn("report not found: {}", exception.getMessage());
+
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND.value());
+    }
+
+    @ExceptionHandler(DuplicateReportException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseDto handleDuplicateReport(DuplicateReportException exception) {
+        logger.warn("duplicate report: {}", exception.getMessage());
+
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     //AUTHENTICATION && AUTHORIZATION EXCEPTIONS

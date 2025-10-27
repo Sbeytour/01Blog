@@ -1,0 +1,106 @@
+.report-card {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 16px;
+  padding: 32px;
+  background-color: var(--mat-sys-surface-bright);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
+
+}
+
+.card-header {
+  margin-bottom: 20px;
+  align-items: center;
+
+  h1 {
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0px 0 20px 0;
+    color: var(--mat-sys-primary);
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+    }
+  }
+
+  .label {
+    text-align: center;
+
+    .entity-label {
+      margin: 0 0 4px 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--mat-sys-on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .entity-name {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--mat-sys-on-surface-variant);
+    }
+  }
+
+}
+
+// Report Form
+.report-form {
+  .full-width {
+    width: 100%;
+  }
+
+  textarea {
+    resize: none;
+    min-height: 15vh;
+  }
+
+  // Error Message
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #ffebee;
+    border-radius: 4px;
+    color: #c62828;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    span {
+      flex: 1;
+      font-size: 14px;
+    }
+  }
+}
+
+// Dialog Actions
+mat-dialog-actions {
+  padding: 16px 24px;
+  margin: 0 -24px -24px -24px;
+
+  button {
+    margin-left: 8px;
+  }
+}
+
+// Submitting State
+.submitting-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-spinner {
+    display: inline-block;
+  }
+}

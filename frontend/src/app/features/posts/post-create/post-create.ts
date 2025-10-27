@@ -32,7 +32,7 @@ export interface PostEditData {
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule,
+    // MatDialogModule,
     MatProgressSpinnerModule,
   ],
   templateUrl: './post-create.html',
