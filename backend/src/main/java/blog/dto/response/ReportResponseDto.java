@@ -2,7 +2,6 @@ package blog.dto.response;
 
 import blog.entity.Report;
 import blog.entity.ReportReason;
-import blog.entity.ReportStatus;
 import blog.entity.ReportedType;
 
 import java.time.LocalDateTime;

@@ -12,21 +12,20 @@ export enum ReportReason {
 }
 
 export enum ReportStatus {
-  PENDING = 'PENDING',
-  UNDER_REVIEW = 'UNDER_REVIEW',
-  RESOLVED = 'RESOLVED',
-  DISMISSED = 'DISMISSED'
+  PENDING,
+  RESOLVED,
+  DISMISSED
 }
 
 export enum ReportedType {
-  USER = 'USER',
-  POST = 'POST'
+  USER,
+  POST
 }
 
 // Request DTO
 export interface CreateReportRequest {
   reportedType: ReportedType;
-  reportedEntityId: number;
+  reportedId: number;
   reason: ReportReason;
   description: string;
 }
@@ -35,38 +34,13 @@ export interface CreateReportRequest {
 export interface ReportResponse {
   id: number;
   reportedType: ReportedType;
-  reportedEntityId: number;
+  reportedId: number;
   reason: ReportReason;
   description: string;
   status: ReportStatus;
   createdAt: string;
 }
 
-export interface AdminReportResponse extends ReportResponse {
-  updatedAt: string;
-  resolvedAt?: string;
-  reporterId: number;
-  reporterUsername: string;
-  reporterEmail: string;
-  resolvedById?: number;
-  resolvedByUsername?: string;
-  adminNotes?: string;
-  reportedEntityTitle?: string;
-  reportedUsername?: string;
-}
-
-// Paginated Response
-export interface PagedReportResponse {
-  content: ReportResponse[];
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  first: boolean;
-  last: boolean;
-}
-
-// Helper for displaying reason labels
 export const ReportReasonLabels: Record<ReportReason, string> = {
   [ReportReason.SPAM]: 'Spam or misleading content',
   [ReportReason.HARASSMENT]: 'Harassment or bullying',

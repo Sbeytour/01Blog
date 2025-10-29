@@ -9,7 +9,6 @@ export interface dialogData {
 @Component({
     selector: 'app-dialog',
     templateUrl: './dialog.html',
-    styleUrl: './dialog.scss',
     imports: [
         MatDialogModule,
         MatButtonModule,

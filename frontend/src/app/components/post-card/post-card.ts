@@ -122,9 +122,9 @@ export class PostCard {
       maxWidth: '95vw',
       maxHeight: '95vh',
       data: {
-        entityType: ReportedType.POST,
-        entityId: this.post.id,
-        entityName: this.post.title
+        reportedType: ReportedType.POST,
+        reportedId: this.post.id,
+        reportedName: this.post.title
       }
     });
 

@@ -20,9 +20,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 
 export interface ReportDialogData {
-  entityType: ReportedType;
-  entityId: number;
-  entityName: string; // Post title or username for display
+  reportedType: ReportedType;
+  reportedId: number;
+  reportedName: string; // Post title or username for display
 }
 
 @Component({
@@ -50,7 +50,7 @@ export class ReportDialogComponent implements OnInit {
   private dialogRef = inject(MatDialogRef<ReportDialogComponent>);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
-  data = inject<ReportDialogData>(MAT_DIALOG_DATA);
+  reportData = inject<ReportDialogData>(MAT_DIALOG_DATA);
 
   reportForm!: FormGroup;
   isSubmitting = signal(false);
@@ -87,7 +87,7 @@ export class ReportDialogComponent implements OnInit {
   }
 
   private showConfirmationDialog(): void {
-    const entityLabel = this.data.entityType === ReportedType.USER ? 'user' : 'post';
+    const entityLabel = this.reportData.reportedType === ReportedType.USER ? 'user' : 'post';
 
     const confirmDialogRef = this.dialog.open(DialogComponent, {
       data: {
@@ -108,8 +108,8 @@ export class ReportDialogComponent implements OnInit {
     this.errorMessage.set(null);
 
     const request: CreateReportRequest = {
-      reportedType: this.data.entityType,
-      reportedEntityId: this.data.entityId,
+      reportedType: this.reportData.reportedType,
+      reportedId: this.reportData.reportedId,
       reason: this.reportForm.value.reason,
       description: this.reportForm.value.description
     };
@@ -131,7 +131,6 @@ export class ReportDialogComponent implements OnInit {
       error: (error) => {
         this.isSubmitting.set(false);
 
-        // Handle specific error messages
         if (error.error?.message) {
           this.errorMessage.set(error.error.message);
         } else if (error.status === 400) {
@@ -161,7 +160,6 @@ export class ReportDialogComponent implements OnInit {
 
     return 'Invalid input';
   }
-
 
   descriptionLength(): number {
     return this.reportForm.get('description')?.value?.length || 0;

@@ -18,16 +18,13 @@ public class Report {
 
     @NotNull(message = "Reported entity type is required")
     @Enumerated(EnumType.STRING)
-    @Column(name = "reported_type", nullable = false)
     private ReportedType reportedType;
 
     @NotNull(message = "Reported entity ID is required")
-    @Column(name = "reported_id", nullable = false)
     private Long reportedId;
 
     @NotNull(message = "Reporter is required")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reporter_id", nullable = false)
     private User reporter;
 
     @NotNull(message = "Reason is required")

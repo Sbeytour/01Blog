@@ -21,18 +21,6 @@ public class CreateReportRequestDto {
     @Size(min = 10, max = 1000, message = "Description must be between 10 and 1000 characters")
     private String description;
 
-    // Constructors
-    public CreateReportRequestDto() {
-    }
-
-    public CreateReportRequestDto(ReportedType reportedType, Long reportedId,
-                                  ReportReason reason, String description) {
-        this.reportedType = reportedType;
-        this.reportedId = reportedId;
-        this.reason = reason;
-        this.description = description;
-    }
-
     // Getters and Setters
     public ReportedType getReportedType() {
         return reportedType;

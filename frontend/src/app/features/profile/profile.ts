@@ -227,9 +227,9 @@ export class UserProfile implements OnInit {
       width: '500px',
       maxWidth: '95vw',
       data: {
-        entityType: ReportedType.USER,
-        entityId: user.id,
-        entityName: `@${user.username}`
+        reportedType: ReportedType.USER,
+        reportedId: user.id,
+        reportedName: `@${user.username}`
       }
     });
 

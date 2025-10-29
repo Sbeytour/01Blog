@@ -2,13 +2,13 @@
   <!-- Entity Info Display -->
   <div class="card-header">
     <h1>
-      Report {{ data.entityType === reportedType.USER ? 'User' : 'Post' }}
+      Report {{ reportData.reportedType === reportedType.USER ? 'User' : 'Post' }}
     </h1>
     <div class="label">
       <p class="entity-label">
-        {{ data.entityType === reportedType.USER ? 'Username:' : 'Post Title:' }}
+        {{ reportData.reportedType === reportedType.USER ? 'Username:' : 'Post Title:' }}
       </p>
-      <p class="entity-name">{{ data.entityName }}</p>
+      <p class="entity-name">{{ reportData.reportedName }}</p>
     </div>
   </div>
 
