@@ -12,10 +12,6 @@ public class ResolveReportRequestDto {
     @Size(max = 2000, message = "Admin notes cannot exceed 2000 characters")
     private String adminNotes;
 
-    // Constructors
-    public ResolveReportRequestDto() {
-    }
-
     public ResolveReportRequestDto(ReportStatus status, String adminNotes) {
         this.status = status;
         this.adminNotes = adminNotes;

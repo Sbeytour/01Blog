@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -19,12 +18,12 @@ public class Report {
 
     @NotNull(message = "Reported entity type is required")
     @Enumerated(EnumType.STRING)
-    @Column(name = "reported_entity_type", nullable = false)
-    private ReportedEntityType reportedEntityType;
+    @Column(name = "reported_type", nullable = false)
+    private ReportedType reportedType;
 
     @NotNull(message = "Reported entity ID is required")
-    @Column(name = "reported_entity_id", nullable = false)
-    private Long reportedEntityId;
+    @Column(name = "reported_id", nullable = false)
+    private Long reportedId;
 
     @NotNull(message = "Reporter is required")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,7 +35,7 @@ public class Report {
     @Column(nullable = false)
     private ReportReason reason;
 
-    @NotBlank(message = "Description cannot be blank")
+    @NotBlank(message = "Description cannot be empty")
     @Size(min = 10, max = 1000, message = "Description must be between 10 and 1000 characters")
     @Column(nullable = false, length = 1000)
     private String description;
@@ -50,35 +49,6 @@ public class Report {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @Column(name = "resolved_at")
-    private LocalDateTime resolvedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resolved_by_id")
-    private User resolvedBy;
-
-    @Size(max = 2000, message = "Admin notes cannot exceed 2000 characters")
-    @Column(name = "admin_notes", length = 2000)
-    private String adminNotes;
-
-    // Constructors
-    public Report() {
-    }
-
-    public Report(ReportedEntityType reportedEntityType, Long reportedEntityId, User reporter,
-                  ReportReason reason, String description) {
-        this.reportedEntityType = reportedEntityType;
-        this.reportedEntityId = reportedEntityId;
-        this.reporter = reporter;
-        this.reason = reason;
-        this.description = description;
-        this.status = ReportStatus.PENDING;
-    }
-
     // Getters and Setters
     public Long getId() {
         return id;
@@ -88,20 +58,20 @@ public class Report {
         this.id = id;
     }
 
-    public ReportedEntityType getReportedEntityType() {
-        return reportedEntityType;
+    public ReportedType getReportedType() {
+        return reportedType;
     }
 
-    public void setReportedEntityType(ReportedEntityType reportedEntityType) {
-        this.reportedEntityType = reportedEntityType;
+    public void setReportedType(ReportedType reportedType) {
+        this.reportedType = reportedType;
     }
 
-    public Long getReportedEntityId() {
-        return reportedEntityId;
+    public Long getReportedId() {
+        return reportedId;
     }
 
-    public void setReportedEntityId(Long reportedEntityId) {
-        this.reportedEntityId = reportedEntityId;
+    public void setReportedId(Long reportedId) {
+        this.reportedId = reportedId;
     }
 
     public User getReporter() {
@@ -142,37 +112,5 @@ public class Report {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getResolvedAt() {
-        return resolvedAt;
-    }
-
-    public void setResolvedAt(LocalDateTime resolvedAt) {
-        this.resolvedAt = resolvedAt;
-    }
-
-    public User getResolvedBy() {
-        return resolvedBy;
-    }
-
-    public void setResolvedBy(User resolvedBy) {
-        this.resolvedBy = resolvedBy;
-    }
-
-    public String getAdminNotes() {
-        return adminNotes;
-    }
-
-    public void setAdminNotes(String adminNotes) {
-        this.adminNotes = adminNotes;
     }
 }

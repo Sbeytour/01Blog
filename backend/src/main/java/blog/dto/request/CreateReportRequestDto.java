@@ -1,18 +1,18 @@
 package blog.dto.request;
 
 import blog.entity.ReportReason;
-import blog.entity.ReportedEntityType;
+import blog.entity.ReportedType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class CreateReportRequestDto {
 
-    @NotNull(message = "Reported entity type is required")
-    private ReportedEntityType reportedEntityType;
+    @NotNull(message = "Reported  type is required")
+    private ReportedType reportedType;
 
-    @NotNull(message = "Reported entity ID is required")
-    private Long reportedEntityId;
+    @NotNull(message = "Reported  ID is required")
+    private Long reportedId;
 
     @NotNull(message = "Reason is required")
     private ReportReason reason;
@@ -25,29 +25,29 @@ public class CreateReportRequestDto {
     public CreateReportRequestDto() {
     }
 
-    public CreateReportRequestDto(ReportedEntityType reportedEntityType, Long reportedEntityId,
+    public CreateReportRequestDto(ReportedType reportedType, Long reportedId,
                                   ReportReason reason, String description) {
-        this.reportedEntityType = reportedEntityType;
-        this.reportedEntityId = reportedEntityId;
+        this.reportedType = reportedType;
+        this.reportedId = reportedId;
         this.reason = reason;
         this.description = description;
     }
 
     // Getters and Setters
-    public ReportedEntityType getReportedEntityType() {
-        return reportedEntityType;
+    public ReportedType getReportedType() {
+        return reportedType;
     }
 
-    public void setReportedEntityType(ReportedEntityType reportedEntityType) {
-        this.reportedEntityType = reportedEntityType;
+    public void setReportedType(ReportedType reportedType) {
+        this.reportedType = reportedType;
     }
 
-    public Long getReportedEntityId() {
-        return reportedEntityId;
+    public Long getReportedId() {
+        return reportedId;
     }
 
-    public void setReportedEntityId(Long reportedEntityId) {
-        this.reportedEntityId = reportedEntityId;
+    public void setReportedId(Long reportedId) {
+        this.reportedId = reportedId;
     }
 
     public ReportReason getReason() {

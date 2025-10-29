@@ -17,7 +17,6 @@
     <mat-icon>error_outline</mat-icon>
     <span>{{ errorMessage() }}</span>
   </div>
-  
   <!-- Report Form -->
   <form [formGroup]="reportForm" class="report-form">
     <!-- Reason Dropdown -->
@@ -30,7 +29,7 @@
         </mat-option>
         }
       </mat-select>
-      @if(reportForm.get('reason')?.touched && reportForm.get('reason')?.errors) {
+      @if(reportForm.get('reason')?.errors) {
       <mat-error>
         {{ getFieldErrorMessage('Reason') }}
       </mat-error>
@@ -43,7 +42,7 @@
       <textarea matInput formControlName="description"
         placeholder="Please provide details about why you're reporting this..." rows="6" required
         maxlength="1000"></textarea>
-      <mat-hint align="end">{{ descriptionLength }}/1000</mat-hint>
+      <mat-hint align="end">{{ descriptionLength() }}/1000</mat-hint>
       @if(reportForm.get('description')?.touched && reportForm.get('description')?.errors) {
       <mat-error>
         {{ getFieldErrorMessage('Description') }}
@@ -52,11 +51,11 @@
     </mat-form-field>
   </form>
 
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()" [disabled]="isSubmitting()">
+  <div class="form-actions">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="isSubmitting()">
       Cancel
     </button>
-    <button mat-raised-button color="warn" (click)="onSubmit()" [disabled]="reportForm.invalid || isSubmitting()">
+    <button mat-flat-button color="warn" (click)="onSubmit()" [disabled]="reportForm.invalid || isSubmitting()">
       @if(!isSubmitting()) {
       <span>Submit Report</span>
       } @else {
@@ -66,5 +65,5 @@
       </span>
       }
     </button>
-  </mat-dialog-actions>
+  </div>
 </mat-dialog-content>

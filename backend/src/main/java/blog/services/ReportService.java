@@ -75,7 +75,7 @@ public class ReportService {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Report> reports = reportRepository.findByReporter(user, pageable);
 
-        return reports.map(this::mapToReportResponseDto);
+        return ReportResponseDto.fromEntity(null, null, null, null, null, null, null);
     }
 
     /**
@@ -98,18 +98,4 @@ public class ReportService {
         }
     }
 
-    /**
-     * Map Report entity to ReportResponseDto
-     */
-    private ReportResponseDto mapToReportResponseDto(Report report) {
-        return new ReportResponseDto(
-                report.getId(),
-                report.getReportedEntityType(),
-                report.getReportedEntityId(),
-                report.getReason(),
-                report.getDescription(),
-                report.getStatus(),
-                report.getCreatedAt()
-        );
-    }
 }

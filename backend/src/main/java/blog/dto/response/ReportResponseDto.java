@@ -1,35 +1,35 @@
 package blog.dto.response;
 
+import blog.entity.Report;
 import blog.entity.ReportReason;
 import blog.entity.ReportStatus;
-import blog.entity.ReportedEntityType;
+import blog.entity.ReportedType;
 
 import java.time.LocalDateTime;
 
 public class ReportResponseDto {
 
     private Long id;
-    private ReportedEntityType reportedEntityType;
-    private Long reportedEntityId;
+    private ReportedType reportedType;
+    private Long reportedId;
     private ReportReason reason;
     private String description;
-    private ReportStatus status;
     private LocalDateTime createdAt;
 
-    // Constructors
+    // Constructor
     public ReportResponseDto() {
     }
 
-    public ReportResponseDto(Long id, ReportedEntityType reportedEntityType, Long reportedEntityId,
-                             ReportReason reason, String description, ReportStatus status,
-                             LocalDateTime createdAt) {
-        this.id = id;
-        this.reportedEntityType = reportedEntityType;
-        this.reportedEntityId = reportedEntityId;
-        this.reason = reason;
-        this.description = description;
-        this.status = status;
-        this.createdAt = createdAt;
+    // method to convert entity to dto
+    public static ReportResponseDto fromEntity(Report report) {
+        ReportResponseDto reportResp = new ReportResponseDto();
+        reportResp.id = report.getReportedId();
+        reportResp.reportedType = report.getReportedType();
+        reportResp.reportedId = report.getReportedId();
+        reportResp.reason = report.getReason();
+        reportResp.description = report.getDescription();
+        reportResp.createdAt = report.getCreatedAt();
+        return reportResp;
     }
 
     // Getters and Setters
@@ -41,20 +41,20 @@ public class ReportResponseDto {
         this.id = id;
     }
 
-    public ReportedEntityType getReportedEntityType() {
-        return reportedEntityType;
+    public ReportedType getReportedType() {
+        return reportedType;
     }
 
-    public void setReportedEntityType(ReportedEntityType reportedEntityType) {
-        this.reportedEntityType = reportedEntityType;
+    public void setReportedType(ReportedType reportedType) {
+        this.reportedType = reportedType;
     }
 
-    public Long getReportedEntityId() {
-        return reportedEntityId;
+    public Long getReportedId() {
+        return reportedId;
     }
 
-    public void setReportedEntityId(Long reportedEntityId) {
-        this.reportedEntityId = reportedEntityId;
+    public void setReportedId(Long reportedId) {
+        this.reportedId = reportedId;
     }
 
     public ReportReason getReason() {
@@ -71,14 +71,6 @@ public class ReportResponseDto {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public ReportStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ReportStatus status) {
-        this.status = status;
     }
 
     public LocalDateTime getCreatedAt() {

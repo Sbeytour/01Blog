@@ -114,6 +114,7 @@ export class ReportDialogComponent implements OnInit {
       description: this.reportForm.value.description
     };
 
+    console.log("report request: ", request)
     this.reportService.createReport(request).subscribe({
       next: (report) => {
         this.snackBar.open(
@@ -161,7 +162,8 @@ export class ReportDialogComponent implements OnInit {
     return 'Invalid input';
   }
 
-  get descriptionLength(): number {
+
+  descriptionLength(): number {
     return this.reportForm.get('description')?.value?.length || 0;
   }
 }
