@@ -201,7 +201,8 @@
                 font-size: 12px;
 
                 &.warning {
-                  color: var(--mat-sys-error);
+                  background-color: var(--mat-sys-error-container);
+                  color: var(--mat-sys-on-error-container);
                   font-weight: 500;
                 }
               }
@@ -225,10 +226,10 @@
 
 // Delete action styling
 .delete-action {
-  color: var(--mat-sys-error);
+  color: var(--mat-sys-on-error-container);
 
   mat-icon {
-    color: var(--mat-sys-error);
+    color: var(--mat-sys-on-error-container);
   }
 }
 

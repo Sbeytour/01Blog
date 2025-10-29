@@ -13,10 +13,12 @@
   </div>
 
   <!-- Error Message Display -->
+  @if(errorMessage()) {
   <div class="error-message">
     <mat-icon>error_outline</mat-icon>
     <span>{{ errorMessage() }}</span>
   </div>
+  }
   <!-- Report Form -->
   <form [formGroup]="reportForm" class="report-form">
     <!-- Reason Dropdown -->
@@ -29,9 +31,9 @@
         </mat-option>
         }
       </mat-select>
-      @if(reportForm.get('reason')?.errors) {
+      @if(reportForm.get('reason')?.touched && reportForm.get('reason')?.errors) {
       <mat-error>
-        {{ getFieldErrorMessage('Reason') }}
+        {{ getFieldErrorMessage('reason') }}
       </mat-error>
       }
     </mat-form-field>
@@ -45,7 +47,7 @@
       <mat-hint align="end">{{ descriptionLength() }}/1000</mat-hint>
       @if(reportForm.get('description')?.touched && reportForm.get('description')?.errors) {
       <mat-error>
-        {{ getFieldErrorMessage('Description') }}
+        {{ getFieldErrorMessage('description') }}
       </mat-error>
       }
     </mat-form-field>

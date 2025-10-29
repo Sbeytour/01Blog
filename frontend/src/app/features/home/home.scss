@@ -34,12 +34,14 @@
   gap: 16px;
   text-align: center;
   padding: 24px;
+  color: var(--mat-sys-on-error-container);
+  background-color: var(--mat-sys-error-container);
 
   .error-icon {
     font-size: 72px;
     width: 72px;
     height: 72px;
-    color: var(--mat-sys-error);
+    color: var(--mat-sys-on-error-container);
   }
 
   h2 {
