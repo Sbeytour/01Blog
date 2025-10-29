@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from './core/guards/guest-guard';
 import { authGuard } from './core/guards/auth-guard';
+import { adminGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
     {
@@ -58,6 +59,29 @@ export const routes: Routes = [
             {
                 path: ':id',
                 loadComponent: () => import('./features/posts/post-detail/post-detail').then(m => m.PostDetail)
+            }
+        ]
+    },
+    {
+        path: 'admin',
+        canActivate: [authGuard, adminGuard],
+        children: [
+            {
+                path: '',
+                redirectTo: 'dashboard',
+                pathMatch: 'full'
+            },
+            {
+                path: 'dashboard',
+                loadComponent: () => import('./features/admin/dashboard/dashboard').then(m => m.Dashboard)
+            },
+            {
+                path: 'users',
+                loadComponent: () => import('./features/admin/users/users').then(m => m.Users)
+            },
+            {
+                path: 'reports',
+                loadComponent: () => import('./features/admin/reports/reports').then(m => m.Reports)
             }
         ]
     },

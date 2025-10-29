@@ -1,1 +1,154 @@
-<p>reports works!</p>
+<div class="reports-management">
+  <div class="header">
+    <div class="header-content">
+      <h1>Report Management</h1>
+      <p class="subtitle">Review and resolve user reports</p>
+    </div>
+
+    <mat-form-field appearance="outline" class="status-filter">
+      <mat-label>Filter by Status</mat-label>
+      <mat-select [value]="statusFilter()" (selectionChange)="onStatusFilterChange($event.value)">
+        <mat-option value="">All Reports</mat-option>
+        <mat-option value="PENDING">Pending</mat-option>
+        <mat-option value="RESOLVED">Resolved</mat-option>
+        <mat-option value="DISMISSED">Dismissed</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (isLoading()) {
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading reports...</p>
+  </div>
+  }
+
+  @if (!isLoading()) {
+  <div class="table-container">
+    <table mat-table [dataSource]="reports()" class="reports-table">
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let report">{{ report.id }}</td>
+      </ng-container>
+
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let report">
+          <mat-chip [class]="report.reportedType === 0 ? 'user-type-chip' : 'post-type-chip'">
+            {{ report.reportedType === 0 ? 'USER' : 'POST' }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <!-- Reporter Column -->
+      <ng-container matColumnDef="reporter">
+        <th mat-header-cell *matHeaderCellDef>Reporter</th>
+        <td mat-cell *matCellDef="let report">{{ report.reporterUsername }}</td>
+      </ng-container>
+
+      <!-- Reported Entity Column -->
+      <ng-container matColumnDef="reported">
+        <th mat-header-cell *matHeaderCellDef>Reported</th>
+        <td mat-cell *matCellDef="let report">
+          <div class="reported-entity">
+            <span class="entity-name">{{ report.reportedEntityName }}</span>
+            <span class="entity-id">(ID: {{ report.reportedId }})</span>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Reason Column
+      <ng-container matColumnDef="reason">
+        <th mat-header-cell *matHeaderCellDef>Reason</th>
+        <td mat-cell *matCellDef="let report">
+          <div class="reason-cell" [matTooltip]="report.description">
+            {{ reportReasonLabels[report.reason] }}
+            <mat-icon class="info-icon">info_outline</mat-icon>
+          </div>
+        </td>
+      </ng-container> -->
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let report">
+          <mat-chip [class]="getStatusColor(report.status)">
+            {{ report.status === 0 ? 'PENDING' : report.status === 1 ? 'RESOLVED' : 'DISMISSED' }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let report">
+          {{ report.createdAt | date:'short' }}
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let report">
+          <div class="action-buttons">
+            @if (report.status === ReportStatus.PENDING) {
+            <button mat-icon-button [matMenuTriggerFor]="actionMenu" color="primary" matTooltip="Resolve Report">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+            <mat-menu #actionMenu="matMenu">
+              @if (report.reportedType === 0) {
+              <button mat-menu-item (click)="resolveReport(report, reportAction.BAN_USER)">
+                <mat-icon>block</mat-icon>
+                <span>Ban User</span>
+              </button>
+              <button mat-menu-item (click)="resolveReport(report, reportAction.DELETE_USER)">
+                <mat-icon>delete_forever</mat-icon>
+                <span>Delete User</span>
+              </button>
+              }
+              @if (report.reportedType === 1) {
+              <button mat-menu-item (click)="resolveReport(report, reportAction.DELETE_POST)">
+                <mat-icon>delete</mat-icon>
+                <span>Delete Post</span>
+              </button>
+              }
+              <button mat-menu-item (click)="resolveReport(report, reportAction.NONE)">
+                <mat-icon>done</mat-icon>
+                <span>Resolve (No Action)</span>
+              </button>
+            </mat-menu>
+
+            <button mat-icon-button color="warn" (click)="dismissReport(report)" matTooltip="Dismiss Report">
+              <mat-icon>cancel</mat-icon>
+            </button>
+            } @else {
+            <span class="resolved-text">
+              {{ report.status === 1 ? 'Resolved' : 'Dismissed' }}
+              @if (report.resolvedByUsername) {
+              <small>by {{ report.resolvedByUsername }}</small>
+              }
+            </span>
+            }
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    @if (reports().length === 0) {
+    <div class="no-data">
+      <mat-icon>flag_outlined</mat-icon>
+      <p>No reports found</p>
+    </div>
+    }
+  </div>
+
+  <mat-paginator [length]="totalReports()" [pageSize]="pageSize()" [pageIndex]="pageIndex()"
+    [pageSizeOptions]="[10, 20, 50, 100]" (page)="onPageChange($event)" showFirstLastButtons>
+  </mat-paginator>
+  }
+</div>

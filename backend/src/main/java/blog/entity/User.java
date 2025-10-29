@@ -60,6 +60,9 @@ public class User implements UserDetails {
     @Column(length = 500)
     private String profileImgUrl;
 
+    @Column(nullable = false)
+    private Boolean banned = false;
+
     @OneToMany(mappedBy = "following")
     private List<Subscription> followers;
 
@@ -154,9 +157,22 @@ public class User implements UserDetails {
         this.following = following;
     }
 
+    public Boolean getBanned() {
+        return banned;
+    }
+
+    public void setBanned(Boolean banned) {
+        this.banned = banned;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(
                 new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !banned;
     }
 }

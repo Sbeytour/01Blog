@@ -57,7 +57,7 @@
       margin: 0 0 4px 0;
       font-size: 12px;
       font-weight: 500;
-      color: var(--mat-sys-on-surface-variant);
+      color: var(--mat-sys-inverse-surface);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -81,6 +81,8 @@
   textarea {
     resize: none;
     min-height: 15vh;
+    margin-top: 12px;
+    padding-top: 12px;
   }
 }
 
