@@ -11,14 +11,13 @@ import {
   ResolveReportRequest,
   UpdateUserRoleRequest
 } from '../models/admin';
-import { Post } from '../models/post';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/admin`;
+  private apiUrl = `${environment.apiUrl}/api/admin`;
 
   // Dashboard Statistics
   getDashboardStats(): Observable<AdminStats> {

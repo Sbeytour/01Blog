@@ -3,7 +3,6 @@ package blog.services;
 import blog.dto.request.BanUserRequestDto;
 import blog.dto.request.UpdateUserRoleRequestDto;
 import blog.dto.response.AdminStatsResponseDto;
-import blog.dto.response.UserListResponseDto;
 import blog.dto.response.UserResponseDto;
 import blog.entity.Post;
 import blog.entity.ReportStatus;
@@ -36,9 +35,9 @@ public class AdminService {
     @Autowired
     private ReportRepository reportRepository;
 
-    /**
-     * Get dashboard statistics for admin panel
-     */
+    // /**
+    // * Get dashboard statistics for admin panel
+    // */
     public AdminStatsResponseDto getDashboardStats() {
         long totalUsers = userRepository.count();
         long totalPosts = postRepository.count();
@@ -69,14 +68,14 @@ public class AdminService {
     /**
      * Get all users with pagination
      */
-    public Page<UserListResponseDto> getAllUsers(int page, int size) {
+    public Page<UserResponseDto> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> users = userRepository.findAllByOrderByIdDesc(pageable);
 
         return users.map(user -> {
             long reportCount = reportRepository.countByReportedIdAndReportedType(
                     user.getId(), ReportedType.USER);
-            return UserListResponseDto.fromEntity(user, reportCount);
+            return UserResponseDto.forAdminDash(user, reportCount);
         });
     }
 
@@ -86,7 +85,8 @@ public class AdminService {
     @Transactional
     public void banUser(Long userId, BanUserRequestDto requestDto, Long adminId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " +
+                        userId));
 
         // Prevent admin from banning themselves
         if (userId.equals(adminId)) {
@@ -108,7 +108,8 @@ public class AdminService {
     @Transactional
     public void unbanUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " +
+                        userId));
 
         user.setBanned(false);
         userRepository.save(user);
@@ -120,7 +121,8 @@ public class AdminService {
     @Transactional
     public void deleteUser(Long userId, Long adminId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " +
+                        userId));
 
         // Prevent admin from deleting themselves
         if (userId.equals(adminId)) {
@@ -139,9 +141,11 @@ public class AdminService {
      * Update user role
      */
     @Transactional
-    public void updateUserRole(Long userId, UpdateUserRoleRequestDto requestDto, Long adminId) {
+    public void updateUserRole(Long userId, UpdateUserRoleRequestDto requestDto,
+            Long adminId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " +
+                        userId));
 
         // Prevent admin from changing their own role
         if (userId.equals(adminId)) {
@@ -158,7 +162,8 @@ public class AdminService {
     @Transactional
     public void deletePostByAdmin(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " +
+                        postId));
 
         postRepository.delete(post);
     }

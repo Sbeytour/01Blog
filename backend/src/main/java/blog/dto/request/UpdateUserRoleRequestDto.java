@@ -7,14 +7,7 @@ public class UpdateUserRoleRequestDto {
 
     @NotNull(message = "Role is required")
     private Role role;
-
-    public UpdateUserRoleRequestDto() {
-    }
-
-    public UpdateUserRoleRequestDto(Role role) {
-        this.role = role;
-    }
-
+    
     public Role getRole() {
         return role;
     }

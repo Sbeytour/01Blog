@@ -1,122 +1,86 @@
+<app-navbar></app-navbar>
+
 <div class="admin-dashboard">
-  <div class="dashboard-header">
-    <h1>Admin Dashboard</h1>
-    <p class="subtitle">Manage your blog platform</p>
+  <div class="dashboard-grid">
+    <!-- LEFT SIDE: STATS -->
+    <section class="stats-section">
+      <h2>Hi {{ nameUser() }}!</h2>
+      <p>Manage your blog platform</p>
+
+      <div class="stats-boxes">
+
+        <!-- Total Users Card -->
+        <mat-card class="stat-card users-card" (click)="showSection('users')">
+          <mat-card-content>
+            <div class="stat-icon">
+              <mat-icon>people</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats()?.totalUsers }}</h3>
+              <p>Total Users</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Total Posts Card -->
+        <mat-card class="stat-card posts-card" (click)="showSection('posts')">
+          <mat-card-content>
+            <div class="stat-icon">
+              <mat-icon>article</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats()?.totalPosts }}</h3>
+              <p>Total Posts</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Pending Reports Card -->
+        <mat-card class="stat-card reports-card" (click)="showSection('reports')">
+          <mat-card-content>
+            <div class="stat-icon">
+              <mat-icon>flag</mat-icon>
+            </div>
+            <div class="stat-info">
+              <h3>{{ stats()?.pendingReports }}</h3>
+              <p>Pending Reports</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Most Reported User Card -->
+        <mat-card class="stat-card most-reported-card">
+          <mat-card-content>
+            <div class="stat-icon">
+              <mat-icon>warning</mat-icon>
+            </div>
+            <div class="stat-info">
+              @if (stats()?.mostReportedUser) {
+              <h3>{{ stats()?.mostReportedUser?.username }}</h3>
+              <p>Most Reported User ({{ stats()?.mostReportedUser?.username}} reports)</p>
+              } @else {
+              <h3>-</h3>
+              <p>No Reported Users</p>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+      </div>
+    </section>
+
+    <!-- RIGHT SIDE: DYNAMIC CONTENT -->
+    <section class="details-section">
+      <ng-container [ngSwitch]="activeSection">
+        <!-- Reports List -->
+        <app-reports-list *ngSwitchCase="'reports'"></app-reports-list>
+
+        <!-- Users List -->
+        <app-users-list *ngSwitchCase="'users'"></app-users-list>
+
+        <!-- Posts List -->
+        <app-posts-list *ngSwitchCase="'posts'"></app-posts-list>
+      </ng-container>
+    </section>
   </div>
-
-  @if (isLoading()) {
-  <div class="loading-container">
-    <mat-spinner diameter="50"></mat-spinner>
-    <p>Loading dashboard...</p>
-  </div>
-  }
-
-  @if (errorMessage()) {
-  <div class="error-message">
-    <mat-icon>error_outline</mat-icon>
-    <span>{{ errorMessage() }}</span>
-  </div>
-  }
-
-  @if (stats() && !isLoading()) {
-  <div class="stats-grid">
-    <!-- Total Users Card -->
-    <mat-card class="stat-card users-card">
-      <mat-card-content>
-        <div class="stat-icon">
-          <mat-icon>people</mat-icon>
-        </div>
-        <div class="stat-info">
-          <h3>{{ stats()!.totalUsers }}</h3>
-          <p>Total Users</p>
-        </div>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button (click)="navigateToUsers()">
-          <mat-icon>arrow_forward</mat-icon>
-          Manage Users
-        </button>
-      </mat-card-actions>
-    </mat-card>
-
-    <!-- Total Posts Card -->
-    <mat-card class="stat-card posts-card">
-      <mat-card-content>
-        <div class="stat-icon">
-          <mat-icon>article</mat-icon>
-        </div>
-        <div class="stat-info">
-          <h3>{{ stats()!.totalPosts }}</h3>
-          <p>Total Posts</p>
-        </div>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button>
-          <mat-icon>arrow_forward</mat-icon>
-          View Posts
-        </button>
-      </mat-card-actions>
-    </mat-card>
-
-    <!-- Pending Reports Card -->
-    <mat-card class="stat-card reports-card">
-      <mat-card-content>
-        <div class="stat-icon">
-          <mat-icon>flag</mat-icon>
-        </div>
-        <div class="stat-info">
-          <h3>{{ stats()!.pendingReports }}</h3>
-          <p>Pending Reports</p>
-        </div>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button (click)="navigateToReports()">
-          <mat-icon>arrow_forward</mat-icon>
-          Review Reports
-        </button>
-      </mat-card-actions>
-    </mat-card>
-
-    <!-- Most Reported User Card -->
-    <mat-card class="stat-card most-reported-card">
-      <mat-card-content>
-        <div class="stat-icon">
-          <mat-icon>warning</mat-icon>
-        </div>
-        <div class="stat-info">
-          @if (stats()!.mostReportedUser) {
-          <h3>{{ stats()!.mostReportedUser?.username }}</h3>
-          <p>Most Reported User ({{ stats()!.mostReportedUserReportCount }} reports)</p>
-          } @else {
-          <h3>-</h3>
-          <p>No Reported Users</p>
-          }
-        </div>
-      </mat-card-content>
-      @if (stats()!.mostReportedUser) {
-      <mat-card-actions>
-        <button mat-button (click)="navigateToUsers()">
-          <mat-icon>arrow_forward</mat-icon>
-          View User
-        </button>
-      </mat-card-actions>
-      }
-    </mat-card>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="quick-actions">
-    <h2>Quick Actions</h2>
-    <div class="actions-grid">
-      <button mat-raised-button color="primary" (click)="navigateToUsers()">
-        <mat-icon>people</mat-icon>
-        Manage Users
-      </button>
-      <button mat-raised-button color="accent" (click)="navigateToReports()">
-        <mat-icon>flag</mat-icon>
-        Review Reports
-      </button>
-    </div>
-  </div>
-  }
 </div>

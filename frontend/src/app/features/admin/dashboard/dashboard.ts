@@ -7,6 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AdminService } from '../../../core/services/adminService';
 import { AdminStats } from '../../../core/models/admin';
+import { Navbar } from '../../../components/navbar/navbar';
+import { AuthService } from '../../../core/services/auth';
+import { UsersList } from '../users-list/users-list';
+import { PostsList } from '../posts-list/posts-list';
+import { ReportsList } from '../reports-list/reports-list';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +21,11 @@ import { AdminStats } from '../../../core/models/admin';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    Navbar,
+    ReportsList,
+    UsersList,
+    PostsList
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
@@ -24,6 +33,7 @@ import { AdminStats } from '../../../core/models/admin';
 export class Dashboard implements OnInit {
   private adminService = inject(AdminService);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   stats = signal<AdminStats | null>(null);
   isLoading = signal(true);
@@ -50,6 +60,10 @@ export class Dashboard implements OnInit {
     });
   }
 
+  nameUser(): string {
+    return `${this.authService.currentUser()?.firstName}`
+  }
+
   navigateToUsers(): void {
     this.router.navigate(['/admin/users']);
   }
@@ -57,4 +71,12 @@ export class Dashboard implements OnInit {
   navigateToReports(): void {
     this.router.navigate(['/admin/reports']);
   }
+
+  activeSection: 'reports' | 'users' | 'posts' | 'mostReported' = 'reports';
+
+  showSection(section: 'reports' | 'users' | 'posts' | 'mostReported') {
+    this.activeSection = section;
+  }
+
+
 }

@@ -18,7 +18,7 @@ public class AdminReportResponseDto {
     private LocalDateTime createdAt;
     private String reporterUsername;
     private Long reporterId;
-    private String reportedEntityName;  // Username or post title
+    private String reportedName;  // Username or post title
     private String adminNotes;
     private String resolvedByUsername;
     private LocalDateTime resolvedAt;
@@ -26,7 +26,7 @@ public class AdminReportResponseDto {
     public AdminReportResponseDto() {
     }
 
-    public static AdminReportResponseDto fromEntity(Report report, String reportedEntityName) {
+    public static AdminReportResponseDto fromEntity(Report report, String reportedName) {
         AdminReportResponseDto dto = new AdminReportResponseDto();
         dto.id = report.getId();
         dto.reportedType = report.getReportedType();
@@ -37,7 +37,7 @@ public class AdminReportResponseDto {
         dto.createdAt = report.getCreatedAt();
         dto.reporterUsername = report.getReporter() != null ? report.getReporter().getUsername() : null;
         dto.reporterId = report.getReporter() != null ? report.getReporter().getId() : null;
-        dto.reportedEntityName = reportedEntityName;
+        dto.reportedName = reportedName;
         dto.adminNotes = report.getAdminNotes();
         dto.resolvedByUsername = report.getResolvedBy() != null ? report.getResolvedBy().getUsername() : null;
         dto.resolvedAt = report.getResolvedAt();
@@ -117,12 +117,12 @@ public class AdminReportResponseDto {
         this.reporterId = reporterId;
     }
 
-    public String getReportedEntityName() {
-        return reportedEntityName;
+    public String getReportedName() {
+        return reportedName;
     }
 
-    public void setReportedEntityName(String reportedEntityName) {
-        this.reportedEntityName = reportedEntityName;
+    public void setReportedName(String reportedName) {
+        this.reportedName = reportedName;
     }
 
     public String getAdminNotes() {

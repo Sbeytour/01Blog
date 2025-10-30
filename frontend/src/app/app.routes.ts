@@ -74,14 +74,6 @@ export const routes: Routes = [
             {
                 path: 'dashboard',
                 loadComponent: () => import('./features/admin/dashboard/dashboard').then(m => m.Dashboard)
-            },
-            {
-                path: 'users',
-                loadComponent: () => import('./features/admin/users/users').then(m => m.Users)
-            },
-            {
-                path: 'reports',
-                loadComponent: () => import('./features/admin/reports/reports').then(m => m.Reports)
             }
         ]
     },

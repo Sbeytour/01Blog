@@ -16,6 +16,8 @@ public class UserResponseDto {
     private Long followersCount;
     private Long followingCount;
     private Boolean isFollowedByCurrentUser;
+    private Boolean banned;
+    private long reportCount;
 
     public UserResponseDto() {
     }
@@ -31,6 +33,20 @@ public class UserResponseDto {
         userResp.profileImgUrl = user.getProfileImgUrl();
         userResp.role = user.getRole();
         return userResp;
+    }
+
+    public static UserResponseDto forAdminDash(User user, long reportCount) {
+        UserResponseDto dto = new UserResponseDto();
+        dto.id = user.getId();
+        dto.username = user.getUsername();
+        dto.email = user.getEmail();
+        dto.firstName = user.getFirstName();
+        dto.lastName = user.getLastName();
+        dto.role = user.getRole();
+        dto.banned = user.getBanned();
+        dto.profileImgUrl = user.getProfileImgUrl();
+        dto.reportCount = reportCount;
+        return dto;
     }
 
     public Long getId() {
@@ -120,4 +136,21 @@ public class UserResponseDto {
     public void setIsFollowedByCurrentUser(Boolean isFollowedByCurrentUser) {
         this.isFollowedByCurrentUser = isFollowedByCurrentUser;
     }
+
+    public long getReportCount() {
+        return reportCount;
+    }
+
+    public void setReportCount(long reportCount) {
+        this.reportCount = reportCount;
+    }
+
+    public Boolean getBanned() {
+        return banned;
+    }
+
+    public void setBanned(Boolean banned) {
+        this.banned = banned;
+    }
+
 }

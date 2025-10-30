@@ -20,7 +20,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
         @Query("SELECT COUNT(r) > 0 FROM Report r WHERE r.reporter = :reporter " +
                         "AND r.reportedType = :reportedType AND r.reportedId = :reportedId " +
                         "AND r.status IN ('PENDING')")
-        boolean existsByReporterAndEntityAndActiveStatus(
+        boolean existsByReporterAndTypeAndReported(
                         @Param("reporter") User reporter,
                         @Param("reportedType") ReportedType reportedType,
                         @Param("reportedId") Long reportedId);
