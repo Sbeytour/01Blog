@@ -18,7 +18,8 @@ import { AuthService } from '../../core/services/auth';
     MatIconModule,
     MatMenuModule,
     MatBadgeModule,
-    MatDividerModule
+    MatDividerModule,
+    RouterLink
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'
