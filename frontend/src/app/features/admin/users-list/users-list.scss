@@ -1,0 +1,212 @@
+.users-list-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+  background: var(--mat-sys-surface);
+
+  .header {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h2 {
+      color: var(--mat-sys-primary);
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  .loading-container,
+  .empty-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 320px;
+    color: var(--mat-sys-on-surface-variant);
+    text-align: center;
+
+    mat-icon {
+      font-size: 56px;
+      margin-bottom: 12px;
+      color: var(--mat-sys-outline-variant);
+    }
+
+    p {
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+
+  .table-container {
+    flex: 1;
+    overflow: auto;
+    background: var(--mat-sys-surface-container-low);
+    border-radius: 12px 12px 0 0;
+    box-shadow: var(--mat-sys-level2);
+    transition: all 0.3s ease;
+
+    .users-table {
+      width: 100%;
+
+      th {
+        font-weight: 600;
+        color: var(--mat-sys-on-surface);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      td,
+      th {
+        padding: 12px 16px;
+      }
+
+      .user-details {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .pic,
+        .default-avatar {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          object-fit: cover;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: var(--mat-sys-surface-container-high);
+
+          mat-icon {
+            font-size: 32px;
+            width: 32px;
+            height: 32px;
+            color: var(--mat-sys-outline);
+          }
+        }
+
+        .name-cell {
+          display: flex;
+          flex-direction: column;
+          line-height: 1.2;
+
+          .full-name {
+            font-weight: 500;
+            color: var(--mat-sys-on-surface);
+            font-size: 14px;
+          }
+
+          .username {
+            color: var(--mat-sys-on-surface-variant);
+            font-size: 12px;
+          }
+        }
+      }
+
+      mat-chip {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 4px 10px;
+        height: 22px;
+        border-radius: 12px;
+
+        &.admin-chip {
+          background-color: var(--mat-sys-primary-container);
+          color: var(--mat-sys-on-primary-container);
+        }
+
+        &.user-chip {
+          background-color: var(--mat-sys-surface-container-high);
+          color: var(--mat-sys-on-surface-variant);
+        }
+
+        &.active-chip {
+          background-color: var(--mat-sys-success-container, #10b98120);
+          color: #059669;
+        }
+
+        &.banned-chip {
+          background-color: var(--mat-sys-error-container);
+          color: var(--mat-sys-on-error-container);
+        }
+      }
+
+      .report {
+        .report-count {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 28px;
+          padding: 4px 8px;
+          border-radius: 8px;
+          font-size: 17px;
+          font-weight: 500;
+          // background-color: var(--mat-sys-surface-container-high);
+          color: var(--mat-sys-on-surface-variant);
+  
+          &.has-reports {
+            background-color: #fff3cd;
+            color: #b45309;
+          }
+        }
+
+        
+      }
+
+      // .mat-mdc-icon-button {
+      //   color: var(--mat-sys-outline);
+
+      //   &:hover {
+      //     color: var(--mat-sys-on-surface);
+      //   }
+      // }
+    }
+  }
+
+  mat-paginator {
+    background: var(--mat-sys-surface-container-low);
+    border-radius: 0 0 12px 12px;
+    box-shadow: var(--mat-sys-level2);
+  }
+}
+
+// Menu styling
+.mat-mdc-menu-panel {
+  .delete-action {
+    color: var(--mat-sys-error);
+
+    mat-icon {
+      color: var(--mat-sys-error);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .users-list-container {
+    padding: 8px;
+
+    .table-container {
+      .users-table {
+
+        th,
+        td {
+          padding: 8px;
+          font-size: 13px;
+        }
+
+        .user-details .pic {
+          width: 32px;
+          height: 32px;
+        }
+
+        .name-cell .full-name {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+}

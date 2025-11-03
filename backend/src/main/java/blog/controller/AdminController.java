@@ -1,9 +1,11 @@
 package blog.controller;
 
 import blog.dto.response.AdminStatsResponseDto;
+import blog.dto.response.UserResponseDto;
 import blog.services.AdminService;
 // import blog.services.ReportService;
 
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +30,13 @@ public class AdminController {
 
     // // ===== USER MANAGEMENT =====
 
-    // @GetMapping("/users")
-    // public ResponseEntity<Page<UserListResponseDto>> getAllUsers(
-    // @RequestParam(defaultValue = "0") int page,
-    // @RequestParam(defaultValue = "20") int size) {
-    // Page<UserListResponseDto> users = adminService.getAllUsers(page, size);
-    // return ResponseEntity.ok(users);
-    // }
+    @GetMapping("/users")
+    public ResponseEntity<Page<UserResponseDto>> getAllUsers(
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "20") int size) {
+    Page<UserResponseDto> users = adminService.getAllUsers(page, size);
+    return ResponseEntity.ok(users);
+    }
 
     // @PutMapping("/users/{userId}/ban")
     // public ResponseEntity<Void> banUser(
