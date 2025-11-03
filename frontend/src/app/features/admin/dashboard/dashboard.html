@@ -54,10 +54,10 @@
             <div class="stat-icon">
               <mat-icon>warning</mat-icon>
             </div>
-            <div class="stat-info">
+            <div class="stat-info reported-info">
               @if (stats()?.mostReportedUser) {
               <h3>{{ stats()?.mostReportedUser?.username }}</h3>
-              <p>Most Reported User ({{ stats()?.mostReportedUser?.username}} reports)</p>
+              <p>Most Reported User</p>
               } @else {
               <h3>-</h3>
               <p>No Reported Users</p>

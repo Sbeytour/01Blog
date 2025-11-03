@@ -40,6 +40,7 @@ import { UserRole } from '../../../core/models/user';
 export class UsersList implements OnInit {
   private adminService = inject(AdminService);
   private dialog = inject(MatDialog);
+  private router = inject(Router)
 
   users = signal<UserListItem[]>([]);
   loading = signal<boolean>(false);
@@ -82,6 +83,10 @@ export class UsersList implements OnInit {
 
   getUserAvatar(user: UserListItem): string {
     return user.profileImgUrl;
+  }
+
+  navigateProfile( user: UserListItem) {
+    this.router.navigate(['/profile', user.username]);
   }
 
   openBanDialog(user: UserListItem): void {
@@ -271,4 +276,5 @@ export class DeleteUserDialog {
 }
 
 import { Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog'; import { Router } from '@angular/router';
+
