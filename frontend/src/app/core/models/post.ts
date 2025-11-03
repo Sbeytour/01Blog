@@ -7,15 +7,18 @@ export interface Post {
     creator: {
         id: number;
         username: string;
+        email?: string;
         firstName: string;
         lastName: string;
         profileImgUrl?: string;
+        role?: string;
     };
     media: Media[];
     comments?: Comment[];
     likesCount: number;
     commentsCount: number;
-    isLikedByCurrentUser: boolean;
+    hidden: boolean;
+    isLikedByCurrentUser?: boolean;
     createdAt: string;
     updatedAt: string;
 }

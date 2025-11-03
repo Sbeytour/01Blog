@@ -1,15 +1,16 @@
 export interface User {
-    id: number;
-    username: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    bio?: string;
-    profileImgUrl?:string;
-    role: UserRole;
-    followersCount?: number;
-    followingCount?: number;
-    isFollowedByCurrentUser?: boolean;
+  id: number;
+  username: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  bio?: string;
+  profileImgUrl: string;
+  role: UserRole;
+  followersCount?: number;
+  followingCount?: number;
+  isFollowedByCurrentUser?: boolean;
+  banned: boolean;
 }
 
 export enum UserRole {

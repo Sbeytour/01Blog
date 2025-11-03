@@ -12,19 +12,6 @@ import { AdminService } from '../../../core/services/adminService';
 import { Post } from '../../../core/models/post';
 import { Router } from '@angular/router';
 
-interface PagedPostResponse {
-  content: Post[];
-  pageable: any;
-  totalPages: number;
-  totalElements: number;
-  last: boolean;
-  first: boolean;
-  number: number;
-  size: number;
-  numberOfElements: number;
-  empty: boolean;
-}
-
 @Component({
   selector: 'app-posts-list',
   standalone: true,
@@ -46,7 +33,7 @@ export class PostsList implements OnInit {
   posts = signal<Post[]>([]);
   loading = signal<boolean>(false);
 
-  displayedColumns: string[] = ['title', 'creator', 'stats', 'date', 'actions'];
+  displayedColumns: string[] = ['title', 'creator', 'status', 'date'];
 
   // Pagination
   totalElements = signal<number>(0);
@@ -57,7 +44,7 @@ export class PostsList implements OnInit {
     private adminService: AdminService,
     private dialog: MatDialog,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadPosts();
@@ -65,10 +52,10 @@ export class PostsList implements OnInit {
 
   loadPosts(): void {
     this.loading.set(true);
-    this.adminService.getPosts(this.pageIndex(), this.pageSize()).subscribe({
-      next: (response: PagedPostResponse) => {
-        this.posts.set(response.content);
-        this.totalElements.set(response.totalElements);
+    this.adminService.getPosts().subscribe({
+      next: (posts: Post[]) => {
+        this.posts.set(posts);
+        this.totalElements.set(posts.length);
         this.loading.set(false);
       },
       error: (error) => {
@@ -88,11 +75,11 @@ export class PostsList implements OnInit {
     return `${post.creator.firstName} ${post.creator.lastName}`.trim();
   }
 
-  getCreatorAvatar(post: Post): string {
-    return post.creator.profileImgUrl || 'assets/default-avatar.png';
+  getCreatorAvatar(post: Post): string | undefined {
+    return post.creator.profileImgUrl;
   }
 
-  getTruncatedTitle(title: string, maxLength: number = 60): string {
+  getTruncatedTitle(title: string, maxLength: number = 30): string {
     return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
   }
 
@@ -157,5 +144,5 @@ export class PostsList implements OnInit {
   `
 })
 export class DeletePostDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { post: Post }) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { post: Post }) { }
 }

@@ -11,6 +11,7 @@ import {
   ResolveReportRequest,
   UpdateUserRoleRequest
 } from '../models/admin';
+import { Post } from '../models/post';
 
 @Injectable({
   providedIn: 'root'
@@ -73,12 +74,8 @@ export class AdminService {
   }
 
   // Post Management
-  getPosts(page: number = 0, size: number = 20): Observable<any> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
-    return this.http.get<any>(`${this.apiUrl}/posts`, { params });
+  getPosts(): Observable<Post[]> {
+    return this.http.get<Post[]>(`${this.apiUrl}/posts`);
   }
 
   deletePost(postId: number): Observable<void> {

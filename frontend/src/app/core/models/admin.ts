@@ -1,39 +1,17 @@
 import { ReportReason, ReportStatus, ReportedType } from './report';
-import { UserRole } from './user';
+import { User, UserRole } from './user';
 
 // Admin Statistics
 export interface AdminStats {
   totalUsers: number;
   totalPosts: number;
   pendingReports: number;
-  mostReportedUser: MostReportedUser | null;
+  mostReportedUser: User | null;
   mostReportedUserReportCount: number;
 }
 
-export interface MostReportedUser {
-  id: number;
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  profileImgUrl: string;
-}
-
-// User Management
-export interface UserListItem {
-  id: number;
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: UserRole;
-  banned: boolean;
-  profileImgUrl: string;
-  reportCount: number;
-}
-
 export interface PagedUserResponse {
-  content: UserListItem[];
+  content: User[];
   pageable: Pageable;
   totalPages: number;
   totalElements: number;

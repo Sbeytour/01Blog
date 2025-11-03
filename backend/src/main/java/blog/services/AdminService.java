@@ -3,6 +3,7 @@ package blog.services;
 import blog.dto.request.BanUserRequestDto;
 import blog.dto.request.UpdateUserRoleRequestDto;
 import blog.dto.response.AdminStatsResponseDto;
+import blog.dto.response.PostResponseDto;
 import blog.dto.response.UserResponseDto;
 import blog.entity.Post;
 import blog.entity.ReportStatus;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
@@ -169,10 +171,12 @@ public class AdminService {
     }
 
     /**
-     * Get all posts with pagination
+     * Get all posts for admin dashboard
      */
-    public Page<Post> getAllPosts(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return postRepository.findAll(pageable);
+    public List<PostResponseDto> getAllPosts() {
+        List<Post> posts = postRepository.findAllPosts();
+        return posts.stream()
+                .map(PostResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }

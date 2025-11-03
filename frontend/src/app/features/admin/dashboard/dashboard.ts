@@ -64,19 +64,9 @@ export class Dashboard implements OnInit {
     return `${this.authService.currentUser()?.firstName}`
   }
 
-  navigateToUsers(): void {
-    this.router.navigate(['/admin/users']);
-  }
-
-  navigateToReports(): void {
-    this.router.navigate(['/admin/reports']);
-  }
-
   activeSection: 'reports' | 'users' | 'posts' | 'mostReported' = 'reports';
 
   showSection(section: 'reports' | 'users' | 'posts' | 'mostReported') {
     this.activeSection = section;
   }
-
-
 }

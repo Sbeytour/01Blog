@@ -13,8 +13,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { AdminService } from '../../../core/services/adminService';
-import { UserListItem } from '../../../core/models/admin';
-import { UserRole } from '../../../core/models/user';
+// import { User } from '../../../core/models/admin';
+import { User, UserRole } from '../../../core/models/user';
 
 @Component({
   selector: 'app-users-list',
@@ -42,7 +42,7 @@ export class UsersList implements OnInit {
   private dialog = inject(MatDialog);
   private router = inject(Router)
 
-  users = signal<UserListItem[]>([]);
+  users = signal<User[]>([]);
   loading = signal<boolean>(false);
 
   displayedColumns: string[] = ['user', 'role', 'status', 'reports'];
@@ -77,19 +77,19 @@ export class UsersList implements OnInit {
     this.loadUsers();
   }
 
-  getFullName(user: UserListItem): string {
+  getFullName(user: User): string {
     return `${user.firstName} ${user.lastName}`.trim();
   }
 
-  getUserAvatar(user: UserListItem): string {
+  getUserAvatar(user: User): string {
     return user.profileImgUrl;
   }
 
-  navigateProfile( user: UserListItem) {
+  navigateProfile( user: User) {
     this.router.navigate(['/profile', user.username]);
   }
 
-  openBanDialog(user: UserListItem): void {
+  openBanDialog(user: User): void {
     const dialogRef = this.dialog.open(BanUserDialog, {
       width: '400px',
       data: { user }
@@ -128,7 +128,7 @@ export class UsersList implements OnInit {
     });
   }
 
-  openRoleDialog(user: UserListItem): void {
+  openRoleDialog(user: User): void {
     const dialogRef = this.dialog.open(ChangeRoleDialog, {
       width: '400px',
       data: { user }
@@ -154,7 +154,7 @@ export class UsersList implements OnInit {
     });
   }
 
-  openDeleteDialog(user: UserListItem): void {
+  openDeleteDialog(user: User): void {
     const dialogRef = this.dialog.open(DeleteUserDialog, {
       width: '400px',
       data: { user }
@@ -212,7 +212,7 @@ export class UsersList implements OnInit {
 export class BanUserDialog {
   reason: string = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: UserListItem }) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User }) { }
 
   isValid(): boolean {
     return this.reason.trim().length >= 10;
@@ -247,7 +247,7 @@ export class BanUserDialog {
 export class ChangeRoleDialog {
   selectedRole: UserRole;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: UserListItem }) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User }) {
     this.selectedRole = data.user.role;
   }
 }
@@ -272,7 +272,7 @@ export class ChangeRoleDialog {
   `
 })
 export class DeleteUserDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: UserListItem }) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User }) { }
 }
 
 import { Inject } from '@angular/core';

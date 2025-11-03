@@ -1,11 +1,15 @@
 package blog.controller;
 
 import blog.dto.response.AdminStatsResponseDto;
+import blog.dto.response.PostResponseDto;
 import blog.dto.response.UserResponseDto;
 import blog.services.AdminService;
 // import blog.services.ReportService;
 
 import org.springframework.data.domain.Page;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +36,10 @@ public class AdminController {
 
     @GetMapping("/users")
     public ResponseEntity<Page<UserResponseDto>> getAllUsers(
-    @RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "20") int size) {
-    Page<UserResponseDto> users = adminService.getAllUsers(page, size);
-    return ResponseEntity.ok(users);
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Page<UserResponseDto> users = adminService.getAllUsers(page, size);
+        return ResponseEntity.ok(users);
     }
 
     // @PutMapping("/users/{userId}/ban")
@@ -112,13 +116,11 @@ public class AdminController {
 
     // // ===== POST MANAGEMENT =====
 
-    // @GetMapping("/posts")
-    // public ResponseEntity<Page<Post>> getAllPosts(
-    // @RequestParam(defaultValue = "0") int page,
-    // @RequestParam(defaultValue = "20") int size) {
-    // Page<Post> posts = adminService.getAllPosts(page, size);
-    // return ResponseEntity.ok(posts);
-    // }
+    @GetMapping("/posts")
+    public ResponseEntity<List<PostResponseDto>> getAllPosts() {
+        List<PostResponseDto> posts = adminService.getAllPosts();
+        return ResponseEntity.ok(posts);
+    }
 
     // @DeleteMapping("/posts/{postId}")
     // public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
