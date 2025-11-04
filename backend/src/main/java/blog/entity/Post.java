@@ -66,6 +66,14 @@ public class Post {
         this.title = title;
     }
 
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
+
     public String getContent() {
         return content;
     }

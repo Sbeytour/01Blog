@@ -126,6 +126,14 @@ public class AdminController {
         return ResponseEntity.ok(posts);
     }
 
+    @PutMapping("/posts/{postId}/hidde")
+    public ResponseEntity<Void> hiddePost(
+            @PathVariable Long postId,
+            @Valid @RequestBody BanUserRequestDto requestDto) {
+        adminService.hiddePost(postId, requestDto);
+        return ResponseEntity.ok().build();
+    }
+
     // @DeleteMapping("/posts/{postId}")
     // public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
     // adminService.deletePostByAdmin(postId);

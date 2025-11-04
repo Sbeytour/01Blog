@@ -108,7 +108,7 @@ public class AdminService {
         userRepository.save(user);
     }
 
-    //Delete a user permanently
+    // Delete a user permanently
     @Transactional
     public void deleteUser(Long userId, Long adminId) {
         User user = userRepository.findById(userId)
@@ -166,13 +166,32 @@ public class AdminService {
         postRepository.delete(post);
     }
 
-    /**
-     * Get all posts for admin dashboard
-     */
+    // Get all posts for admin dashboard
     public List<PostResponseDto> getAllPosts() {
         List<Post> posts = postRepository.findAllPosts();
         return posts.stream()
                 .map(PostResponseDto::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    // hidde a post
+    @Transactional
+    public void hiddePost(Long postId, BanUserRequestDto requestDto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+
+        post.setHidden(true);
+        postRepository.save(post);
+    }
+
+    // unhidde post
+    @Transactional
+    public void unHiddePost(Long postId, BanUserRequestDto requestDto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+
+        post.setHidden(false);
+        postRepository.save(post);
+    }
+
 }

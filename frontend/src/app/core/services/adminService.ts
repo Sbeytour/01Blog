@@ -78,6 +78,11 @@ export class AdminService {
     return this.http.get<Post[]>(`${this.apiUrl}/posts`);
   }
 
+  hiddePost(postId: number, reason: string) {
+    const request: BanUserRequest = { reason };
+    return this.http.put<void>(`${this.apiUrl}/posts/${postId}/hidde`, request);
+  }
+
   deletePost(postId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/posts/${postId}`);
   }

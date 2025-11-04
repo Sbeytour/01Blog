@@ -11,6 +11,9 @@ import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/d
 import { AdminService } from '../../../core/services/adminService';
 import { Post } from '../../../core/models/post';
 import { Router } from '@angular/router';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-posts-list',
@@ -109,6 +112,33 @@ export class PostsList implements OnInit {
     });
   }
 
+  hiddePost(postId: number, reason: string): void {
+    this.loading.set(true);
+    this.adminService.hiddePost(postId, reason).subscribe({
+      next: () => {
+        this.loadPosts();
+      },
+      error: (error) => {
+        console.error('Failed to hidde post:', error);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  openHiddeDialog(post: Post): void {
+    const dialogRef = this.dialog.open(BanUserDialog, {
+      width: '400px',
+      data: { post }
+    });
+
+    dialogRef.afterClosed().subscribe((reason: string) => {
+      if (reason) {
+        this.hiddePost(post.id, reason);
+      }
+    });
+  }
+
+
   deletePost(postId: number): void {
     this.loading.set(true);
     this.adminService.deletePost(postId).subscribe({
@@ -146,3 +176,43 @@ export class PostsList implements OnInit {
 export class DeletePostDialog {
   constructor(@Inject(MAT_DIALOG_DATA) public data: { post: Post }) { }
 }
+
+
+// Ban User Dialog Component
+@Component({
+  selector: 'hidde-post-dialog',
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormsModule],
+  template: `
+    <h2 mat-dialog-title>Ban User</h2>
+    <mat-dialog-content>
+      <p>You are about to ban <strong>{{ data.post.title }}</strong></p>
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Reason for ban</mat-label>
+        <textarea
+          matInput
+          [(ngModel)]="reason"
+          placeholder="Enter reason (min 10 characters)"
+          rows="4"
+          required
+        ></textarea>
+      </mat-form-field>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button [mat-dialog-close]="null">Cancel</button>
+      <button mat-raised-button color="warn" [mat-dialog-close]="reason" [disabled]="!isValid()">
+        Ban User
+      </button>
+    </mat-dialog-actions>
+  `
+})
+export class BanUserDialog {
+  reason: string = '';
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { post: Post }) { }
+
+  isValid(): boolean {
+    return this.reason.trim().length >= 10;
+  }
+}
+
