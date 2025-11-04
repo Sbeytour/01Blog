@@ -7,6 +7,7 @@
 
   .header {
     margin-bottom: 24px;
+
     h2 {
       margin: 25px 0 5px 25px;
       font-size: 24px;
@@ -151,8 +152,14 @@
           background-color: var(--mat-sys-surface-container-high);
           color: var(--mat-sys-on-surface-variant);
         }
+      }
 
+      .mat-mdc-icon-button {
+        color: #6b7280;
 
+        &:hover {
+          color: #1a1a1a;
+        }
       }
     }
   }

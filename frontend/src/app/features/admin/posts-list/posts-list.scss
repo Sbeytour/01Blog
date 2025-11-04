@@ -134,9 +134,15 @@
         }
       }
 
-      .date-text {
-        color: #6b7280;
-        font-size: 13px;
+      .date-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .date-text {
+          color: #6b7280;
+          font-size: 13px;
+        }
       }
 
       .mat-mdc-icon-button {
@@ -150,9 +156,8 @@
   }
 
   mat-paginator {
-    background: white;
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: var(--mat-sys-surface-container-low);
+    border-radius: 0 0 12px 12px;
   }
 }
 
