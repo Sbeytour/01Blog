@@ -12,7 +12,7 @@ html {
   --mat-sys-primary-fixed: light-dark(#ffdad4, #804d4654);
   --mat-sys-primary-fixed-dim: light-dark(#ffb4a8, #ffb4a8);
   --mat-sys-on-primary-fixed: light-dark(#410000, #410000);
-  --mat-sys-on-primary-fixed-variant: light-dark(#930100, #930100);
+  --mat-sys-on-primary-fixed-variant: light-dark(#e43838b9, #930100);
 
   /* Secondary palette variables */
   --mat-sys-secondary: light-dark(#9c4235, #ffb4a8);

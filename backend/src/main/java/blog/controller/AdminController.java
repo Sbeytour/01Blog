@@ -1,10 +1,13 @@
 package blog.controller;
 
+import blog.dto.request.BanUserRequestDto;
+import blog.dto.request.UpdateUserRoleRequestDto;
 import blog.dto.response.AdminStatsResponseDto;
 import blog.dto.response.PostResponseDto;
 import blog.dto.response.UserResponseDto;
+import blog.entity.User;
 import blog.services.AdminService;
-// import blog.services.ReportService;
+import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
 
@@ -12,6 +15,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,40 +46,40 @@ public class AdminController {
         return ResponseEntity.ok(users);
     }
 
-    // @PutMapping("/users/{userId}/ban")
-    // public ResponseEntity<Void> banUser(
-    // @PathVariable Long userId,
-    // @Valid @RequestBody BanUserRequestDto requestDto,
-    // Authentication authentication) {
-    // User admin = (User) authentication.getPrincipal();
-    // adminService.banUser(userId, requestDto, admin.getId());
-    // return ResponseEntity.ok().build();
-    // }
+    @PutMapping("/users/{userId}/ban")
+    public ResponseEntity<Void> banUser(
+            @PathVariable Long userId,
+            @Valid @RequestBody BanUserRequestDto requestDto,
+            Authentication authentication) {
+        User admin = (User) authentication.getPrincipal();
+        adminService.banUser(userId, requestDto, admin.getId());
+        return ResponseEntity.ok().build();
+    }
 
-    // @PutMapping("/users/{userId}/unban")
-    // public ResponseEntity<Void> unbanUser(@PathVariable Long userId) {
-    // adminService.unbanUser(userId);
-    // return ResponseEntity.ok().build();
-    // }
+    @PutMapping("/users/{userId}/unban")
+    public ResponseEntity<Void> unbanUser(@PathVariable Long userId) {
+        adminService.unbanUser(userId);
+        return ResponseEntity.ok().build();
+    }
 
-    // @DeleteMapping("/users/{userId}")
-    // public ResponseEntity<Void> deleteUser(
-    // @PathVariable Long userId,
-    // Authentication authentication) {
-    // User admin = (User) authentication.getPrincipal();
-    // adminService.deleteUser(userId, admin.getId());
-    // return ResponseEntity.noContent().build();
-    // }
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Long userId,
+            Authentication authentication) {
+        User admin = (User) authentication.getPrincipal();
+        adminService.deleteUser(userId, admin.getId());
+        return ResponseEntity.noContent().build();
+    }
 
-    // @PutMapping("/users/{userId}/role")
-    // public ResponseEntity<Void> updateUserRole(
-    // @PathVariable Long userId,
-    // @Valid @RequestBody UpdateUserRoleRequestDto requestDto,
-    // Authentication authentication) {
-    // User admin = (User) authentication.getPrincipal();
-    // adminService.updateUserRole(userId, requestDto, admin.getId());
-    // return ResponseEntity.ok().build();
-    // }
+    @PutMapping("/users/{userId}/role")
+    public ResponseEntity<Void> updateUserRole(
+            @PathVariable Long userId,
+            @Valid @RequestBody UpdateUserRoleRequestDto requestDto,
+            Authentication authentication) {
+        User admin = (User) authentication.getPrincipal();
+        adminService.updateUserRole(userId, requestDto, admin.getId());
+        return ResponseEntity.ok().build();
+    }
 
     // // ===== REPORT MANAGEMENT =====
 

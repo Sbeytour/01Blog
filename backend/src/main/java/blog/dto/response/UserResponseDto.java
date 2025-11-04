@@ -1,5 +1,7 @@
 package blog.dto.response;
 
+import java.time.LocalDateTime;
+
 import blog.entity.Role;
 import blog.entity.User;
 
@@ -18,6 +20,7 @@ public class UserResponseDto {
     private Boolean isFollowedByCurrentUser;
     private Boolean banned;
     private long reportCount;
+    private LocalDateTime joinedDate;
 
     public UserResponseDto() {
     }
@@ -32,6 +35,7 @@ public class UserResponseDto {
         userResp.bio = user.getBio();
         userResp.profileImgUrl = user.getProfileImgUrl();
         userResp.role = user.getRole();
+        userResp.joinedDate = user.getJoinedDate();
         return userResp;
     }
 
@@ -46,6 +50,7 @@ public class UserResponseDto {
         dto.banned = user.getBanned();
         dto.profileImgUrl = user.getProfileImgUrl();
         dto.reportCount = reportCount;
+        dto.joinedDate = user.getJoinedDate();
         return dto;
     }
 
@@ -151,6 +156,14 @@ public class UserResponseDto {
 
     public void setBanned(Boolean banned) {
         this.banned = banned;
+    }
+
+    public LocalDateTime getJoinedDate() {
+        return joinedDate;
+    }
+
+    public void setJoinedDate(LocalDateTime joinedDate) {
+        this.joinedDate = joinedDate;
     }
 
 }

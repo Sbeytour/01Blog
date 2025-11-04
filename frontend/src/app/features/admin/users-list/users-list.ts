@@ -13,7 +13,6 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { AdminService } from '../../../core/services/adminService';
-// import { User } from '../../../core/models/admin';
 import { User, UserRole } from '../../../core/models/user';
 
 @Component({
@@ -41,11 +40,12 @@ export class UsersList implements OnInit {
   private adminService = inject(AdminService);
   private dialog = inject(MatDialog);
   private router = inject(Router)
+  authService = inject(AuthService);
 
   users = signal<User[]>([]);
   loading = signal<boolean>(false);
 
-  displayedColumns: string[] = ['user', 'role', 'status', 'reports'];
+  displayedColumns: string[] = ['user', 'role', 'status', 'date', 'reports'];
 
   // Pagination
   totalElements = signal<number>(0);
@@ -85,7 +85,7 @@ export class UsersList implements OnInit {
     return user.profileImgUrl;
   }
 
-  navigateProfile( user: User) {
+  navigateProfile(user: User) {
     this.router.navigate(['/profile', user.username]);
   }
 
@@ -164,6 +164,15 @@ export class UsersList implements OnInit {
       if (confirmed) {
         this.deleteUser(user.id);
       }
+    });
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   }
 
@@ -277,4 +286,5 @@ export class DeleteUserDialog {
 
 import { Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog'; import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth';
 

@@ -40,7 +40,7 @@ export class AdminService {
   }
 
   unbanUser(userId: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/users/${userId}/unban`, {});
+    return this.http.put<void>(`${this.apiUrl}/users/${userId}/unban`, null);
   }
 
   deleteUser(userId: number): Observable<void> {

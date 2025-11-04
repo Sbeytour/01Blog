@@ -37,9 +37,7 @@ public class AdminService {
     @Autowired
     private ReportRepository reportRepository;
 
-    // /**
-    // * Get dashboard statistics for admin panel
-    // */
+    // Get dashboard statistics for admin panel
     public AdminStatsResponseDto getDashboardStats() {
         long totalUsers = userRepository.count();
         long totalPosts = postRepository.count();
@@ -67,9 +65,7 @@ public class AdminService {
                 mostReportedUser, reportCount);
     }
 
-    /**
-     * Get all users with pagination
-     */
+    // Get all users
     public Page<UserResponseDto> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> users = userRepository.findAllByOrderByIdDesc(pageable);
@@ -81,9 +77,7 @@ public class AdminService {
         });
     }
 
-    /**
-     * Ban a user
-     */
+    // Ban a user
     @Transactional
     public void banUser(Long userId, BanUserRequestDto requestDto, Long adminId) {
         User user = userRepository.findById(userId)
@@ -104,22 +98,17 @@ public class AdminService {
         userRepository.save(user);
     }
 
-    /**
-     * Unban a user
-     */
+    // Unban a user
     @Transactional
     public void unbanUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " +
-                        userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         user.setBanned(false);
         userRepository.save(user);
     }
 
-    /**
-     * Delete a user permanently (cascade will handle related entities)
-     */
+    //Delete a user permanently
     @Transactional
     public void deleteUser(Long userId, Long adminId) {
         User user = userRepository.findById(userId)
@@ -136,12 +125,19 @@ public class AdminService {
             throw new UnauthorizedException("You cannot delete other admins");
         }
 
+        // Handle reports where this user resolved them (set resolvedBy to null)
+        // This preserves the report history while removing the user reference
+        reportRepository.findAll().stream()
+                .filter(report -> report.getResolvedBy() != null && report.getResolvedBy().getId() == userId)
+                .forEach(report -> {
+                    report.setResolvedBy(null);
+                    reportRepository.save(report);
+                });
+
         userRepository.delete(user);
     }
 
-    /**
-     * Update user role
-     */
+    // Update user role
     @Transactional
     public void updateUserRole(Long userId, UpdateUserRoleRequestDto requestDto,
             Long adminId) {

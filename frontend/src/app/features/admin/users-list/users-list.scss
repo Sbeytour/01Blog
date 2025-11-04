@@ -116,22 +116,18 @@
 
         &.admin-chip {
           background-color: var(--mat-sys-primary-container);
-          color: var(--mat-sys-on-primary-container);
         }
 
         &.user-chip {
           background-color: var(--mat-sys-surface-container-high);
-          color: var(--mat-sys-on-surface-variant);
         }
 
         &.active-chip {
           background-color: var(--mat-sys-success-container);
-          color: var(--mat-sys-on-success-container);
         }
 
         &.banned-chip {
-          background-color: var(--mat-sys-error-container);
-          color: var(--mat-sys-on-error-container);
+          background-color: var(--mat-sys-on-primary-fixed-variant);
         }
       }
 
@@ -201,6 +197,19 @@
 
         .name-cell .full-name {
           font-size: 13px;
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .users-list-container {
+    .mdc-data-table__content {
+      .mat-column-status {
+        .mat-mdc-chip-action-label {
+          color: var(--mat-sys-on-surface-variant);
+
         }
       }
     }

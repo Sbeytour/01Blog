@@ -11,6 +11,8 @@ export interface User {
   followingCount?: number;
   isFollowedByCurrentUser?: boolean;
   banned: boolean;
+  reportCount?: number;
+  joinedDate: string;
 }
 
 export enum UserRole {
