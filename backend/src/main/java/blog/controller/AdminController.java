@@ -1,12 +1,15 @@
 package blog.controller;
 
 import blog.dto.request.BanUserRequestDto;
+import blog.dto.request.ResolveReportRequestDto;
 import blog.dto.request.UpdateUserRoleRequestDto;
+import blog.dto.response.AdminReportResponseDto;
 import blog.dto.response.AdminStatsResponseDto;
 import blog.dto.response.PostResponseDto;
 import blog.dto.response.UserResponseDto;
 import blog.entity.User;
 import blog.services.AdminService;
+import blog.services.ReportService;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -25,8 +28,8 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    // @Autowired
-    // private ReportService reportService;
+    @Autowired
+    private ReportService reportService;
 
     // ===== DASHBOARD STATS =====
 
@@ -83,40 +86,29 @@ public class AdminController {
 
     // // ===== REPORT MANAGEMENT =====
 
-    // @GetMapping("/reports")
-    // public ResponseEntity<Page<AdminReportResponseDto>> getReports(
-    // @RequestParam(required = false) String status,
-    // @RequestParam(defaultValue = "0") int page,
-    // @RequestParam(defaultValue = "20") int size) {
+    @GetMapping("/reports")
+    public ResponseEntity<List<AdminReportResponseDto>> getReports(
+            @RequestParam(required = false) String status) {
 
-    // Page<AdminReportResponseDto> reports;
+        List<AdminReportResponseDto> reports = reportService.getAllReports();
+        return ResponseEntity.ok(reports);
+    }
 
-    // if (status != null && !status.isEmpty()) {
-    // ReportStatus reportStatus = ReportStatus.valueOf(status.toUpperCase());
-    // reports = reportService.getReportsByStatus(reportStatus, page, size);
-    // } else {
-    // reports = reportService.getAllReports(page, size);
-    // }
+    @GetMapping("/reports/{reportId}")
+    public ResponseEntity<AdminReportResponseDto> getReportById(@PathVariable Long reportId) {
+        AdminReportResponseDto report = reportService.getReportById(reportId);
+        return ResponseEntity.ok(report);
+    }
 
-    // return ResponseEntity.ok(reports);
-    // }
-
-    // @GetMapping("/reports/{reportId}")
-    // public ResponseEntity<AdminReportResponseDto> getReportById(@PathVariable
-    // Long reportId) {
-    // AdminReportResponseDto report = reportService.getReportById(reportId);
-    // return ResponseEntity.ok(report);
-    // }
-
-    // @PutMapping("/reports/{reportId}/resolve")
-    // public ResponseEntity<Void> resolveReport(
-    // @PathVariable Long reportId,
-    // @Valid @RequestBody ResolveReportRequestDto requestDto,
-    // Authentication authentication) {
-    // User admin = (User) authentication.getPrincipal();
-    // reportService.resolveReport(reportId, requestDto, admin);
-    // return ResponseEntity.ok().build();
-    // }
+    @PutMapping("/reports/{reportId}/resolve")
+    public ResponseEntity<Void> resolveReport(
+            @PathVariable Long reportId,
+            @Valid @RequestBody ResolveReportRequestDto requestDto,
+            Authentication authentication) {
+        User admin = (User) authentication.getPrincipal();
+        reportService.resolveReport(reportId, requestDto, admin);
+        return ResponseEntity.ok().build();
+    }
 
     // // ===== POST MANAGEMENT =====
 

@@ -1,0 +1,173 @@
+<div class="report-details-modal">
+  <div class="modal-header">
+    <h2 mat-dialog-title>Report Details</h2>
+    <button mat-icon-button (click)="close()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    @if (loading()) {
+      <div class="loading-container">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Loading report details...</p>
+      </div>
+    } @else if (error()) {
+      <div class="error-container">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ error() }}</p>
+        <button mat-raised-button color="primary" (click)="loadReportDetails()">
+          Retry
+        </button>
+      </div>
+    } @else if (report()) {
+      <div class="report-content">
+        <!-- Report Information Section -->
+        <div class="section">
+          <h3 class="section-title">Report Information</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Report ID:</span>
+              <span class="info-value">#{{ report()!.id }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Created At:</span>
+              <span class="info-value">{{ formatDate(report()!.createdAt) }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Type:</span>
+              <mat-chip [ngClass]="getTypeClass(report()!.reportedType)">
+                {{ report()!.reportedType }}
+              </mat-chip>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Status:</span>
+              <mat-chip [ngClass]="getStatusClass(report()!.status)">
+                {{ report()!.status }}
+              </mat-chip>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reported Entity Section -->
+        <div class="section">
+          <h3 class="section-title">Reported {{ report()!.reportedType === ReportedType.USER ? 'User' : 'Post' }}</h3>
+          <div class="info-grid">
+            <div class="info-item full-width">
+              <span class="info-label">Name:</span>
+              <span class="info-value highlight">{{ report()!.reportedName }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reporter Section -->
+        <div class="section">
+          <h3 class="section-title">Reported By</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Username:</span>
+              <span class="info-value">{{ report()!.reporterUsername }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report Details Section -->
+        <div class="section">
+          <h3 class="section-title">Report Details</h3>
+          <div class="info-item full-width">
+            <span class="info-label">Reason:</span>
+            <span class="info-value">{{ ReportReasonLabels[report()!.reason] }}</span>
+          </div>
+          <div class="info-item full-width description-item">
+            <span class="info-label">Description:</span>
+            <p class="description-text">{{ report()!.description }}</p>
+          </div>
+        </div>
+
+        <!-- Resolution Details (if resolved) -->
+        @if (report()!.status !== ReportStatus.PENDING) {
+          <div class="section resolution-section">
+            <h3 class="section-title">Resolution Details</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="info-label">Resolved By:</span>
+                <span class="info-value">{{ report()!.resolvedByUsername || 'N/A' }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Resolved At:</span>
+                <span class="info-value">{{ formatDate(report()!.resolvedAt) }}</span>
+              </div>
+            </div>
+            @if (report()!.adminNotes) {
+              <div class="info-item full-width">
+                <span class="info-label">Admin Notes:</span>
+                <p class="notes-text">{{ report()!.adminNotes }}</p>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Resolution Form (if pending) -->
+        @if (isPending()) {
+          <div class="section resolution-form">
+            <h3 class="section-title">Resolve Report</h3>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Action</mat-label>
+              <mat-select [(ngModel)]="selectedAction" [value]="selectedAction()">
+                @for (action of getAvailableActions(); track action) {
+                  <mat-option [value]="action">
+                    {{ ReportActionLabels[action] }}
+                  </mat-option>
+                }
+              </mat-select>
+              <mat-hint>Choose the action to take on the reported</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Admin Notes</mat-label>
+              <textarea
+                matInput
+                [(ngModel)]="adminNotes"
+                [value]="adminNotes()"
+                rows="4"
+                maxlength="2000"
+                placeholder="Add notes about your decision..."></textarea>
+              <mat-hint align="end">{{ adminNotes().length }}/2000</mat-hint>
+            </mat-form-field>
+
+            @if (error()) {
+              <div class="error-message">
+                <mat-icon>error</mat-icon>
+                <span>{{ error() }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    @if (!loading() && report() && isPending()) {
+      <button
+        mat-button
+        (click)="dismissReport()"
+        [disabled]="submitting()">
+        Dismiss
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="resolveReport()"
+        [disabled]="submitting()">
+        @if (submitting()) {
+          <mat-spinner diameter="20" style="display: inline-block; margin-right: 8px;"></mat-spinner>
+        }
+        Resolve Report
+      </button>
+    } @else {
+      <button mat-button (click)="close()">Close</button>
+    }
+  </mat-dialog-actions>
+</div>

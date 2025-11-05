@@ -8,7 +8,6 @@ import blog.entity.ReportedType;
 import java.time.LocalDateTime;
 
 public class AdminReportResponseDto {
-
     private Long id;
     private ReportedType reportedType;
     private Long reportedId;
@@ -18,7 +17,7 @@ public class AdminReportResponseDto {
     private LocalDateTime createdAt;
     private String reporterUsername;
     private Long reporterId;
-    private String reportedName;  // Username or post title
+    private String reportedName;
     private String adminNotes;
     private String resolvedByUsername;
     private LocalDateTime resolvedAt;

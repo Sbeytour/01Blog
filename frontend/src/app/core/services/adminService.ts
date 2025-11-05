@@ -3,16 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
-  AdminReportDetails,
   AdminStats,
-  BanUserRequest,
-  PagedReportResponse,
   PagedUserResponse,
+  BanUserRequest,
   ResolveReportRequest,
   UpdateUserRoleRequest
 } from '../models/admin';
 import { Post } from '../models/post';
-
+import { ReportResponse } from '../models/report';
 @Injectable({
   providedIn: 'root'
 })
@@ -53,20 +51,17 @@ export class AdminService {
   }
 
   // Report Management
-  getReports(page: number = 0, size: number = 20, status?: string): Observable<PagedReportResponse> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
+  getReports(status?: string): Observable<ReportResponse[]> {
+    let params = new HttpParams();
     if (status) {
       params = params.set('status', status);
     }
 
-    return this.http.get<PagedReportResponse>(`${this.apiUrl}/reports`, { params });
+    return this.http.get<ReportResponse[]>(`${this.apiUrl}/reports`, { params });
   }
 
-  getReportById(reportId: number): Observable<AdminReportDetails> {
-    return this.http.get<AdminReportDetails>(`${this.apiUrl}/reports/${reportId}`);
+  getReportById(reportId: number): Observable<ReportResponse> {
+    return this.http.get<ReportResponse>(`${this.apiUrl}/reports/${reportId}`);
   }
 
   resolveReport(reportId: number, request: ResolveReportRequest): Observable<void> {
@@ -78,9 +73,13 @@ export class AdminService {
     return this.http.get<Post[]>(`${this.apiUrl}/posts`);
   }
 
-  hiddePost(postId: number, reason: string) {
+  hiddePost(postId: number, reason: string): Observable<void> {
     const request: BanUserRequest = { reason };
     return this.http.put<void>(`${this.apiUrl}/posts/${postId}/hidde`, request);
+  }
+
+  unhidePost(postId: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/posts/${postId}/unhidde`, null);
   }
 
   deletePost(postId: number): Observable<void> {

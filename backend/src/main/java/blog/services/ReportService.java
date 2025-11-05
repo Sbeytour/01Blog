@@ -1,21 +1,24 @@
 package blog.services;
 
 import blog.dto.request.CreateReportRequestDto;
-// import blog.dto.request.ResolveReportRequestDto;
-// import blog.dto.response.AdminReportResponseDto;
+import blog.dto.request.ResolveReportRequestDto;
+import blog.dto.response.AdminReportResponseDto;
+
 import blog.dto.response.ReportResponseDto;
 import blog.entity.*;
 import blog.exceptions.DuplicateReportException;
-// import blog.exceptions.ReportNotFoundException;
-// import blog.exceptions.ResourceNotFoundException;
+import blog.exceptions.ReportNotFoundException;
+import blog.exceptions.ResourceNotFoundException;
 import blog.exceptions.UserNotFoundException;
 import blog.repositories.PostRepository;
 import blog.repositories.ReportRepository;
 import blog.repositories.UserRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.data.domain.Page;
-// import org.springframework.data.domain.PageRequest;
-// import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,110 +91,109 @@ public class ReportService {
 
     // // ===== ADMIN METHODS =====
 
-    // /**
-    //  * Get all reports with pagination
-    //  */
-    // public Page<AdminReportResponseDto> getAllReports(int page, int size) {
-    //     Pageable pageable = PageRequest.of(page, size);
-    //     Page<Report> reports = reportRepository.findAllByOrderByCreatedAtDesc(pageable);
+    // Get all reports
+    public List<AdminReportResponseDto> getAllReports() {
+        List<Report> reports = reportRepository.findAll();
 
-    //     return reports.map(report -> {
-    //         String entityName = getReportedEntityName(report.getReportedType(), report.getReportedId());
-    //         return AdminReportResponseDto.fromEntity(report, entityName);
-    //     });
+        return reports.stream().map(report -> {
+            String entityName = getReportedName(report.getReportedType(), report.getReportedId());
+            return AdminReportResponseDto.fromEntity(report, entityName);
+        }).toList();
+    }
+
+    // /**
+    // * Get reports filtered by status
+    // */
+    // public Page<AdminReportResponseDto> getReportsByStatus(ReportStatus status,
+    // int page, int size) {
+    // Page<Report> reports =
+    // reportRepository.findAllByStatusOrderByCreatedAtDesc(status, pageable);
+
+    // return reports.map(report -> {
+    // String entityName = getReportedEntityName(report.getReportedType(),
+    // report.getReportedId());
+    // return AdminReportResponseDto.fromEntity(report, entityName);
+    // });
     // }
 
     // /**
-    //  * Get reports filtered by status
-    //  */
-    // public Page<AdminReportResponseDto> getReportsByStatus(ReportStatus status, int page, int size) {
-    //     Pageable pageable = PageRequest.of(page, size);
-    //     Page<Report> reports = reportRepository.findAllByStatusOrderByCreatedAtDesc(status, pageable);
+    // * Get a single report by ID with full details
+    // */
+    public AdminReportResponseDto getReportById(Long reportId) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new ReportNotFoundException("Report not found with id: " +
+                        reportId));
 
-    //     return reports.map(report -> {
-    //         String entityName = getReportedEntityName(report.getReportedType(), report.getReportedId());
-    //         return AdminReportResponseDto.fromEntity(report, entityName);
-    //     });
-    // }
-
-    // /**
-    //  * Get a single report by ID with full details
-    //  */
-    // public AdminReportResponseDto getReportById(Long reportId) {
-    //     Report report = reportRepository.findById(reportId)
-    //             .orElseThrow(() -> new ReportNotFoundException("Report not found with id: " + reportId));
-
-    //     String entityName = getReportedEntityName(report.getReportedType(), report.getReportedId());
-    //     return AdminReportResponseDto.fromEntity(report, entityName);
-    // }
+        String entityName = getReportedName(report.getReportedType(),
+                report.getReportedId());
+        return AdminReportResponseDto.fromEntity(report, entityName);
+    }
 
     // /**
-    //  * Resolve a report and take action on the reported entity
-    //  */
-    // @Transactional
-    // public void resolveReport(Long reportId, ResolveReportRequestDto requestDto, User admin) {
-    //     Report report = reportRepository.findById(reportId)
-    //             .orElseThrow(() -> new ReportNotFoundException("Report not found with id: " + reportId));
+    // * Resolve a report and take action on the reported entity
+    // */
+    @Transactional
+    public void resolveReport(Long reportId, ResolveReportRequestDto requestDto, User admin) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new ReportNotFoundException("Report not found with id: " + reportId));
 
-    //     // Update report status
-    //     report.setStatus(requestDto.getStatus());
-    //     report.setAdminNotes(requestDto.getAdminNotes());
-    //     report.setResolvedBy(admin);
-    //     report.setResolvedAt(LocalDateTime.now());
+        // Update report status
+        report.setStatus(requestDto.getStatus());
+        report.setAdminNotes(requestDto.getAdminNotes());
+        report.setResolvedBy(admin);
+        report.setResolvedAt(LocalDateTime.now());
 
-    //     // Take action based on the request
-    //     if (requestDto.getStatus() == ReportStatus.RESOLVED) {
-    //         executeReportAction(report, requestDto.getAction());
-    //     }
+        // Take action based on the request
+        if (requestDto.getStatus() == ReportStatus.RESOLVED) {
+            executeReportAction(report, requestDto.getAction());
+        }
 
-    //     reportRepository.save(report);
-    // }
-
-    // /**
-    //  * Execute the action on the reported entity
-    //  */
-    // private void executeReportAction(Report report, ReportAction action) {
-    //     switch (action) {
-    //         case BAN_USER:
-    //             if (report.getReportedType() == ReportedType.USER) {
-    //                 User user = userRepository.findById(report.getReportedId())
-    //                         .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-    //                 user.setBanned(true);
-    //                 userRepository.save(user);
-    //             }
-    //             break;
-    //         case DELETE_USER:
-    //             if (report.getReportedType() == ReportedType.USER) {
-    //                 userRepository.deleteById(report.getReportedId());
-    //             }
-    //             break;
-    //         case DELETE_POST:
-    //             if (report.getReportedType() == ReportedType.POST) {
-    //                 postRepository.deleteById(report.getReportedId());
-    //             }
-    //             break;
-    //         case NONE:
-    //             // No action taken
-    //             break;
-    //     }
-    // }
+        reportRepository.save(report);
+    }
 
     // /**
-    //  * Get the name of the reported entity (username or post title)
-    //  */
-    // private String getReportedEntityName(ReportedType reportedType, Long reportedId) {
-    //     switch (reportedType) {
-    //         case USER:
-    //             return userRepository.findById(reportedId)
-    //                     .map(User::getUsername)
-    //                     .orElse("Unknown User");
-    //         case POST:
-    //             return postRepository.findById(reportedId)
-    //                     .map(Post::getTitle)
-    //                     .orElse("Unknown Post");
-    //         default:
-    //             return "Unknown";
-    //     }
-    // }
+    // * Execute the action on the reported entity
+    // */
+    private void executeReportAction(Report report, ReportAction action) {
+        switch (action) {
+            case BAN_USER:
+                if (report.getReportedType() == ReportedType.USER) {
+                    User user = userRepository.findById(report.getReportedId())
+                            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                    user.setBanned(true);
+                    userRepository.save(user);
+                }
+                break;
+            case DELETE_USER:
+                if (report.getReportedType() == ReportedType.USER) {
+                    userRepository.deleteById(report.getReportedId());
+                }
+                break;
+            case DELETE_POST:
+                if (report.getReportedType() == ReportedType.POST) {
+                    postRepository.deleteById(report.getReportedId());
+                }
+                break;
+            case NONE:
+                // No action taken
+                break;
+        }
+    }
+
+    // Get the name of the reported entity (username or post title)
+    private String getReportedName(ReportedType reportedType, Long reportedId) {
+        switch (reportedType) {
+            case USER:
+                return userRepository.findById(reportedId)
+                        .map(User::getUsername)
+                        .orElse("Unknown User");
+            case POST:
+                return postRepository.findById(reportedId)
+                        .map(Post::getTitle)
+                        .orElse("Unknown Post");
+            default:
+                return "Unknown";
+        }
+    }
 
 }

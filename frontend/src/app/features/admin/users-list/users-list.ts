@@ -43,7 +43,7 @@ export class UsersList implements OnInit {
   authService = inject(AuthService);
 
   users = signal<User[]>([]);
-  loading = signal<boolean>(false);
+  isLoading = signal<boolean>(false);
 
   displayedColumns: string[] = ['user', 'role', 'status', 'date', 'reports' , 'actions'];
 
@@ -57,16 +57,16 @@ export class UsersList implements OnInit {
   }
 
   loadUsers(): void {
-    this.loading.set(true);
+    this.isLoading.set(true);
     this.adminService.getUsers(this.pageIndex(), this.pageSize()).subscribe({
       next: (response) => {
         this.users.set(response.content);
         this.totalElements.set(response.totalElements);
-        this.loading.set(false);
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Failed to load users:', error);
-        this.loading.set(false);
+        this.isLoading.set(false);
       }
     });
   }
@@ -103,27 +103,27 @@ export class UsersList implements OnInit {
   }
 
   banUser(userId: number, reason: string): void {
-    this.loading.set(true);
+    this.isLoading.set(true);
     this.adminService.banUser(userId, reason).subscribe({
       next: () => {
         this.loadUsers();
       },
       error: (error) => {
         console.error('Failed to ban user:', error);
-        this.loading.set(false);
+        this.isLoading.set(false);
       }
     });
   }
 
   unbanUser(userId: number): void {
-    this.loading.set(true);
+    this.isLoading.set(true);
     this.adminService.unbanUser(userId).subscribe({
       next: () => {
         this.loadUsers();
       },
       error: (error) => {
         console.error('Failed to unban user:', error);
-        this.loading.set(false);
+        this.isLoading.set(false);
       }
     });
   }
@@ -142,14 +142,14 @@ export class UsersList implements OnInit {
   }
 
   updateUserRole(userId: number, role: UserRole): void {
-    this.loading.set(true);
+    this.isLoading.set(true);
     this.adminService.updateUserRole(userId, role).subscribe({
       next: () => {
         this.loadUsers();
       },
       error: (error) => {
         console.error('Failed to update user role:', error);
-        this.loading.set(false);
+        this.isLoading.set(false);
       }
     });
   }
@@ -177,14 +177,14 @@ export class UsersList implements OnInit {
   }
 
   deleteUser(userId: number): void {
-    this.loading.set(true);
+    this.isLoading.set(true);
     this.adminService.deleteUser(userId).subscribe({
       next: () => {
         this.loadUsers();
       },
       error: (error) => {
         console.error('Failed to delete user:', error);
-        this.loading.set(false);
+        this.isLoading.set(false);
       }
     });
   }

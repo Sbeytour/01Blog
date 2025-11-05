@@ -31,6 +31,7 @@ export interface CreateReportRequest {
 }
 
 // Response DTOs
+// Report Management
 export interface ReportResponse {
   id: number;
   reportedType: ReportedType;
@@ -39,7 +40,26 @@ export interface ReportResponse {
   description: string;
   status: ReportStatus;
   createdAt: string;
+  reporterUsername: string;
+  reporterId: number;
+  reportedName: string;
+  adminNotes?: string;
+  resolvedByUsername?: string;
+  resolvedAt?: string;
 }
+
+// export interface ReportResponse {
+//   content: ReportDetails[];
+//   pageable: Pageable;
+//   totalPages: number;
+//   totalElements: number;
+//   last: boolean;
+//   first: boolean;
+//   number: number;
+//   size: number;
+//   numberOfElements: number;
+//   empty: boolean;
+// }
 
 export const ReportReasonLabels: Record<ReportReason, string> = {
   [ReportReason.SPAM]: 'Spam or misleading content',

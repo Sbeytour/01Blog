@@ -1,4 +1,4 @@
-import { ReportReason, ReportStatus, ReportedType } from './report';
+import { ReportStatus } from './report';
 import { User, UserRole } from './user';
 
 // Admin Statistics
@@ -12,36 +12,6 @@ export interface AdminStats {
 
 export interface PagedUserResponse {
   content: User[];
-  pageable: Pageable;
-  totalPages: number;
-  totalElements: number;
-  last: boolean;
-  first: boolean;
-  number: number;
-  size: number;
-  numberOfElements: number;
-  empty: boolean;
-}
-
-// Report Management
-export interface AdminReportDetails {
-  id: number;
-  reportedType: ReportedType;
-  reportedId: number;
-  reason: ReportReason;
-  description: string;
-  status: ReportStatus;
-  createdAt: string;
-  reporterUsername: string;
-  reporterId: number;
-  reportedEntityName: string;
-  adminNotes?: string;
-  resolvedByUsername?: string;
-  resolvedAt?: string;
-}
-
-export interface PagedReportResponse {
-  content: AdminReportDetails[];
   pageable: Pageable;
   totalPages: number;
   totalElements: number;
