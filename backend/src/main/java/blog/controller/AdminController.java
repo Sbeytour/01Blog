@@ -134,9 +134,15 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
-    // @DeleteMapping("/posts/{postId}")
-    // public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-    // adminService.deletePostByAdmin(postId);
-    // return ResponseEntity.noContent().build();
-    // }
+    @PutMapping("/posts/{postId}/unhidde")
+    public ResponseEntity<Void> unhiddePost(@PathVariable Long postId) {
+        adminService.unHiddePost(postId, null);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+        adminService.deletePostByAdmin(postId);
+        return ResponseEntity.noContent().build();
+    }
 }

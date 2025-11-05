@@ -45,7 +45,7 @@ export class UsersList implements OnInit {
   users = signal<User[]>([]);
   loading = signal<boolean>(false);
 
-  displayedColumns: string[] = ['user', 'role', 'status', 'date', 'reports'];
+  displayedColumns: string[] = ['user', 'role', 'status', 'date', 'reports' , 'actions'];
 
   // Pagination
   totalElements = signal<number>(0);

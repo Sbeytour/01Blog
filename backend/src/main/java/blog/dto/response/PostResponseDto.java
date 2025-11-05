@@ -40,6 +40,7 @@ public class PostResponseDto {
                 : List.of();
         dto.commentsCount = post.getComments() != null ? post.getComments().size() : 0;
         dto.likesCount = post.getLikes() != null ? post.getLikes().size() : 0;
+        dto.hidden = post.getHidden();
         dto.createdAt = post.getCreatedAt();
         dto.updatedAt = post.getUpdatedAt();
         return dto;

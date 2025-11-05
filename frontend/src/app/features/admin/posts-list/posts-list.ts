@@ -36,7 +36,7 @@ export class PostsList implements OnInit {
   posts = signal<Post[]>([]);
   loading = signal<boolean>(false);
 
-  displayedColumns: string[] = ['title', 'creator', 'status', 'date'];
+  displayedColumns: string[] = ['title', 'creator', 'status', 'date', 'reports', 'actions'];
 
   // Pagination
   totalElements = signal<number>(0);
@@ -84,6 +84,14 @@ export class PostsList implements OnInit {
 
   getTruncatedTitle(title: string, maxLength: number = 30): string {
     return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
+  }
+
+  navigateToPost(postId: number) {
+    this.router.navigate(['/api/posts', postId]);
+  }
+
+  navigatToProfile(username: string) {
+    this.router.navigate(['/profile', username]);
   }
 
   formatDate(dateString: string): string {
@@ -138,6 +146,18 @@ export class PostsList implements OnInit {
     });
   }
 
+  unhidePost(postId: number): void {
+    this.loading.set(true);
+    this.adminService.unhidePost(postId).subscribe({
+      next: () => {
+        this.loadPosts();
+      },
+      error: (error) => {
+        console.error('Failed to unhide post:', error);
+        this.loading.set(false);
+      }
+    });
+  }
 
   deletePost(postId: number): void {
     this.loading.set(true);

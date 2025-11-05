@@ -131,23 +131,22 @@
         }
       }
 
-      .report {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+      .date-text {
+        color: #6b7280;
+        font-size: 13px;
+      }
 
-        .report-count {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          min-width: 28px;
-          padding: 4px 8px;
-          border-radius: 8px;
-          font-size: 17px;
-          font-weight: 500;
-          background-color: var(--mat-sys-surface-container-high);
-          color: var(--mat-sys-on-surface-variant);
-        }
+      .report-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 28px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 17px;
+        font-weight: 500;
+        background-color: var(--mat-sys-surface-container-high);
+        color: var(--mat-sys-on-surface-variant);
       }
 
       .mat-mdc-icon-button {
