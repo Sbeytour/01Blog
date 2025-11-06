@@ -10,7 +10,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { ReportResponse, ReportReasonLabels, ReportStatus, ReportedType } from '../../../core/models/report';
+import { ReportResponse, ReportStatus, ReportedType, ReportDetails } from '../../../core/models/report';
 import { AdminService } from '../../../core/services/adminService';
 import { ReportDetailsModal } from '../report-details-modal/report-details-modal';
 
@@ -51,7 +51,7 @@ export class ReportsList implements OnInit {
 
   loadReports(): void {
     this.loading.set(true);
-    this.adminService.getReports().subscribe({
+    this.adminService.getAllReports().subscribe({
       next: (response) => {
         this.reports.set(response);
         this.loading.set(false);
@@ -80,8 +80,8 @@ export class ReportsList implements OnInit {
     return type === ReportedType.USER ? 'user-type-chip' : 'post-type-chip';
   }
 
-  getTruncatedDescription(description: string, maxLength: number = 30): string {
-    return description.length > maxLength ? description.substring(0, maxLength) + '...' : description;
+  getTruncatedText(text: string, maxLength: number = 20): string {
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
   }
 
   formatDate(dateString: string): string {
@@ -95,7 +95,7 @@ export class ReportsList implements OnInit {
     });
   }
 
-  viewDetails(report: ReportResponse): void {
+  viewDetails(report: ReportDetails): void {
     const dialogRef = this.dialog.open(ReportDetailsModal, {
       width: '700px',
       maxWidth: '90vw',

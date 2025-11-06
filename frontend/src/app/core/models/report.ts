@@ -12,14 +12,14 @@ export enum ReportReason {
 }
 
 export enum ReportStatus {
-  PENDING,
-  RESOLVED,
-  DISMISSED
+  PENDING = 'PENDING',
+  RESOLVED = 'RESOLVED',
+  DISMISSED = 'DISMISSED'
 }
 
 export enum ReportedType {
-  USER,
-  POST
+  USER = 'USER',
+  POST = 'POST'
 }
 
 // Request DTO
@@ -33,20 +33,29 @@ export interface CreateReportRequest {
 // Response DTOs
 // Report Management
 export interface ReportResponse {
+  reportedType: ReportedType;
+  reason: ReportReason;
+  description: string;
+  status: ReportStatus;
+  reporterUsername: string;
+}
+
+//Report Details Response
+export interface ReportDetails {
   id: number;
   reportedType: ReportedType;
-  reportedId: number;
   reason: ReportReason;
   description: string;
   status: ReportStatus;
   createdAt: string;
   reporterUsername: string;
-  reporterId: number;
   reportedName: string;
+  reportedStatus?: string;
   adminNotes?: string;
   resolvedByUsername?: string;
   resolvedAt?: string;
 }
+
 
 // export interface ReportResponse {
 //   content: ReportDetails[];

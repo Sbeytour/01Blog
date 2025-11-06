@@ -10,14 +10,13 @@ import java.time.LocalDateTime;
 public class AdminReportResponseDto {
     private Long id;
     private ReportedType reportedType;
-    private Long reportedId;
     private ReportReason reason;
     private String description;
     private ReportStatus status;
     private LocalDateTime createdAt;
     private String reporterUsername;
-    private Long reporterId;
     private String reportedName;
+    private String reportedStatus;
     private String adminNotes;
     private String resolvedByUsername;
     private LocalDateTime resolvedAt;
@@ -25,18 +24,28 @@ public class AdminReportResponseDto {
     public AdminReportResponseDto() {
     }
 
-    public static AdminReportResponseDto fromEntity(Report report, String reportedName) {
+    public static AdminReportResponseDto fromEntity(Report report) {
         AdminReportResponseDto dto = new AdminReportResponseDto();
         dto.id = report.getId();
         dto.reportedType = report.getReportedType();
-        dto.reportedId = report.getReportedId();
+        dto.reason = report.getReason();
+        dto.description = report.getDescription();
+        dto.status = report.getStatus();
+        dto.reporterUsername = report.getReporter() != null ? report.getReporter().getUsername() : null;
+        return dto;
+    }
+
+    public static AdminReportResponseDto forDetails(Report report, String reportedName, String status) {
+        AdminReportResponseDto dto = new AdminReportResponseDto();
+        dto.id = report.getId();
+        dto.reportedType = report.getReportedType();
         dto.reason = report.getReason();
         dto.description = report.getDescription();
         dto.status = report.getStatus();
         dto.createdAt = report.getCreatedAt();
         dto.reporterUsername = report.getReporter() != null ? report.getReporter().getUsername() : null;
-        dto.reporterId = report.getReporter() != null ? report.getReporter().getId() : null;
         dto.reportedName = reportedName;
+        dto.reportedStatus = status;
         dto.adminNotes = report.getAdminNotes();
         dto.resolvedByUsername = report.getResolvedBy() != null ? report.getResolvedBy().getUsername() : null;
         dto.resolvedAt = report.getResolvedAt();
@@ -58,14 +67,6 @@ public class AdminReportResponseDto {
 
     public void setReportedType(ReportedType reportedType) {
         this.reportedType = reportedType;
-    }
-
-    public Long getReportedId() {
-        return reportedId;
-    }
-
-    public void setReportedId(Long reportedId) {
-        this.reportedId = reportedId;
     }
 
     public ReportReason getReason() {
@@ -108,20 +109,20 @@ public class AdminReportResponseDto {
         this.reporterUsername = reporterUsername;
     }
 
-    public Long getReporterId() {
-        return reporterId;
-    }
-
-    public void setReporterId(Long reporterId) {
-        this.reporterId = reporterId;
-    }
-
     public String getReportedName() {
         return reportedName;
     }
 
     public void setReportedName(String reportedName) {
         this.reportedName = reportedName;
+    }
+
+    public String getReportedStatus() {
+        return reportedStatus;
+    }
+
+    public void setReportedStatus(String reportedStatus) {
+        this.reportedStatus = reportedStatus;
     }
 
     public String getAdminNotes() {

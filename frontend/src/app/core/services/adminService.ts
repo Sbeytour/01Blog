@@ -10,7 +10,7 @@ import {
   UpdateUserRoleRequest
 } from '../models/admin';
 import { Post } from '../models/post';
-import { ReportResponse } from '../models/report';
+import { ReportDetails, ReportResponse } from '../models/report';
 @Injectable({
   providedIn: 'root'
 })
@@ -51,17 +51,12 @@ export class AdminService {
   }
 
   // Report Management
-  getReports(status?: string): Observable<ReportResponse[]> {
-    let params = new HttpParams();
-    if (status) {
-      params = params.set('status', status);
-    }
-
-    return this.http.get<ReportResponse[]>(`${this.apiUrl}/reports`, { params });
+  getAllReports(): Observable<ReportResponse[]> {
+    return this.http.get<ReportResponse[]>(`${this.apiUrl}/reports`);
   }
 
-  getReportById(reportId: number): Observable<ReportResponse> {
-    return this.http.get<ReportResponse>(`${this.apiUrl}/reports/${reportId}`);
+  getReportById(reportId: number): Observable<ReportDetails> {
+    return this.http.get<ReportDetails>(`${this.apiUrl}/reports/${reportId}`);
   }
 
   resolveReport(reportId: number, request: ResolveReportRequest): Observable<void> {

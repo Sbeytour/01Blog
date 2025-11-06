@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   max-height: 90vh;
+  
 
   .modal-header {
     display: flex;
@@ -14,17 +15,18 @@
       margin: 0;
       font-size: 24px;
       font-weight: 600;
-      color: var(--mat-sys-on-surface);
+      color: var(--mat-sys-primary);
     }
 
     .close-button {
-      color: var(--mat-sys-on-surface-variant);
+      color: var(--mat-sys-on-primary-fixed-variant);
     }
   }
 
   mat-dialog-content {
     padding: 0 24px;
     overflow-y: auto;
+    scrollbar-width: none;
     min-width: 600px;
     max-width: 800px;
 
@@ -56,15 +58,24 @@
     }
 
     .report-content {
+      .reported-reporter {
+        display: flex;
+        gap: 10px;
+
+        .section {
+          width: 50%;
+        }
+      }
+
       .section {
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         padding: 16px;
         background: var(--mat-sys-surface-container-low);
         border-radius: 12px;
 
         &.resolution-section {
-          background: var(--mat-sys-success-container);
-          border: 1px solid var(--mat-sys-outline-variant);
+          background: var(--mat-sys-surface-container);
+          border: 0px solid var(--mat-sys-surface-container-highest);
         }
 
         &.resolution-form {
@@ -88,7 +99,6 @@
         .info-item {
           display: flex;
           flex-direction: column;
-          gap: 4px;
 
           &.full-width {
             grid-column: 1 / -1;
@@ -113,37 +123,62 @@
             }
           }
 
+
           mat-chip {
             width: fit-content;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 10px;
-            height: 22px;
-            border-radius: 12px;
+            padding: 15px 10px;
 
             &.user-type-chip {
-              background-color: var(--mat-sys-primary-container);
-              color: var(--mat-sys-on-primary-container);
+              background-color: var(--mat-sys-secondary-fixed-dim);
             }
 
             &.post-type-chip {
-              background-color: var(--mat-sys-secondary-container);
-              color: var(--mat-sys-on-secondary-container);
+              background-color: var(--mat-sys-secondary-fixed-dim);
             }
 
             &.pending-chip {
-              background-color: #FEF3C7;
-              color: #92400E;
+              background-color: var(--mat-sys-tertiary-fixed-dim);
             }
 
             &.resolved-chip {
               background-color: var(--mat-sys-success-container);
-              color: #065F46;
             }
 
             &.dismissed-chip {
               background-color: var(--mat-sys-surface-container-high);
-              color: var(--mat-sys-on-surface-variant);
+            }
+
+            // Entity status chips
+            &.active-chip {
+              background-color: var(--mat-sys-success-container);
+            }
+
+            &.banned-chip {
+              background-color: var(--mat-sys-on-primary-fixed-variant);
+            }
+
+            &.hidden-chip {
+              background-color: var(--mat-sys-on-primary-fixed-variant);
+            }
+
+            &.deleted-chip {
+              background-color: var(--mat-sys-on-tertiary-container);
+            }
+
+            &.unknown-chip {
+              background-color: var(--mat-sys-on-tertiary-container);
+            }
+
+            &.username-chip {
+              background-color: var(--mat-sys-on-secondary-fixed-variant);
+            }
+
+            &.cratedAt-chip {
+              background-color: var(--mat-sys-on-surface-variant);
+            }
+
+            &.review-chip {
+              background-color: var(--mat-sys-outline);
             }
           }
         }
@@ -167,7 +202,7 @@
         .notes-text {
           margin: 8px 0 0;
           padding: 12px;
-          background: var(--mat-sys-surface-container);
+          background: var(--mat-sys-surface);
           border-radius: 8px;
           font-size: 14px;
           line-height: 1.6;
@@ -208,7 +243,6 @@
   mat-dialog-actions {
     padding: 16px 24px;
     border-top: 1px solid var(--mat-sys-outline-variant);
-    gap: 12px;
 
     button {
       min-width: 100px;
@@ -227,6 +261,21 @@
           .info-grid {
             grid-template-columns: 1fr;
           }
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .info-grid {
+    .info-item {
+      .mat-mdc-standard-chip {
+        .mat-mdc-chip-action-label {
+          font-size: 16px;
+          font-weight: 500;
+          color: var(--mat-sys-white);
+
         }
       }
     }

@@ -55,6 +55,9 @@ html {
   --mat-sys-outline-variant: light-dark(#e3beb8, #5b403c);
   --mat-sys-neutral10: light-dark(#271815, #271815); /* Variable used for the form field native select option text color */
 
+  /* standard colores */
+  --mat-sys-white:light-dark(#ffffff, #ffffff);
+  --mat-sys-black:light-dark(#000000, #000000);
   /* Error palette variables */
   --mat-sys-error: light-dark(#ba1a1a, #ffb4ab);
   --mat-sys-on-error: light-dark(#ffffff, #690005);

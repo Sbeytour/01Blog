@@ -36,8 +36,7 @@ public class Report {
     @Size(min = 10, max = 1000, message = "Description must be between 10 and 1000 characters")
     @Column(nullable = false, length = 1000)
     private String description;
-
-    @NotNull(message = "Status is required")
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReportStatus status = ReportStatus.PENDING;

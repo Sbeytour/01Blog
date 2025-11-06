@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
-import { ReportResponse, ReportReasonLabels, ReportStatus, ReportedType } from '../../../core/models/report';
+import {ReportReasonLabels, ReportStatus, ReportedType, ReportDetails } from '../../../core/models/report';
 import { ReportAction, ReportActionLabels, ResolveReportRequest } from '../../../core/models/admin';
 import { AdminService } from '../../../core/services/adminService';
 
@@ -35,7 +35,7 @@ export class ReportDetailsModal {
   private adminService = inject(AdminService);
   private dialogRef = inject(MatDialogRef<ReportDetailsModal>);
 
-  report = signal<ReportResponse | null>(null);
+  report = signal<ReportDetails | null>(null);
   loading = signal<boolean>(true);
   submitting = signal<boolean>(false);
   error = signal<string | null>(null);
@@ -61,6 +61,7 @@ export class ReportDetailsModal {
 
     this.adminService.getReportById(this.data.reportId).subscribe({
       next: (report) => {
+        console.log("report details = ", report);
         this.report.set(report);
         this.loading.set(false);
         // Pre-fill admin notes if they exist
@@ -110,6 +111,21 @@ export class ReportDetailsModal {
 
   getTypeClass(type: ReportedType): string {
     return type === ReportedType.USER ? 'user-type-chip' : 'post-type-chip';
+  }
+
+  getEntityStatusClass(status?: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'active-chip';
+      case 'BANNED':
+        return 'banned-chip';
+      case 'HIDDEN':
+        return 'hidden-chip';
+      case 'DELETED':
+        return 'deleted-chip';
+      default:
+        return 'unknown-chip';
+    }
   }
 
   formatDate(dateString?: string): string {
@@ -163,7 +179,7 @@ export class ReportDetailsModal {
 
     const request: ResolveReportRequest = {
       status: ReportStatus.DISMISSED,
-      adminNotes: this.adminNotes(),
+      adminNotes: this.adminNotes() || 'Report was already actioned by admin.',
       action: ReportAction.NONE
     };
 

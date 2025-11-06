@@ -28,7 +28,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
         // Admin queries for report management
         Page<Report> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
-        Page<Report> findAllByStatusOrderByCreatedAtDesc(ReportStatus status, Pageable pageable);
+        List<Report> findAllByStatusOrderByCreatedAtDesc(ReportStatus status);
 
         long countByStatus(ReportStatus status);
 

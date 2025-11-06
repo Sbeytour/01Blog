@@ -39,7 +39,7 @@
       <ng-container matColumnDef="reason">
         <th mat-header-cell *matHeaderCellDef>Reason</th>
         <td mat-cell *matCellDef="let report">
-          <span class="reason-text">{{ report.reason }}</span>
+          <span class="reason-text">{{ getTruncatedText(report.reason) }}</span>
         </td>
       </ng-container>
 
@@ -48,7 +48,7 @@
         <th mat-header-cell *matHeaderCellDef>Description</th>
         <td mat-cell *matCellDef="let report">
           <span class="description-text" [title]="report.description">
-            {{ getTruncatedDescription(report.description) }}
+            {{ getTruncatedText(report.description) }}
           </span>
         </td>
       </ng-container>
@@ -67,10 +67,17 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let report">
-            <button mat-menu-item (click)="viewDetails(report)">
-              <mat-icon>visibility</mat-icon>
-              <span>View Details</span>
-            </button>
+          @if (report?.status != ReportStatus.PENDING) {
+          <button mat-raised-button (click)="viewDetails(report)">
+            <mat-icon>visibility</mat-icon>
+            <span>View Details</span>
+          </button>
+          } @else {
+          <button mat-raised-button (click)="viewDetails(report)">
+            <mat-icon>visibility</mat-icon>
+            <span>Resolve Report</span>
+          </button>
+          }
         </td>
       </ng-container>
 

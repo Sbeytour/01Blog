@@ -34,7 +34,6 @@ export class Navbar {
   }
 
   navigateToProfile(): void {
-    console.log(this.authService.currentUser());
     const username = this.authService.currentUser()?.username;
     if (username) {
       this.router.navigate(['/profile']);

@@ -16,6 +16,7 @@ import blog.repositories.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -95,38 +96,60 @@ public class ReportService {
     public List<AdminReportResponseDto> getAllReports() {
         List<Report> reports = reportRepository.findAll();
 
-        return reports.stream().map(report -> {
-            String entityName = getReportedName(report.getReportedType(), report.getReportedId());
-            return AdminReportResponseDto.fromEntity(report, entityName);
-        }).toList();
+        return reports.stream().map(report -> AdminReportResponseDto.fromEntity(report)).toList();
     }
 
-    // /**
-    // * Get reports filtered by status
-    // */
-    // public Page<AdminReportResponseDto> getReportsByStatus(ReportStatus status,
-    // int page, int size) {
-    // Page<Report> reports =
-    // reportRepository.findAllByStatusOrderByCreatedAtDesc(status, pageable);
-
-    // return reports.map(report -> {
-    // String entityName = getReportedEntityName(report.getReportedType(),
-    // report.getReportedId());
-    // return AdminReportResponseDto.fromEntity(report, entityName);
-    // });
-    // }
-
-    // /**
-    // * Get a single report by ID with full details
-    // */
+    // Get a single report by ID with full details
+    @Transactional(readOnly = true)
     public AdminReportResponseDto getReportById(Long reportId) {
         Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new ReportNotFoundException("Report not found with id: " +
-                        reportId));
+                .orElseThrow(() -> new ReportNotFoundException("Report not found"));
 
-        String entityName = getReportedName(report.getReportedType(),
-                report.getReportedId());
-        return AdminReportResponseDto.fromEntity(report, entityName);
+        Map<String, String> entityInfo = getReportedEntityInfo(report.getReportedType(), report.getReportedId());
+        return AdminReportResponseDto.forDetails(report, entityInfo.get("name"), entityInfo.get("status"));
+    }
+
+    // Get the name and status of the reported entity
+    private Map<String, String> getReportedEntityInfo(ReportedType reportedType, Long reportedId) {
+
+        switch (reportedType) {
+            case USER:
+                return userRepository.findById(reportedId)
+                        .map(user -> {
+                            String name = user.getUsername();
+                            String status;
+                            if (user.getBanned() != null && user.getBanned()) {
+                                status = "BANNED";
+                            } else {
+                                status = "ACTIVE";
+                            }
+                            return Map.of("name", name, "status", status);
+                        })
+                        .orElseGet(() -> {
+                            System.out.println("User not found - returning DELETED status");
+                            return Map.of("name", "This User was Deleted", "status", "DELETED");
+                        });
+
+            case POST:
+                return postRepository.findById(reportedId)
+                        .map(post -> {
+                            String name = post.getTitle();
+                            String status;
+                            if (post.getHidden()) {
+                                status = "HIDDEN";
+                            } else {
+                                status = "ACTIVE";
+                            }
+                            return Map.of("name", name, "status", status);
+                        })
+                        .orElseGet(() -> {
+                            System.out.println("Post not found - returning DELETED status");
+                            return Map.of("name", "This Post was Deleted", "status", "DELETED");
+                        });
+
+            default:
+                return Map.of("name", "Unknown", "status", "UNKNOWN");
+        }
     }
 
     // /**
@@ -179,21 +202,4 @@ public class ReportService {
                 break;
         }
     }
-
-    // Get the name of the reported entity (username or post title)
-    private String getReportedName(ReportedType reportedType, Long reportedId) {
-        switch (reportedType) {
-            case USER:
-                return userRepository.findById(reportedId)
-                        .map(User::getUsername)
-                        .orElse("Unknown User");
-            case POST:
-                return postRepository.findById(reportedId)
-                        .map(Post::getTitle)
-                        .orElse("Unknown Post");
-            default:
-                return "Unknown";
-        }
-    }
-
 }
