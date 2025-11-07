@@ -43,6 +43,8 @@ export interface ReportResponse {
 //Report Details Response
 export interface ReportDetails {
   id: number;
+  reportedId: number;
+  reporterId: number;
   reportedType: ReportedType;
   reason: ReportReason;
   description: string;

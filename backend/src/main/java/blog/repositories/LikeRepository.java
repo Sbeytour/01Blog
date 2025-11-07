@@ -3,9 +3,10 @@ package blog.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import blog.entity.Like;
-
+@Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
 
     @Query("SELECT COUNT(l) FROM Like l WHERE l.post.id = :postId")

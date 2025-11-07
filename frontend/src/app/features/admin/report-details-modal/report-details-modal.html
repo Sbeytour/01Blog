@@ -56,7 +56,8 @@
 
       <div class="reported-reporter">
         <!-- Reported Section -->
-        <div class="section">
+        <div class="section"
+          (click)="report()!.reportedStatus !== 'DELETED' ? affichReported(report()!.reportedType) : null">
           <h3 class="section-title">Reported {{ report()!.reportedType === ReportedType.USER ? 'User' : 'Post' }}</h3>
           <div class="info-grid">
             <div class="info-item full-width">
@@ -75,7 +76,7 @@
         </div>
 
         <!-- Reporter Section -->
-        <div class="section">
+        <div class="section" (click)= "affichReporter(report()!.reporterUsername)">
           <h3 class="section-title">Reported By</h3>
           <div class="info-grid">
             <div class="info-item">
@@ -99,7 +100,7 @@
         </div>
       </div>
 
-      
+
 
       <!-- Resolution Form (if pending) -->
       @if (isPending()) {

@@ -72,6 +72,17 @@
         padding: 16px;
         background: var(--mat-sys-surface-container-low);
         border-radius: 12px;
+        transition: all 0.2s ease;
+
+        &.clickable {
+          cursor: pointer;
+
+          &:hover {
+            background: var(--mat-sys-surface-container);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+          }
+        }
 
         &.resolution-section {
           background: var(--mat-sys-surface-container);
@@ -79,8 +90,8 @@
         }
 
         &.resolution-form {
-          background: var(--mat-sys-primary-container);
-          border: 1px solid var(--mat-sys-primary);
+          background: var(--mat-sys-surface-container);
+          border: 0.5px solid var(--mat-sys-primary);
         }
 
         .section-title {

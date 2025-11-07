@@ -4,7 +4,6 @@ import blog.entity.Report;
 import blog.entity.ReportStatus;
 import blog.entity.ReportedType;
 import blog.entity.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,17 +15,16 @@ import java.util.List;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-        // Check if a user has already reported a specific entity with PENDING status
+        // Check if a user has already reported a specific entity (regardless of status)
         @Query("SELECT COUNT(r) > 0 FROM Report r WHERE r.reporter = :reporter " +
-                        "AND r.reportedType = :reportedType AND r.reportedId = :reportedId " +
-                        "AND r.status IN ('PENDING')")
+                        "AND r.reportedType = :reportedType AND r.reportedId = :reportedId")
         boolean existsByReporterAndTypeAndReported(
                         @Param("reporter") User reporter,
                         @Param("reportedType") ReportedType reportedType,
                         @Param("reportedId") Long reportedId);
 
         // Admin queries for report management
-        Page<Report> findAllByOrderByCreatedAtDesc(Pageable pageable);
+        List<Report> findAllByOrderByCreatedAtDesc();
 
         List<Report> findAllByStatusOrderByCreatedAtDesc(ReportStatus status);
 

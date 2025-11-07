@@ -1,14 +1,14 @@
 .admin-dashboard {
   padding: 2rem;
   display: flex;
-  justify-content: center;
 
+  justify-content: center;
   .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 2fr 5fr;
     gap: 2rem;
     width: 100%;
-    max-width: 1400px;
+    max-width: 1600px;
   }
 
   .stats-section {

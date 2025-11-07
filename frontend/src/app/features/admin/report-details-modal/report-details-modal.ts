@@ -9,9 +9,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
-import {ReportReasonLabels, ReportStatus, ReportedType, ReportDetails } from '../../../core/models/report';
+import { ReportReasonLabels, ReportStatus, ReportedType, ReportDetails } from '../../../core/models/report';
 import { ReportAction, ReportActionLabels, ResolveReportRequest } from '../../../core/models/admin';
 import { AdminService } from '../../../core/services/adminService';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-report-details-modal',
@@ -34,6 +35,7 @@ import { AdminService } from '../../../core/services/adminService';
 export class ReportDetailsModal {
   private adminService = inject(AdminService);
   private dialogRef = inject(MatDialogRef<ReportDetailsModal>);
+  private router = inject(Router);
 
   report = signal<ReportDetails | null>(null);
   loading = signal<boolean>(true);
@@ -90,6 +92,7 @@ export class ReportDetailsModal {
     } else if (report.reportedType === ReportedType.POST) {
       return [
         ReportAction.NONE,
+        ReportAction.HIDE_POST,
         ReportAction.DELETE_POST
       ];
     }
@@ -126,6 +129,43 @@ export class ReportDetailsModal {
       default:
         return 'unknown-chip';
     }
+  }
+
+  affichReported(reportedType: string) {
+    const report = this.report();
+    if (!report) return;
+
+    // Check if the reported is deleted
+    if (report.reportedStatus === 'DELETED') {
+      return;
+    }
+
+    // Close the dialog before navigating
+    this.dialogRef.close();
+
+    switch (reportedType) {
+      case 'USER':
+        if (report.reportedName && report.reportedName !== 'This User was Deleted') {
+          this.router.navigate(['/profile', report.reportedName]);
+        } else {
+          console.error('User name is not available');
+        }
+        break;
+      case 'POST':
+        if (report.reportedId) {
+          this.router.navigate(['/api/posts', report.reportedId]);
+        } else {
+          console.error('Post ID is not available');
+        }
+        break;
+      default:
+        this.router.navigate(['/admin/dashboard']);
+    }
+  }
+
+  affichReporter(reporterUsername: string) {
+    this.dialogRef.close();
+    this.router.navigate(['/profile', reporterUsername]);
   }
 
   formatDate(dateString?: string): string {
@@ -179,7 +219,7 @@ export class ReportDetailsModal {
 
     const request: ResolveReportRequest = {
       status: ReportStatus.DISMISSED,
-      adminNotes: this.adminNotes() || 'Report was already actioned by admin.',
+      adminNotes: this.adminNotes() || 'Report was already actioned by admin or it a fake report.',
       action: ReportAction.NONE
     };
 

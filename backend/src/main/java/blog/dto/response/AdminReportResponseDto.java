@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 
 public class AdminReportResponseDto {
     private Long id;
+    private Long reportedId;
+    private Long reporterId;
     private ReportedType reportedType;
     private ReportReason reason;
     private String description;
@@ -38,6 +40,8 @@ public class AdminReportResponseDto {
     public static AdminReportResponseDto forDetails(Report report, String reportedName, String status) {
         AdminReportResponseDto dto = new AdminReportResponseDto();
         dto.id = report.getId();
+        dto.reportedId = report.getReportedId();
+        dto.reporterId = report.getReporter() != null ? report.getReporter().getId() : null;
         dto.reportedType = report.getReportedType();
         dto.reason = report.getReason();
         dto.description = report.getDescription();
@@ -59,6 +63,22 @@ public class AdminReportResponseDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getReportedId() {
+        return reportedId;
+    }
+
+    public void setReportedId(Long reportedId) {
+        this.reportedId = reportedId;
+    }
+
+    public Long getReporterId() {
+        return reporterId;
+    }
+
+    public void setReporterId(Long reporterId) {
+        this.reporterId = reporterId;
     }
 
     public ReportedType getReportedType() {

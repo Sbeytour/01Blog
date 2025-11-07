@@ -94,7 +94,7 @@ public class ReportService {
 
     // Get all reports
     public List<AdminReportResponseDto> getAllReports() {
-        List<Report> reports = reportRepository.findAll();
+        List<Report> reports = reportRepository.findAllByOrderByCreatedAtDesc();
 
         return reports.stream().map(report -> AdminReportResponseDto.fromEntity(report)).toList();
     }
@@ -111,7 +111,6 @@ public class ReportService {
 
     // Get the name and status of the reported entity
     private Map<String, String> getReportedEntityInfo(ReportedType reportedType, Long reportedId) {
-
         switch (reportedType) {
             case USER:
                 return userRepository.findById(reportedId)
@@ -187,6 +186,8 @@ public class ReportService {
                     userRepository.save(user);
                 }
                 break;
+                case HIDE_POST:
+                    if (report.getReportedType() == ReportedType)
             case DELETE_USER:
                 if (report.getReportedType() == ReportedType.USER) {
                     userRepository.deleteById(report.getReportedId());

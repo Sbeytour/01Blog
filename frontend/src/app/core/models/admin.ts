@@ -51,6 +51,7 @@ export interface UpdateUserRoleRequest {
 export enum ReportAction {
   NONE = 'NONE',
   BAN_USER = 'BAN_USER',
+  HIDE_POST = 'HIDE_POST',
   DELETE_POST = 'DELETE_POST',
   DELETE_USER = 'DELETE_USER'
 }
@@ -65,6 +66,7 @@ export interface ResolveReportRequest {
 export const ReportActionLabels: Record<ReportAction, string> = {
   [ReportAction.NONE]: 'No Action',
   [ReportAction.BAN_USER]: 'Ban User',
+  [ReportAction.HIDE_POST]: 'Hide Post',
   [ReportAction.DELETE_POST]: 'Delete Post',
   [ReportAction.DELETE_USER]: 'Delete User Permanently'
 };
