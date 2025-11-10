@@ -1,7 +1,32 @@
 .home-container {
-  min-height: calc(100vh - 64px);
+  display: flex;
+  justify-content: center;
+  max-height: 871px;
   padding: 24px;
   background-color: var(--mat-sys-surface);
+  overflow: auto;
+  scrollbar-width: none;
+
+  .posts-grid {
+    width: 100%;
+    max-width: 1600px;
+  }
+
+  .posts-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
 
   @media (max-width: 768px) {
     padding: 16px;
@@ -103,52 +128,5 @@
 
   button {
     margin-top: 8px;
-  }
-}
-
-// Posts Scroll Container
-.posts-scroll-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  max-height: calc(100vh - 112px);
-  padding-right: 8px;
-
-  // Custom scrollbar styling
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: var(--mat-sys-surface-container);
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: var(--mat-sys-on-surface-variant);
-    border-radius: 4px;
-
-    &:hover {
-      background: var(--mat-sys-on-surface);
-    }
-  }
-
-  // Firefox scrollbar
-  scrollbar-width: thin;
-  scrollbar-color: var(--mat-sys-on-surface-variant) var(--mat-sys-surface-container);
-
-  @media (max-width: 768px) {
-    padding-right: 4px;
-  }
-}
-
-// Posts List
-.posts-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding-bottom: 24px;
-
-  @media (max-width: 768px) {
-    gap: 16px;
   }
 }

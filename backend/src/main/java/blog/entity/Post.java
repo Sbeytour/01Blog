@@ -20,11 +20,11 @@ public class Post {
     private Long id;
 
     @NotBlank(message = "Title is required")
-    @Size(min = 4, max = 150, message = "Title must be between 3 and 150 characters")
+    @Size(min = 4, max = 100, message = "Title must be between 3 and 100 characters")
     private String title;
 
     @NotBlank(message = "Content is required")
-    @Size(min = 4, max = 1000, message = "Content must be between 10 and 1000 characters")
+    @Size(min = 4, max = 5000, message = "Content must be between 10 and 5000 characters")
     private String content;
 
     @ManyToOne

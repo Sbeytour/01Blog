@@ -35,10 +35,10 @@
             <mat-form-field appearance="outline" class="full-width content-field">
                 <mat-label>thoughts</mat-label>
                 <textarea matInput formControlName="content" placeholder="Share your thoughts, ideas, or experiences..."
-                    rows="8" maxlength="1000">
+                    rows="8" maxlength="5000">
                 </textarea>
                 <mat-hint align="end">
-                    {{ postForm.get('content')?.value?.length || 0 }}/1000
+                    {{ postForm.get('content')?.value?.length || 0 }}/5000
                 </mat-hint>
                 <mat-error>{{ getFieldErrorMsg('content') }}</mat-error>
             </mat-form-field>

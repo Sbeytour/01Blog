@@ -45,47 +45,49 @@
         </div>
     </mat-card-header>
 
-    <!-- Title section -->
-    <mat-card-title class="post-title">
-        {{post.title}}
-    </mat-card-title>
-
     <mat-card-content class="post-content">
-        <div class="text-content">
-            <p>{{post.content}}</p>
-        </div>
-
+        <!-- Posts with media: Show title overlay on images -->
         @if (post.media && post.media.length > 0) {
-        <mat-divider class="content-divider"></mat-divider>
+            <div class="media-preview">
+                <div class="media-grid" [class.single-media]="post.media.length === 1"
+                    [class.two-media]="post.media.length === 2" [class.three-plus-media]="post.media.length >= 3">
+                    @for (media of post.media.slice(0, 3); track $index) {
+                    <div class="media-item">
+                        <!-- Image -->
+                        @if (media.type === 'IMAGE') {
+                        <img [src]="media.url" [alt]="'Post image ' + ($index + 1)" class="media-image" />
+                        }
 
-        <!-- Media Preview Section -->
-        <div class="media-preview">
-            <div class="media-grid" [class.single-media]="post.media.length === 1"
-                [class.two-media]="post.media.length === 2" [class.three-plus-media]="post.media.length >= 3">
-                @for (media of post.media.slice(0, 3); track $index) {
-                <div class="media-item">
-                    <!-- Image -->
-                    @if (media.type === 'IMAGE') {
+                        <!-- Video -->
+                        @if (media.type === 'VIDEO'){
+                        <video [src]="media.url" class="media-video" controls
+                            (click)="$event.stopPropagation()"></video>
+                        }
 
-                    <img [src]="media.url" [alt]="'Post image ' + ($index + 1)" class="media-image" />
-                    }
-
-                    <!-- Video -->
-                    @if (media.type === 'VIDEO'){
-                    <video [src]="media.url" class="media-video" controls (click)="$event.stopPropagation()"></video>
-                    }
-
-                    <!-- Show +N overlay for additional media -->
-                    @if ($index === 2 && post.media.length > 3) {
-
-                    <div class="more-media-overlay">
-                        <span>+{{ post.media.length - 3 }}</span>
+                        <!-- Show +N overlay for additional media -->
+                        @if ($index === 2 && post.media.length > 3) {
+                        <div class="more-media-overlay">
+                            <span>+{{ post.media.length - 3 }}</span>
+                        </div>
+                        }
                     </div>
                     }
                 </div>
-                }
             </div>
-        </div>
+
+            <!-- Title overlay on media -->
+            <div class="post-title-media">
+                <h3>{{ getTruncatedText(post.title) }}</h3>
+            </div>
+        } @else {
+            <!-- Posts without media: Show title and content -->
+            <mat-card-title class="post-title">
+                {{ getTruncatedText(post.title) }}
+            </mat-card-title>
+
+            <div class="text-content">
+                <p>{{ getTruncatedText(post.content) }}</p>
+            </div>
         }
     </mat-card-content>
 
@@ -94,12 +96,7 @@
     <mat-card-footer class="post-footer">
         <div class="footer-stats">
             <div class="stat-item likes" (click)="onLikeToggle($event)">
-                <button
-                    matIconButton
-                    [disabled]="isLiking()"
-                    class="like-button"
-                    aria-label="Like post"
-                >
+                <button matIconButton [disabled]="isLiking()" class="like-button" aria-label="Like post">
                     <mat-icon [class.liked]="post.isLikedByCurrentUser">
                         {{ post.isLikedByCurrentUser ? 'favorite' : 'favorite_border' }}
                     </mat-icon>

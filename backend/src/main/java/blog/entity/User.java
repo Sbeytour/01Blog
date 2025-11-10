@@ -53,7 +53,7 @@ public class User implements UserDetails {
     @NotBlank
     private String password;
 
-    @Size(min = 3, max = 1000)
+    @Size(min = 3, max = 250)
     private String bio;
 
     @Enumerated(EnumType.STRING)

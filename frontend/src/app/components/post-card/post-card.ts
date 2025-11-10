@@ -54,6 +54,10 @@ export class PostCard {
   profilePic(): string | undefined {
     return this.post.creator.profileImgUrl;
   }
+  
+  getTruncatedText(text: string, maxLength: number = 50): string {
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  }
 
   navigateToPost(event: Event): void {
     const target = event.target as HTMLElement;

@@ -96,7 +96,7 @@ export class PostCreate implements OnInit {
       content: ['', [
         Validators.required,
         Validators.minLength(10),
-        Validators.maxLength(1000)
+        Validators.maxLength(5000)
       ]]
     });
   }

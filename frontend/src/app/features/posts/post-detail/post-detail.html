@@ -72,29 +72,17 @@
 
                 <!-- Media Preview Section -->
                 <div class="media-preview">
-                    <div class="media-grid" [class.single-media]="post()!.media.length === 1"
-                        [class.two-media]="post()!.media.length === 2"
-                        [class.three-plus-media]="post()!.media.length >= 3">
-                        @for (media of post()!.media.slice(0, 3); track $index) {
-                        <div class="media-item">
+                    <div class="media-grid">
+                        @for (media of post()!.media; track $index) {
+                        <div class="media-item" (click)="openMediaViewer(media.url, media.type)">
                             <!-- Image -->
                             @if (media.type === 'IMAGE') {
-
                             <img [src]="media.url" [alt]="'Post image ' + ($index + 1)" class="media-image" />
                             }
 
                             <!-- Video -->
                             @if (media.type === 'VIDEO'){
-                            <video [src]="media.url" class="media-video" controls
-                                (click)="$event.stopPropagation()"></video>
-                            }
-
-                            <!-- Show +N overlay for additional media -->
-                            @if ($index === 2 && post()!.media.length > 3) {
-
-                            <div class="more-media-overlay">
-                                <span>+{{ post()!.media.length - 3 }}</span>
-                            </div>
+                            <video [src]="media.url" class="media-video" (click)="$event.stopPropagation(); openMediaViewer(media.url, media.type)"></video>
                             }
                         </div>
                         }
@@ -128,17 +116,31 @@
         <mat-divider class="comments-divider"></mat-divider>
 
         <!-- Comment List -->
-        <app-comment-list
-            [comments]="comments()"
-            [isLoading]="isLoadingComments()"
-            [isLoadingMore]="isLoadingMoreComments()"
-            [hasMore]="hasMoreComments()"
-            [currentUserId]="getCurrentUserId()"
-            (commentDeleted)="onCommentDelete($event)"
-            (commentEdited)="onCommentEdit($event)"
+        <app-comment-list [comments]="comments()" [isLoading]="isLoadingComments()"
+            [isLoadingMore]="isLoadingMoreComments()" [hasMore]="hasMoreComments()" [currentUserId]="getCurrentUserId()"
+            (commentDeleted)="onCommentDelete($event)" (commentEdited)="onCommentEdit($event)"
             (loadMore)="loadMoreComments()">
         </app-comment-list>
     </div>
     }
+    }
+
+    <!-- Media Viewer Modal -->
+    @if (isMediaViewerOpen()) {
+    <div class="media-viewer-overlay" (click)="closeMediaViewer()">
+        <button class="close-button" mat-icon-button (click)="closeMediaViewer()" aria-label="Close media viewer">
+            <mat-icon>close</mat-icon>
+        </button>
+
+        <div class="media-viewer-content" (click)="$event.stopPropagation()">
+            @if (selectedMediaType() === 'IMAGE') {
+            <img [src]="selectedMediaUrl()!" alt="Full size image" class="viewer-image" />
+            }
+
+            @if (selectedMediaType() === 'VIDEO') {
+            <video [src]="selectedMediaUrl()!" class="viewer-video" controls autoplay></video>
+            }
+        </div>
+    </div>
     }
 </div>

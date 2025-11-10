@@ -66,9 +66,26 @@ export class PostDetail implements OnInit {
 
   isLiking = signal(false);
 
+  // Media viewer signals
+  selectedMediaUrl = signal<string | null>(null);
+  selectedMediaType = signal<'IMAGE' | 'VIDEO' | null>(null);
+  isMediaViewerOpen = signal(false);
+
   isOwnPost(): boolean {
     const currentUser = this.authService.currentUser();
     return currentUser?.id === this.post()?.creator.id;
+  }
+
+  openMediaViewer(url: string, type: 'IMAGE' | 'VIDEO'): void {
+    this.selectedMediaUrl.set(url);
+    this.selectedMediaType.set(type);
+    this.isMediaViewerOpen.set(true);
+  }
+
+  closeMediaViewer(): void {
+    this.isMediaViewerOpen.set(false);
+    this.selectedMediaUrl.set(null);
+    this.selectedMediaType.set(null);
   }
 
   ngOnInit(): void {

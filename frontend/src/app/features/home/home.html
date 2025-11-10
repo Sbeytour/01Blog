@@ -21,7 +21,6 @@
     </button>
   </div>
   }
-
   <!-- Empty State -->
   @else if (posts().length === 0) {
   <div class="empty-container">
@@ -31,13 +30,13 @@
     <p class="empty-subtitle">Discover and connect with others to build your personalized feed.</p>
   </div>
   }
-
   <!-- Posts List -->
   @else {
-  <div class="posts-scroll-container">
+  <div class="posts-grid">
     <div class="posts-list">
       @for (post of posts(); track post.id) {
-      <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)" (postEdited)="onPostEdited($event)"></app-post-card>
+      <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)"
+        (postEdited)="onPostEdited($event)"></app-post-card>
       }
     </div>
   </div>

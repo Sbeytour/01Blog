@@ -70,7 +70,7 @@ export class Register implements OnInit {
         Validators.maxLength(100),
       ]],
       bio: ['', [
-        Validators.maxLength(1000)
+        Validators.maxLength(250)
       ]],
       profileImgUrl: ['', [
         Validators.maxLength(500)
