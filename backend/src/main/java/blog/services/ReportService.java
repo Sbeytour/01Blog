@@ -186,8 +186,14 @@ public class ReportService {
                     userRepository.save(user);
                 }
                 break;
-                case HIDE_POST:
-                    if (report.getReportedType() == ReportedType)
+            case HIDE_POST:
+                if (report.getReportedType() == ReportedType.POST) {
+                    Post post = postRepository.findById(report.getReportedId())
+                            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                    post.setHidden(true);
+                    postRepository.save(post);
+                }
+                break;
             case DELETE_USER:
                 if (report.getReportedType() == ReportedType.USER) {
                     userRepository.deleteById(report.getReportedId());
@@ -199,7 +205,6 @@ public class ReportService {
                 }
                 break;
             case NONE:
-                // No action taken
                 break;
         }
     }
