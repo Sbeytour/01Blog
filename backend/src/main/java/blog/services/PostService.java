@@ -104,7 +104,7 @@ public class PostService {
         post.setContent(updateRequest.getContent());
 
         // Delete specific media (only what was removed)
-        String deleteMediaIdsJson = updateRequest.getDeleteMediaIds();
+        String deleteMediaIdsJson = updateRequest.getDeletedMediaIds();
         if (deleteMediaIdsJson != null && !deleteMediaIdsJson.isEmpty()) {
             try {
                 // convert the Json data to a list ,using jackson(convert json text into a java
@@ -149,9 +149,9 @@ public class PostService {
                 System.err.println("Could not delete media file: " + media.getUrl());
             }
 
-            // Remove from post's media list
-            post.getMediaList().removeAll(mediaToDelete);
         }
+        // Remove from post's media list
+        post.getMediaList().removeAll(mediaToDelete);
 
         // Delete from database
         mediaRepository.deleteAll(mediaToDelete);

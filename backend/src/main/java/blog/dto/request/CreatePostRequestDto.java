@@ -19,7 +19,7 @@ public class CreatePostRequestDto {
 
     private List<MultipartFile> files;
 
-    private String deleteMediaIds;
+    private String deletedMediaIds;
 
     public String getTitle() {
         return title;
@@ -45,11 +45,11 @@ public class CreatePostRequestDto {
         this.files = files;
     }
 
-    public String getDeleteMediaIds() {
-        return deleteMediaIds;
+    public String getDeletedMediaIds() {
+        return deletedMediaIds;
     }
 
-    public void setDeleteMediaIds(String deleteMediaIds) {
-        this.deleteMediaIds = deleteMediaIds;
+    public void setDeletedMediaIds(String deletedMediaIds) {
+        this.deletedMediaIds = deletedMediaIds;
     }
 }
