@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import blog.Config.FileStorageConfig;
 import blog.dto.request.CreatePostRequestDto;
 import blog.dto.response.PostResponseDto;
 import blog.entity.Media;
@@ -43,7 +44,8 @@ public class PostService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private String uploadsDir = "uploads/posts";
+    @Autowired
+    private FileStorageConfig fileStorageConfig;
 
     public PostResponseDto createPost(CreatePostRequestDto createDto, User creator) {
         Post post = new Post();
@@ -140,6 +142,7 @@ public class PostService {
             // Delete file from disk
             try {
                 String fileName = media.getUrl().substring(media.getUrl().lastIndexOf('/') + 1);
+                String uploadsDir = fileStorageConfig.getUploadDir() + "/posts";
                 Path filePath = Paths.get(uploadsDir).resolve(fileName).normalize();
                 Files.deleteIfExists(filePath);
             } catch (IOException e) {
@@ -169,6 +172,7 @@ public class PostService {
     private List<Media> saveMediaFiles(List<MultipartFile> files, Post post) {
         List<Media> mediaList = new ArrayList<>();
 
+        String uploadsDir = fileStorageConfig.getUploadDir() + "/posts";
         File dir = new File(uploadsDir);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -206,6 +210,7 @@ public class PostService {
 
     private void deleteOldMedia(Post post) {
         if (post.getMediaList() != null && !post.getMediaList().isEmpty()) {
+            String uploadsDir = fileStorageConfig.getUploadDir() + "/posts";
             for (Media media : post.getMediaList()) {
                 try {
                     String fileName = media.getUrl().substring(media.getUrl().lastIndexOf('/') + 1);

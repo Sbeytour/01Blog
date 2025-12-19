@@ -1,7 +1,8 @@
 package blog.Config;
 
-import org.slf4j.Logger;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -9,13 +10,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import io.jsonwebtoken.security.SecurityException;
-import java.util.stream.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import blog.dto.response.ErrorResponseDto;
 import blog.exceptions.DuplicateReportException;
 import blog.exceptions.InvalidCredentialsException;
+import blog.exceptions.InvalidFileSizeException;
 import blog.exceptions.InvalidTokenException;
 import blog.exceptions.ReportNotFoundException;
 import blog.exceptions.SuccessException;
@@ -23,6 +23,7 @@ import blog.exceptions.UserAlreadyExistsException;
 import blog.exceptions.UserNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SecurityException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -59,6 +60,22 @@ public class GlobalExceptionHandler {
         logger.warn("duplicate report: {}", exception.getMessage());
 
         return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(InvalidFileSizeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseDto handleInvalidFileSize(InvalidFileSizeException exception) {
+        logger.warn("invalid file size: {}", exception.getMessage());
+
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseDto handleMaxUploadSizeExceeded(MaxUploadSizeExceededException exception) {
+        logger.warn("file size exceeded: {}", exception.getMessage());
+
+        return new ErrorResponseDto("File size must be less than 50MB", HttpStatus.BAD_REQUEST.value());
     }
 
     //AUTHENTICATION && AUTHORIZATION EXCEPTIONS

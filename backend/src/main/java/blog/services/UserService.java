@@ -6,16 +6,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.*;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import blog.Config.FileStorageConfig;
 import blog.dto.request.UpdateProfileRequestDto;
 import blog.dto.response.UserResponseDto;
 import blog.entity.User;
+import blog.exceptions.InvalidFileSizeException;
 import blog.exceptions.UserAlreadyExistsException;
 import blog.exceptions.UserNotFoundException;
 import blog.repositories.UserRepository;
@@ -30,6 +32,9 @@ public class UserService {
 
     @Autowired
     private SubscriptionService subscriptionService;
+
+    @Autowired
+    private FileStorageConfig fileStorageConfig;
 
     public UserResponseDto getUserProfile(String username, Long currentUserId) {
         User user = userRepository.findByUsernameOrEmail(username);
@@ -95,7 +100,23 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        String uploadsDir = "uploads";
+        // Validate file size (50MB max)
+        long maxFileSize = 50 * 1024 * 1024; // 50MB in bytes
+        if (file.getSize() > maxFileSize) {
+            throw new InvalidFileSizeException("File size must be less than 50MB");
+        }
+
+        // Validate file type
+        String contentType = file.getContentType();
+        if (contentType == null || (!contentType.equals("image/jpeg") &&
+                                     !contentType.equals("image/jpg") &&
+                                     !contentType.equals("image/png") &&
+                                     !contentType.equals("image/gif"))) {
+            throw new InvalidFileSizeException("Only JPG, PNG, and GIF images are allowed");
+        }
+
+        // Get upload directory from configuration
+        String uploadsDir = fileStorageConfig.getUploadDir();
         File dir = new File(uploadsDir);
 
         if (!dir.exists())
@@ -127,7 +148,8 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        String uploadsDir = "uploads";
+        // Get upload directory from configuration
+        String uploadsDir = fileStorageConfig.getUploadDir();
         String fileUrl = user.getProfileImgUrl();
         if (fileUrl != null && !fileUrl.isEmpty()) {
             try {

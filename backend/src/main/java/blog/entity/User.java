@@ -60,7 +60,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Role role = Role.USER;
 
-    @Column(length = 500)
+    @Column(length = 10000000)
     private String profileImgUrl;
 
     @Column(nullable = false)

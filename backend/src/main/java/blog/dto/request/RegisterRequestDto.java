@@ -28,17 +28,6 @@ public class RegisterRequestDto {
     @Size(max = 1000)
     private String bio;
 
-    @Size(max = 500)
-    private String profileImgUrl;
-
-    public String getProfileImgUrl() {
-        return profileImgUrl;
-    }
-
-    public void setProfileImgUrl(String profileImgUrl) {
-        this.profileImgUrl = profileImgUrl;
-    }
-
     public String getUsername() {
         return username;
     }

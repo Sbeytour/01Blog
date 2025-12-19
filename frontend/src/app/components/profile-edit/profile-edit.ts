@@ -111,18 +111,20 @@ export class ProfileEdit implements OnInit {
 
     const file = input.files[0];
 
-    if (file.size > 5 * 1024 * 1024) {
-      this.errorMessage.set('File size must be less than 5MB');
+    if (file.size > 50 * 1024 * 1024) {
+      this.errorMessage.set('File size must be less than 50MB');
+      console.log("size error",this.errorMessage);
       return;
     }
 
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-      this.errorMessage.set('Only JPG, PNG images are allowed');
+      this.errorMessage.set('Only JPG, PNG, and GIF images are allowed');
       return;
     }
 
     this.selectedFile.set(file);
+    this.errorMessage.set(null);
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -149,9 +151,14 @@ export class ProfileEdit implements OnInit {
           this.authService.currentUser.set(user);
           this.imagePreview.set(`${environment.apiUrl}${response.profileImgUrl}`);
         }
+        this.isUploadingImage.set(false);
+        this.selectedFile.set(null);
       },
-      error: (err) => {
-        console.error('Upload failed', err);
+      error: (error: HttpErrorResponse) => {
+        console.error('Upload failed', error);
+        this.handleError(error);
+        this.isUploadingImage.set(false);
+        this.selectedFile.set(null);
       }
     })
   }
@@ -194,6 +201,7 @@ export class ProfileEdit implements OnInit {
         this.editCompleted.emit(response);
       },
       error: (error: HttpErrorResponse) => {
+        console.log("size error", error)
         this.handleError(error);
         this.isLoading.set(false);
       }

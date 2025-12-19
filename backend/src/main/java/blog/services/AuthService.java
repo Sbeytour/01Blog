@@ -36,10 +36,6 @@ public class AuthService {
                 user.setBio(registerDto.getBio());
             }
 
-            if (registerDto.getProfileImgUrl() != null && !registerDto.getProfileImgUrl().trim().isEmpty()) {
-                user.setProfileImgUrl(registerDto.getProfileImgUrl());
-            }
-
             return userRespository.save(user);
         } catch (Exception e) {
             throw new SuccessException("Failed to register user. Please check your input and try again");
