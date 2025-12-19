@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import blog.entity.User;
+import blog.exceptions.UserBannedException;
 import blog.exceptions.UserNotFoundException;
 import blog.repositories.UserRepository;
 
@@ -18,10 +20,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
         try {
-            UserDetails user = userRepository.findByUsernameOrEmail(identifier);
+            User user = userRepository.findByUsernameOrEmail(identifier);
 
             if (user == null) {
                 throw new UserNotFoundException("User not found with identifier: " + identifier);
+            }
+
+            // Check if user is banned
+            if (user.getBanned() != null && user.getBanned()) {
+                throw new UserBannedException("Your account has been banned. Please try again next time.");
             }
 
             return user;

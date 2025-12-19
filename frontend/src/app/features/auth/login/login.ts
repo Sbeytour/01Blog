@@ -26,7 +26,6 @@ export class Login implements OnInit {
   hidePassword = signal(true);
   errorMessage = signal<string | null>(null);
 
-
   formbuilder = inject(FormBuilder);
   authService = inject(AuthService);
   router = inject(Router);
@@ -46,6 +45,12 @@ export class Login implements OnInit {
 
   ngOnInit(): void {
     this.intializeForm();
+
+    // Check if user was redirected due to being banned
+    const state = history.state as { bannedMessage?: string };
+    if (state && state.bannedMessage) {
+      this.errorMessage.set(state.bannedMessage);
+    }
   }
 
   onSubmit(): void {
@@ -97,6 +102,11 @@ export class Login implements OnInit {
   private handleError(error: HttpErrorResponse): void {
     if (error.status === 0) {
       this.errorMessage.set('Network error. Please check your connection and try again.');
+    } else if (error.status === 403) {
+      // User is banned
+      this.errorMessage.set(error.error?.message || 'Your account has been banned. Please contact support.');
+      // Ensure user is logged out
+      this.authService.logout();
     } else if (error.status === 401) {
       this.errorMessage.set(error.error?.message || 'Invalid username/email or password');
     } else if (error.status === 400) {

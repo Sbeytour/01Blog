@@ -20,6 +20,7 @@ import blog.exceptions.InvalidTokenException;
 import blog.exceptions.ReportNotFoundException;
 import blog.exceptions.SuccessException;
 import blog.exceptions.UserAlreadyExistsException;
+import blog.exceptions.UserBannedException;
 import blog.exceptions.UserNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -85,6 +86,14 @@ public class GlobalExceptionHandler {
         logger.warn("Invalid Credentials: {}", exception.getMessage());
 
         return new ErrorResponseDto(exception.getMessage(), HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @ExceptionHandler(UserBannedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponseDto handleUserBanned(UserBannedException exception) {
+        logger.warn("User banned: {}", exception.getMessage());
+
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value());
     }
 
     //VALIDATION EXCEPTION

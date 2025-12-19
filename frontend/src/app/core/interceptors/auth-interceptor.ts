@@ -27,7 +27,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (error.status === 403) {
-        console.error('Access forbidden');
+        // User is banned - logout and redirect to login
+        localStorage.removeItem("Token");
+        router.navigate(['/auth/login'], {
+          state: { bannedMessage: error.error?.message || 'Your account has been banned. Please contact support.' }
+        });
       }
 
       return throwError(() => error);
