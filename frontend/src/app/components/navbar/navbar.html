@@ -14,9 +14,56 @@
         </button>
 
         <!-- Notifications -->
-        <button mat-icon-button class="notification-btn">
-            <mat-icon>notifications</mat-icon>
+        <button mat-icon-button [matMenuTriggerFor]="notificationMenu" class="notification-btn">
+            <mat-icon [matBadge]="notificationService.unreadCount() > 0 ? notificationService.unreadCount() : null"
+                      matBadgeColor="warn"
+                      [matBadgeHidden]="notificationService.unreadCount() === 0">
+                notifications
+            </mat-icon>
         </button>
+
+        <!-- Notification Dropdown Menu -->
+        <mat-menu #notificationMenu="matMenu" class="notification-dropdown">
+            <div class="notification-header">
+                <span class="notification-title">Notifications</span>
+                @if (notificationService.unreadCount() > 0) {
+                    <button mat-button (click)="markAllAsRead(); $event.stopPropagation();" class="mark-all-btn">
+                        Mark all read
+                    </button>
+                }
+            </div>
+
+            @if (notificationService.isLoading()) {
+                <div class="loading-container">
+                    <mat-spinner diameter="30"></mat-spinner>
+                </div>
+            } @else if (notificationService.notifications().length > 0) {
+                @for (notif of notificationService.notifications(); track notif.id) {
+                    <button mat-menu-item
+                            [class.unread]="!notif.isRead"
+                            (click)="handleNotificationClick(notif)"
+                            class="notification-item-btn">
+                        <div class="notification-item">
+                            <div class="notification-content">
+                                <p class="notification-message">{{ notif.message }}</p>
+                                <span class="notification-time">{{ notif.createdAt | date:'short' }}</span>
+                            </div>
+                            @if (!notif.isRead) {
+                                <span class="unread-indicator"></span>
+                            }
+                        </div>
+                    </button>
+                    @if (!$last) {
+                        <mat-divider></mat-divider>
+                    }
+                }
+            } @else {
+                <div class="no-notifications">
+                    <mat-icon>notifications_none</mat-icon>
+                    <p>No notifications yet</p>
+                </div>
+            }
+        </mat-menu>
 
         <!-- Theme Toggle -->
         <button mat-icon-button (click)="toggleTheme()">

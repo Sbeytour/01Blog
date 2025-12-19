@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -47,6 +48,10 @@ public class PostService {
     @Autowired
     private FileStorageConfig fileStorageConfig;
 
+    @Autowired
+    private NotificationService notificationService;
+
+    @Transactional
     public PostResponseDto createPost(CreatePostRequestDto createDto, User creator) {
         Post post = new Post();
         post.setTitle(createDto.getTitle());
@@ -59,6 +64,9 @@ public class PostService {
         if (files != null && !files.isEmpty()) {
             post.setMediaList(saveMediaFiles(files, post));
         }
+
+        // Notify followers about the new post
+        notificationService.notifyFollowersAboutNewPost(post);
 
         return PostResponseDto.fromEntity(post);
     }

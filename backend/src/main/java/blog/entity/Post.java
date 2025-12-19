@@ -7,7 +7,16 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -20,7 +29,7 @@ public class Post {
     private Long id;
 
     @NotBlank(message = "Title is required")
-    @Size(min = 4, max = 100, message = "Title must be between 3 and 100 characters")
+    @Size(min = 4, max = 255, message = "Title must be between 4 and 255 characters")
     private String title;
 
     @NotBlank(message = "Content is required")
