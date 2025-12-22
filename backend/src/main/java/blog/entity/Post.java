@@ -28,17 +28,30 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title is required")
-    @Size(min = 4, max = 255, message = "Title must be between 4 and 255 characters")
-    private String title;
-
-    @NotBlank(message = "Content is required")
-    @Size(min = 4, max = 5000, message = "Content must be between 10 and 5000 characters")
-    private String content;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User creator;
+
+    @NotBlank(message = "Title is required")
+    @Size(min = 4, max = 200, message = "Title must be between 4 and 200 characters")
+    @Column(name = "title", nullable = false, length = 200)
+    private String title;
+
+    @NotBlank(message = "Content is required")
+    @Size(min = 10, max = 5000, message = "Content must be between 10 and 5000 characters")
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Column(name = "is_hidden", nullable = false)
+    private Boolean isHidden = false;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Media> mediaList = new ArrayList<>();
@@ -48,16 +61,6 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
-
-    @Column(nullable = false)
-    private Boolean hidden = false;
-
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 
     public Long getId() {
         return id;
@@ -75,12 +78,12 @@ public class Post {
         this.title = title;
     }
 
-    public Boolean getHidden() {
-        return hidden;
+    public Boolean getisHidden() {
+        return isHidden;
     }
 
-    public void setHidden(Boolean hidden) {
-        this.hidden = hidden;
+    public void setIsHidden(Boolean isHidden) {
+        this.isHidden = isHidden;
     }
 
     public String getContent() {

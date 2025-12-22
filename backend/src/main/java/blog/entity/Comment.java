@@ -14,32 +14,38 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "comments")
 public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(max = 1000, message = "The max content is 1000 characters")
+    @NotBlank(message = "Content is required")
+    @Size(max = 1000, message = "Content must not exceed 1000 characters")
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @NotNull(message = "User is required")
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @NotNull(message = "Post is required")
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     public Long getId() {

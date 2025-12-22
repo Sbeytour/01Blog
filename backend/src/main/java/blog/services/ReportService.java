@@ -1,11 +1,23 @@
 package blog.services;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import blog.dto.request.CreateReportRequestDto;
 import blog.dto.request.ResolveReportRequestDto;
 import blog.dto.response.AdminReportResponseDto;
-
 import blog.dto.response.ReportResponseDto;
-import blog.entity.*;
+import blog.entity.Post;
+import blog.entity.Report;
+import blog.entity.ReportAction;
+import blog.entity.ReportStatus;
+import blog.entity.ReportedType;
+import blog.entity.User;
 import blog.exceptions.DuplicateReportException;
 import blog.exceptions.ReportNotFoundException;
 import blog.exceptions.ResourceNotFoundException;
@@ -13,15 +25,6 @@ import blog.exceptions.UserNotFoundException;
 import blog.repositories.PostRepository;
 import blog.repositories.ReportRepository;
 import blog.repositories.UserRepository;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 // import java.time.LocalDateTime;
 
@@ -75,18 +78,17 @@ public class ReportService {
     // validate the existence of the type reported
     private void validateReportedEntity(ReportedType reportedType, Long reportedId) {
         switch (reportedType) {
-            case USER:
+            case USER -> {
                 if (!userRepository.existsById(reportedId)) {
                     throw new UserNotFoundException("User not found");
                 }
-                break;
-            case POST:
+            }
+            case POST -> {
                 if (!postRepository.existsById(reportedId)) {
                     throw new IllegalArgumentException("Post not found");
                 }
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid entity type: " + reportedType);
+            }
+            default -> throw new IllegalArgumentException("Invalid entity type: " + reportedType);
         }
     }
 
@@ -111,44 +113,39 @@ public class ReportService {
 
     // Get the name and status of the reported entity
     private Map<String, String> getReportedEntityInfo(ReportedType reportedType, Long reportedId) {
-        switch (reportedType) {
-            case USER:
-                return userRepository.findById(reportedId)
-                        .map(user -> {
-                            String name = user.getUsername();
-                            String status;
-                            if (user.getisBanned() != null && user.getisBanned()) {
-                                status = "BANNED";
-                            } else {
-                                status = "ACTIVE";
-                            }
-                            return Map.of("name", name, "status", status);
-                        })
-                        .orElseGet(() -> {
-                            System.out.println("User not found - returning DELETED status");
-                            return Map.of("name", "This User was Deleted", "status", "DELETED");
-                        });
-
-            case POST:
-                return postRepository.findById(reportedId)
-                        .map(post -> {
-                            String name = post.getTitle();
-                            String status;
-                            if (post.getHidden()) {
-                                status = "HIDDEN";
-                            } else {
-                                status = "ACTIVE";
-                            }
-                            return Map.of("name", name, "status", status);
-                        })
-                        .orElseGet(() -> {
-                            System.out.println("Post not found - returning DELETED status");
-                            return Map.of("name", "This Post was Deleted", "status", "DELETED");
-                        });
-
-            default:
-                return Map.of("name", "Unknown", "status", "UNKNOWN");
-        }
+        return switch (reportedType) {
+            case USER -> userRepository.findById(reportedId)
+                    .map(user -> {
+                        String name = user.getUsername();
+                        String status;
+                        if (user.getisBanned() != null && user.getisBanned()) {
+                            status = "BANNED";
+                        } else {
+                            status = "ACTIVE";
+                        }
+                        return Map.of("name", name, "status", status);
+                    })
+                    .orElseGet(() -> {
+                        System.out.println("User not found - returning DELETED status");
+                        return Map.of("name", "This User was Deleted", "status", "DELETED");
+                    });
+            case POST -> postRepository.findById(reportedId)
+                    .map(post -> {
+                        String name = post.getTitle();
+                        String status;
+                        if (post.getisHidden()) {
+                            status = "HIDDEN";
+                        } else {
+                            status = "ACTIVE";
+                        }
+                        return Map.of("name", name, "status", status);
+                    })
+                    .orElseGet(() -> {
+                        System.out.println("Post not found - returning DELETED status");
+                        return Map.of("name", "This Post was Deleted", "status", "DELETED");
+                    });
+            default -> Map.of("name", "Unknown", "status", "UNKNOWN");
+        };
     }
 
     // /**
@@ -178,34 +175,34 @@ public class ReportService {
     // */
     private void executeReportAction(Report report, ReportAction action) {
         switch (action) {
-            case BAN_USER:
+            case BAN_USER -> {
                 if (report.getReportedType() == ReportedType.USER) {
                     User user = userRepository.findById(report.getReportedId())
                             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                     user.setisBanned(true);
                     userRepository.save(user);
                 }
-                break;
-            case HIDE_POST:
+            }
+            case HIDE_POST -> {
                 if (report.getReportedType() == ReportedType.POST) {
                     Post post = postRepository.findById(report.getReportedId())
                             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-                    post.setHidden(true);
+                    post.setIsHidden(true);
                     postRepository.save(post);
                 }
-                break;
-            case DELETE_USER:
+            }
+            case DELETE_USER -> {
                 if (report.getReportedType() == ReportedType.USER) {
                     userRepository.deleteById(report.getReportedId());
                 }
-                break;
-            case DELETE_POST:
+            }
+            case DELETE_POST -> {
                 if (report.getReportedType() == ReportedType.POST) {
                     postRepository.deleteById(report.getReportedId());
                 }
-                break;
-            case NONE:
-                break;
+            }
+            case NONE -> {
+            }
         }
     }
 }

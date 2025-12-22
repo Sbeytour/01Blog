@@ -8,6 +8,5 @@ public enum ReportReason {
     VIOLENCE,
     MISINFORMATION,
     IMPERSONATION,
-    COPYRIGHT_VIOLATION,
     OTHER
 }

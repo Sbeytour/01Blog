@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "notifications")
@@ -23,23 +24,6 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 50)
-    private NotificationType type;
-
-    @Column(nullable = false, length = 500)
-    private String message;
-
-    @Column(name = "related_post_id")
-    private Long relatedPostId;
-
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private Boolean isRead = false;
-
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
     private User creator;
@@ -48,6 +32,22 @@ public class Notification {
     @JoinColumn(name = "recipient_id", nullable = false)
     private User recipient;
 
+    @NotNull(message = "Related Post ID is required")
+    private Long relatedPostId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false, length = 50)
+    private NotificationType type;
+
+    @Column(name = "message", nullable = false, length = 300)
+    private String message;
+
+    @Column(name = "is_read", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isRead = false;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     // Getters and Setters
     public Long getId() {

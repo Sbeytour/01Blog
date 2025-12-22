@@ -77,6 +77,7 @@ public class User implements UserDetails {
     @Column(name = "banned_until")
     private LocalDateTime bannedUntil;
 
+    @Size(max = 500, message="You must not exceed 500 character")
     @Column(name = "ban_reason", columnDefinition = "TEXT")
     private String banReason;
 
@@ -95,9 +96,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
-    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Report> reportsMade;
-
     @CreationTimestamp
     @Column(name = "joined_date", nullable = false, updatable = false)
     private LocalDateTime joinedDate;
@@ -110,6 +108,7 @@ public class User implements UserDetails {
         this.id = id;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -142,6 +141,7 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -236,14 +236,6 @@ public class User implements UserDetails {
 
     public void setLikes(List<Like> likes) {
         this.likes = likes;
-    }
-
-    public List<Report> getReportsMade() {
-        return reportsMade;
-    }
-
-    public void setReportsMade(List<Report> reportsMade) {
-        this.reportsMade = reportsMade;
     }
 
     @Override

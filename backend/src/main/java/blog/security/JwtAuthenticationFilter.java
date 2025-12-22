@@ -3,13 +3,14 @@ package blog.security;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.lang.NonNull;
 
+import blog.exceptions.UserNotFoundException;
 import blog.services.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -36,20 +37,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwt = authHeader.substring(7);
-        String username = jwtUtils.getUsernameFromJwt(jwt);
+        try {
+            String jwt = authHeader.substring(7);
+            String username = jwtUtils.getUsernameFromJwt(jwt);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (jwtUtils.validateToken(jwt)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, username, userDetails.getAuthorities());
-                authentication.setDetails(userDetails);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (jwtUtils.validateToken(jwt)) {
+                    UsernamePasswordAuthenticationToken authentication
+                            = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(userDetails);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    // JWT invalid
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has expired. Please login again.");
+                    return;
+                }
             }
+        } catch (UserNotFoundException ex) {
+            // User not found in DB
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
+            return;
+        } catch (Exception ex) {
+            // Any other error (JWT parsing, DB error, etc.)
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
+            return;
         }
-
         filterChain.doFilter(request, response);
 
     }

@@ -17,7 +17,7 @@ export interface Post {
     comments?: Comment[];
     likesCount: number;
     commentsCount: number;
-    hidden: boolean;
+    isHidden: boolean;
     isLikedByCurrentUser?: boolean;
     createdAt: string;
     updatedAt: string;

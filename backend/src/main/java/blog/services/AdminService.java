@@ -1,5 +1,15 @@
 package blog.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import blog.dto.request.BanUserRequestDto;
 import blog.dto.request.UpdateUserRoleRequestDto;
 import blog.dto.response.AdminStatsResponseDto;
@@ -15,15 +25,6 @@ import blog.exceptions.UnauthorizedException;
 import blog.repositories.PostRepository;
 import blog.repositories.ReportRepository;
 import blog.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
@@ -180,7 +181,7 @@ public class AdminService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
 
-        post.setHidden(true);
+        post.setIsHidden(true);
         postRepository.save(post);
     }
 
@@ -190,7 +191,7 @@ public class AdminService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
 
-        post.setHidden(false);
+        post.setIsHidden(false);
         postRepository.save(post);
     }
 

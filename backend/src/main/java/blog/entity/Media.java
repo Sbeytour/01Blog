@@ -10,20 +10,26 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "media")
+@Table(name = "post_media")
 public class Media {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Media URL is required")
+    @Size(max = 512, message = "Media URL must not exceed 512 characters")
+    @Column(name = "media_url", nullable = false, length = 512)
     private String url;
 
+    @NotNull(message = "Media type is required")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "media_type", nullable = false, length = 20)
     private MediaType type;
 
     @ManyToOne

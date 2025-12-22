@@ -17,7 +17,7 @@ public class PostResponseDto {
     private List<CommentResponseDto> comments;
     private int commentsCount;
     private int likesCount;
-    private boolean hidden;
+    private boolean isHidden;
     @JsonProperty("isLikedByCurrentUser")
     private boolean isLikedByCurrentUser;
 
@@ -40,7 +40,7 @@ public class PostResponseDto {
                 : List.of();
         dto.commentsCount = post.getComments() != null ? post.getComments().size() : 0;
         dto.likesCount = post.getLikes() != null ? post.getLikes().size() : 0;
-        dto.hidden = post.getHidden();
+        dto.isHidden = post.getisHidden();
         dto.createdAt = post.getCreatedAt();
         dto.updatedAt = post.getUpdatedAt();
         return dto;
@@ -141,11 +141,11 @@ public class PostResponseDto {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isHidden() {
-        return hidden;
+    public boolean isisHidden() {
+        return isHidden;
     }
 
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
+    public void setIsHidden(boolean isHidden) {
+        this.isHidden = isHidden;
     }
 }

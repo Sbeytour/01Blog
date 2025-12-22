@@ -1,12 +1,22 @@
 package blog.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "reports")
@@ -16,42 +26,42 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Reported entity type is required")
+    @NotNull(message = "Reported type is required")
     @Enumerated(EnumType.STRING)
     private ReportedType reportedType;
 
-    @NotNull(message = "Reported entity ID is required")
+    @NotNull(message = "Reported ID is required")
     private Long reportedId;
 
     @NotNull(message = "Reporter is required")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reporter_id", nullable = false)
     private User reporter;
 
-    @NotNull(message = "Reason is required")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotNull(message = "Reason is required")
+    @Column(name = "reason", nullable = false, length = 50)
     private ReportReason reason;
 
-    @NotBlank(message = "Description cannot be empty")
-    @Size(min = 10, max = 1000, message = "Description must be between 10 and 1000 characters")
-    @Column(nullable = false, length = 1000)
+    @Size(max = 1000, message = "You must not exceed 1000 character")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-    
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false, length = 20)
     private ReportStatus status = ReportStatus.PENDING;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Size(max = 2000, message = "Admin notes cannot exceed 2000 characters")
-    @Column(length = 2000)
+    @Size(max = 1000, message = "Admin notes cannot exceed 1000 characters")
+    @Column(name = "admin_notes", columnDefinition = "TEXT")
     private String adminNotes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "resolved_by")
     private User resolvedBy;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "resolved_at")
     private LocalDateTime resolvedAt;

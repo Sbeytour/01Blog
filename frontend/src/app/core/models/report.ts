@@ -7,7 +7,6 @@ export enum ReportReason {
   VIOLENCE = 'VIOLENCE',
   MISINFORMATION = 'MISINFORMATION',
   IMPERSONATION = 'IMPERSONATION',
-  COPYRIGHT_VIOLATION = 'COPYRIGHT_VIOLATION',
   OTHER = 'OTHER'
 }
 
@@ -80,6 +79,5 @@ export const ReportReasonLabels: Record<ReportReason, string> = {
   [ReportReason.VIOLENCE]: 'Violence or threats',
   [ReportReason.MISINFORMATION]: 'Misinformation',
   [ReportReason.IMPERSONATION]: 'Impersonation',
-  [ReportReason.COPYRIGHT_VIOLATION]: 'Copyright violation',
   [ReportReason.OTHER]: 'Other'
 };
