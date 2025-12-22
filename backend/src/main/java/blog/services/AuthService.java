@@ -1,6 +1,5 @@
 package blog.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +11,14 @@ import blog.repositories.UserRepository;
 
 @Service
 public class AuthService {
-    @Autowired
-    UserRepository userRespository;
+    
+    private final UserRepository userRespository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    public AuthService(UserRepository userRespository, PasswordEncoder passwordEncoder) {
+        this.userRespository = userRespository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public User saveUser(RegisterRequestDto registerDto) {
         if (userRespository.existsByUsername(registerDto.getUsername())

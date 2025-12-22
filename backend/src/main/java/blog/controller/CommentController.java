@@ -1,6 +1,5 @@
 package blog.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,15 +24,18 @@ import jakarta.validation.Valid;
 @RequestMapping("/api")
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentResponseDto> createComment(
             @PathVariable Long postId,
             @Valid @RequestBody CreateCommentRequestDto createDto,
             Authentication authentication) {
-                
+
         User currentUser = (User) authentication.getPrincipal();
         CommentResponseDto response = commentService.createComment(postId, createDto, currentUser);
 

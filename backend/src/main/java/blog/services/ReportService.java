@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,17 +30,17 @@ import blog.repositories.UserRepository;
 @Service
 public class ReportService {
 
-    @Autowired
-    private ReportRepository reportRepository;
+    private final ReportRepository reportRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final ModerationService moderationService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private ModerationService moderationService;
+    public ReportService(ReportRepository reportRepository, UserRepository userRepository, PostRepository postRepository, ModerationService moderationService) {
+        this.reportRepository = reportRepository;
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
+        this.moderationService = moderationService;
+    }
 
     @Transactional
     public ReportResponseDto createReport(CreateReportRequestDto requestDto, User reporter) {
@@ -97,7 +96,6 @@ public class ReportService {
     }
 
     //-------- ADMIN METHODS --------
-    
     // Get all reports
     public List<AdminReportResponseDto> getAllReports() {
         List<Report> reports = reportRepository.findAllByOrderByCreatedAtDesc();
@@ -155,7 +153,6 @@ public class ReportService {
         };
     }
 
-    
     //Resolve a report    
     @Transactional
     public void resolveReport(Long reportId, ResolveReportRequestDto requestDto, User admin) {
@@ -175,7 +172,6 @@ public class ReportService {
         reportRepository.save(report);
     }
 
-    
     // Execute Admin actions on the reported entity
     private void executeReportAction(Report report, AdminAction action) {
         switch (action) {

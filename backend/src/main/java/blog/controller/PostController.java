@@ -2,7 +2,6 @@ package blog.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,8 +25,11 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/post")
 public class PostController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
+
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     @PostMapping
     public ResponseEntity<PostResponseDto> createPost(

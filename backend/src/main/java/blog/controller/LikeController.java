@@ -1,6 +1,5 @@
 package blog.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,11 +16,14 @@ import blog.services.LikeService;
 @RequestMapping("/api/post")
 public class LikeController {
 
-    @Autowired
-    private LikeService likeService;
+    private final LikeService likeService;
+
+    public LikeController(LikeService likeService) {
+        this.likeService = likeService;
+    }
 
     @PostMapping("/{postId}/like")
-    public ResponseEntity<LikeResponseDto> toggleLike(@PathVariable Long postId,Authentication authentication) {
+    public ResponseEntity<LikeResponseDto> toggleLike(@PathVariable Long postId, Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
         LikeResponseDto response = likeService.toggleLike(postId, currentUser);
 

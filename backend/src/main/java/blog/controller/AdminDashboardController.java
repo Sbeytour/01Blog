@@ -22,7 +22,6 @@ import blog.services.ReportService;
 public class AdminDashboardController {
 
     private final AdminService adminService;
-
     private final ReportService reportService;
 
     public AdminDashboardController(AdminService adminService, ReportService reportService) {

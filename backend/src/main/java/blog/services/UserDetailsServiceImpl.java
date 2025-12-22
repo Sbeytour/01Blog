@@ -1,6 +1,5 @@
 package blog.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,8 +13,11 @@ import blog.repositories.UserRepository;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
@@ -38,7 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 }
                 throw new DisabledException(banMessage);
             }
-            
+
             return user;
         } catch (UsernameNotFoundException e) {
             throw new UsernameNotFoundException("User not found by identifier: " + identifier);

@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,17 +26,17 @@ import blog.repositories.UserRepository;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final SubscriptionService subscriptionService;
+    private final FileStorageConfig fileStorageConfig;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private SubscriptionService subscriptionService;
-
-    @Autowired
-    private FileStorageConfig fileStorageConfig;
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, SubscriptionService subscriptionService, FileStorageConfig fileStorageConfig) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.subscriptionService = subscriptionService;
+        this.fileStorageConfig = fileStorageConfig;
+    }
 
     public User getCurrentUserEntity() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

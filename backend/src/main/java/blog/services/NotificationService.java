@@ -2,7 +2,6 @@ package blog.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,11 +18,13 @@ import blog.repositories.UserRepository;
 @Service
 public class NotificationService {
 
-    @Autowired
-    private NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public NotificationService(NotificationRepository notificationRepository, UserRepository userRepository) {
+        this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
+    }
 
     @Transactional
     public NotificationResponseDto createNotification(Long creatorId, Long recipientId, NotificationType type,
@@ -93,7 +94,7 @@ public class NotificationService {
     @Transactional
     public void notifyFollowersAboutNewPost(Post post) {
         User postCreator = userRepository.findByUsernameOrEmail(post.getCreator().getUsername());
-        
+
         List<Subscription> followers = postCreator.getFollowers();
         String message = postCreator.getUsername() + " created a new post";
 

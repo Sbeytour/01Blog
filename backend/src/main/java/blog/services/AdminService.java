@@ -3,7 +3,6 @@ package blog.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,14 +22,15 @@ import blog.repositories.UserRepository;
 @Service
 public class AdminService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final ReportRepository reportRepository;
 
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private ReportRepository reportRepository;
+    public AdminService(ReportRepository reportRepository, PostRepository postRepository, UserRepository userRepository) {
+        this.reportRepository = reportRepository;
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+    }
 
     // Get dashboard statistics for admin panel
     public AdminStatsResponseDto getDashboardStats() {
@@ -72,7 +72,6 @@ public class AdminService {
         });
     }
 
-    
     // Get all posts for admin dashboard
     public List<PostResponseDto> getAllPosts() {
         List<Post> posts = postRepository.findAllPosts();

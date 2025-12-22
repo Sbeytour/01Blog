@@ -1,6 +1,5 @@
 package blog.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,14 +28,16 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired
-    AuthService authService;
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthService authService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
-    @Autowired
-    JwtUtils jwtUtils;
+    public AuthController(AuthService authService, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+        this.authService = authService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponseDto> register(

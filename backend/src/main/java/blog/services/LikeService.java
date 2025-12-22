@@ -1,6 +1,5 @@
 package blog.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +13,13 @@ import blog.repositories.PostRepository;
 @Service
 public class LikeService {
 
-    @Autowired
-    private LikeRepository likeRepository;
+    private final LikeRepository likeRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private PostRepository postRepository;
+    public LikeService(LikeRepository likeRepository, PostRepository postRepository) {
+        this.likeRepository = likeRepository;
+        this.postRepository = postRepository;
+    }
 
     @Transactional
     public LikeResponseDto toggleLike(Long postId, User currentUser) {

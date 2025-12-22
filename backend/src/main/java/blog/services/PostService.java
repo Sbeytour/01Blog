@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,25 +30,24 @@ import blog.repositories.PostRepository;
 import blog.repositories.UserRepository;
 
 @Service
-public class PostService {
+public class PostService {    
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;    
+    private final UserRepository userRepository;    
+    private final MediaRepository mediaRepository;    
+    private final ObjectMapper objectMapper;    
+    private final FileStorageConfig fileStorageConfig;    
+    private final NotificationService notificationService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MediaRepository mediaRepository;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private FileStorageConfig fileStorageConfig;
-
-    @Autowired
-    private NotificationService notificationService;
+    public PostService(PostRepository postRepository, UserRepository userRepository, MediaRepository mediaRepository,
+            ObjectMapper objectMapper, FileStorageConfig fileStorageConfig, NotificationService notificationService) {
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.mediaRepository = mediaRepository;
+        this.objectMapper = objectMapper;
+        this.fileStorageConfig = fileStorageConfig;
+        this.notificationService = notificationService;
+    }
 
     @Transactional
     public PostResponseDto createPost(CreatePostRequestDto createDto, User creator) {
@@ -115,8 +113,7 @@ public class PostService {
         String deleteMediaIdsJson = updateRequest.getDeletedMediaIds();
         if (deleteMediaIdsJson != null && !deleteMediaIdsJson.isEmpty()) {
             try {
-                // convert the Json data to a list ,using jackson(convert json text into a java
-                // object)
+                // convert the Json data to a list ,using jackson(convert json text into a java object)
                 List<Long> deletedIds = objectMapper.readValue(deleteMediaIdsJson, new TypeReference<List<Long>>() {
                 });
 
@@ -127,7 +124,6 @@ public class PostService {
         }
 
         // add new apploads media
-
         List<MultipartFile> files = updateRequest.getFiles();
         if (files != null && !files.isEmpty()) {
             // Save new media

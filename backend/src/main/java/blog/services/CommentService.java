@@ -1,6 +1,5 @@
 package blog.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,11 +18,13 @@ import blog.repositories.PostRepository;
 @Service
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+    private final PostRepository postRepository;
 
-    @Autowired
-    private PostRepository postRepository;
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
+        this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
+    }
 
     public CommentResponseDto createComment(Long postId, CreateCommentRequestDto createDto, User currentUser) {
         Post post = postRepository.findById(postId)

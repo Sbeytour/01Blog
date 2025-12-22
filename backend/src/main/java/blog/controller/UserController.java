@@ -2,7 +2,6 @@ package blog.controller;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +23,12 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/profile")
 public class UserController {
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PutMapping
     public UserResponseDto updateProfile(@Valid @RequestBody UpdateProfileRequestDto updateDto,
@@ -45,7 +48,7 @@ public class UserController {
             Authentication authentication) throws IOException {
 
         User user = (User) authentication.getPrincipal();
-        return userService.updateProfileImg(user.getId(),file);
+        return userService.updateProfileImg(user.getId(), file);
     }
 
     @DeleteMapping("/picture")
