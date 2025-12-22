@@ -45,6 +45,8 @@ export class ReportDetailsModal {
   // Form fields
   selectedAction = signal<ReportAction>(ReportAction.NONE);
   adminNotes = signal<string>('');
+  banDurationDays = signal<number>(7);
+  banPermanent = signal<boolean>(false);
 
   // Expose enums and labels to template
   ReportStatus = ReportStatus;
@@ -188,6 +190,14 @@ export class ReportDetailsModal {
     const report = this.report();
     if (!report) return;
 
+    // Validate ban duration if BAN_USER action is selected
+    if (this.selectedAction() === ReportAction.BAN_USER) {
+      if (!this.banPermanent() && (!this.banDurationDays() || this.banDurationDays() < 1 || this.banDurationDays() > 365)) {
+        this.error.set('Please enter a valid ban duration between 1 and 365 days for temporary bans.');
+        return;
+      }
+    }
+
     this.submitting.set(true);
     this.error.set(null);
 
@@ -196,6 +206,12 @@ export class ReportDetailsModal {
       adminNotes: this.adminNotes(),
       action: this.selectedAction()
     };
+
+    // Add ban duration parameters if BAN_USER action is selected
+    if (this.selectedAction() === ReportAction.BAN_USER) {
+      request.banPermanent = this.banPermanent();
+      request.banDurationDays = this.banPermanent() ? 0 : this.banDurationDays();
+    }
 
     this.adminService.resolveReport(report.id, request).subscribe({
       next: () => {

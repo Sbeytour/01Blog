@@ -119,6 +119,28 @@
           <mat-hint>Choose the action to take on the reported</mat-hint>
         </mat-form-field>
 
+        @if (selectedAction() === ReportAction.BAN_USER) {
+        <div class="ban-duration-section">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Ban Type</mat-label>
+            <mat-select [(ngModel)]="banPermanent" [value]="banPermanent()">
+              <mat-option [value]="false">Temporary Ban</mat-option>
+              <mat-option [value]="true">Permanent Ban</mat-option>
+            </mat-select>
+            <mat-hint>Select whether the ban is temporary or permanent</mat-hint>
+          </mat-form-field>
+
+          @if (!banPermanent()) {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Ban Duration (Days)</mat-label>
+            <input matInput type="number" [(ngModel)]="banDurationDays" [value]="banDurationDays()" min="1" max="365"
+              placeholder="Enter number of days">
+            <mat-hint>Duration must be between 1 and 365 days</mat-hint>
+          </mat-form-field>
+          }
+        </div>
+        }
+
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Admin Notes</mat-label>
           <textarea matInput [(ngModel)]="adminNotes" [value]="adminNotes()" rows="4" maxlength="2000"

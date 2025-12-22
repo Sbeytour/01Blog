@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, Inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,12 +7,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
+import { Router } from '@angular/router';
 import { AdminService } from '../../../core/services/adminService';
+import { AuthService } from '../../../core/services/auth';
 import { User, UserRole } from '../../../core/models/user';
 
 @Component({
@@ -104,7 +106,12 @@ export class UsersList implements OnInit {
 
   banUser(userId: number, reason: string): void {
     this.isLoading.set(true);
-    this.adminService.banUser(userId, reason).subscribe({
+    const banRequest = {
+      reason,
+      permanent: true,
+      durationDays: 0
+    };
+    this.adminService.banUser(userId, banRequest).subscribe({
       next: () => {
         this.loadUsers();
       },
@@ -283,8 +290,4 @@ export class ChangeRoleDialog {
 export class DeleteUserDialog {
   constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User }) { }
 }
-
-import { Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog'; import { Router } from '@angular/router';
-import { AuthService } from '../../../core/services/auth';
 

@@ -32,8 +32,7 @@ export class AdminService {
     return this.http.get<PagedUserResponse>(`${this.apiUrl}/users`, { params });
   }
 
-  banUser(userId: number, reason: string): Observable<void> {
-    const request: BanUserRequest = { reason };
+  banUser(userId: number, request: BanUserRequest): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/users/${userId}/ban`, request);
   }
 

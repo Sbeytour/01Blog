@@ -166,23 +166,36 @@ public class ReportService {
 
         // Take action based on the request
         if (requestDto.getStatus() == ReportStatus.RESOLVED) {
-            executeReportAction(report, requestDto.getAction());
+            executeReportAction(report, requestDto);
         }
 
         reportRepository.save(report);
     }
 
     // Execute Admin actions on the reported entity
-    private void executeReportAction(Report report, AdminAction action) {
-        switch (action) {
+    private void executeReportAction(Report report, ResolveReportRequestDto requestDto) {
+        switch (requestDto.getAction()) {
             case BAN_USER -> {
                 if (report.getReportedType() != null && report.getReportedType() == ReportedType.USER) {
                     userRepository.findById(report.getReportedId())
                             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+                    // Use ban duration from request, or default to permanent ban
+                    Integer durationDays = requestDto.getBanDurationDays();
+                    Boolean permanent = requestDto.getBanPermanent();
+
+                    // Default to permanent if not specified
+                    if (permanent == null) {
+                        permanent = true;
+                    }
+                    if (durationDays == null) {
+                        durationDays = 0;
+                    }
+
                     BanUserRequestDto banRequest = new BanUserRequestDto(
                             report.getReason().toString(),
-                            0,
-                            true);
+                            durationDays,
+                            permanent);
                     moderationService.banUser(report.getReportedId(), banRequest);
                 }
             }

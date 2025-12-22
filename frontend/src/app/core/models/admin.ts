@@ -42,6 +42,8 @@ export interface Sort {
 // Request DTOs
 export interface BanUserRequest {
   reason: string;
+  durationDays?: number;
+  permanent?: boolean;
 }
 
 export interface UpdateUserRoleRequest {
@@ -60,6 +62,8 @@ export interface ResolveReportRequest {
   status: ReportStatus;
   adminNotes: string;
   action: ReportAction;
+  banDurationDays?: number;
+  banPermanent?: boolean;
 }
 
 // Label mappings

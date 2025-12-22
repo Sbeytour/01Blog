@@ -16,6 +16,10 @@ public class ResolveReportRequestDto {
     @NotNull(message = "Action is required")
     private AdminAction action;
 
+    private Integer banDurationDays;
+
+    private Boolean banPermanent;
+
     public ResolveReportRequestDto() {
     }
 
@@ -23,6 +27,14 @@ public class ResolveReportRequestDto {
         this.status = status;
         this.adminNotes = adminNotes;
         this.action = action;
+    }
+
+    public ResolveReportRequestDto(ReportStatus status, String adminNotes, AdminAction action, Integer banDurationDays, Boolean banPermanent) {
+        this.status = status;
+        this.adminNotes = adminNotes;
+        this.action = action;
+        this.banDurationDays = banDurationDays;
+        this.banPermanent = banPermanent;
     }
 
     // Getters and Setters
@@ -48,5 +60,21 @@ public class ResolveReportRequestDto {
 
     public void setAction(AdminAction action) {
         this.action = action;
+    }
+
+    public Integer getBanDurationDays() {
+        return banDurationDays;
+    }
+
+    public void setBanDurationDays(Integer banDurationDays) {
+        this.banDurationDays = banDurationDays;
+    }
+
+    public Boolean getBanPermanent() {
+        return banPermanent;
+    }
+
+    public void setBanPermanent(Boolean banPermanent) {
+        this.banPermanent = banPermanent;
     }
 }
