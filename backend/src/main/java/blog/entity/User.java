@@ -77,7 +77,7 @@ public class User implements UserDetails {
     @Column(name = "banned_until")
     private LocalDateTime bannedUntil;
 
-    @Size(max = 500, message="You must not exceed 500 character")
+    @Size(max = 500, message = "You must not exceed 500 character")
     @Column(name = "ban_reason", columnDefinition = "TEXT")
     private String banReason;
 
@@ -255,5 +255,15 @@ public class User implements UserDetails {
 
     public void setJoinedDate(LocalDateTime joinedDate) {
         this.joinedDate = joinedDate;
+    }
+
+    public boolean isActiveBan() {
+        if (!isBanned) {
+            return false;
+        }
+        if (bannedUntil == null) {
+            return true;
+        }
+        return LocalDateTime.now().isBefore(bannedUntil);
     }
 }

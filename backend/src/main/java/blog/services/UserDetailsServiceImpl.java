@@ -1,13 +1,13 @@
 package blog.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import blog.entity.User;
-import blog.exceptions.UserisBannedException;
 import blog.exceptions.UserNotFoundException;
 import blog.repositories.UserRepository;
 
@@ -27,9 +27,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             }
 
             // Check if user is banned
-            if (user.getisBanned() != null && user.getisBanned()) {
-                throw new UserisBannedException("Your account has been banned. Please try again next time.");
+            // if (user.getisBanned() != null && user.getisBanned()) {
+            //     throw new UserisBannedException("Your account has been banned. Please try again next time.");
+            // }
+
+            if (user.isActiveBan()) {
+            String banMessage = "Your account has been banned";
+            if (user.getBannedUntil() != null) {
+                banMessage += " until " + user.getBannedUntil();
+            } else {
+                banMessage += " permanently";
             }
+            if (user.getBanReason() != null) {
+                banMessage += ". Reason: " + user.getBanReason();
+            }
+            throw new DisabledException(banMessage);
+        }
+
 
             return user;
         } catch (UsernameNotFoundException e) {
