@@ -65,13 +65,13 @@ export class ProfileEdit implements OnInit {
       firstName: ['', [
         Validators.required,
         Validators.minLength(3),
-        Validators.maxLength(15),
+        Validators.maxLength(30),
         Validators.pattern(/^[a-zA-Z\s]+$/)
       ]],
       lastName: ['', [
         Validators.required,
         Validators.minLength(3),
-        Validators.maxLength(15),
+        Validators.maxLength(30),
         Validators.pattern(/^[a-zA-Z\s]+$/)
       ]],
       email: ['', [

@@ -1,20 +1,22 @@
 package blog.dto.request;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class UpdateProfileRequestDto {
 
-    @Size(min = 3, max = 15, message = "username must be between 4 and 12 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9]{4,12}$", message = "username must be between 4 and 12 characters and contain only characters and numbers")
+    @Size(min = 3, max = 15, message = "username must be between 4 and 15 characters")
+    @Pattern(regexp = "^[a-zA-Z0-9]{4,15}$", message = "username must be between 4 and 15 characters and contain only characters and numbers")
     private String username;
 
-    @Size(min = 3, max = 15, message = "First name must be between 3 and 15 characters")
+    @Size(min = 3, max = 30, message = "First name must be between 3 and 30 characters")
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "First name can only contain letters and spaces")
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
-    @Size(min = 3, max = 15, message = "Last name must be between 3 and 15 characters")
+    @Size(min = 3, max = 30, message = "Last name must be between 3 and 30 characters")
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "Last name can only contain letters and spaces")
     private String lastName;
 

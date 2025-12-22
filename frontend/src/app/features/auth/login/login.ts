@@ -47,9 +47,9 @@ export class Login implements OnInit {
     this.intializeForm();
 
     // Check if user was redirected due to being banned
-    const state = history.state as { bannedMessage?: string };
-    if (state && state.bannedMessage) {
-      this.errorMessage.set(state.bannedMessage);
+    const state = history.state as { isBannedMessage?: string };
+    if (state && state.isBannedMessage) {
+      this.errorMessage.set(state.isBannedMessage);
     }
   }
 

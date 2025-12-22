@@ -51,8 +51,8 @@
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status</th>
         <td mat-cell *matCellDef="let user">
-          <mat-chip [ngClass]="user.banned ? 'banned-chip' : 'active-chip'">
-            {{ user.banned ? 'BANNED' : 'ACTIVE' }}
+          <mat-chip [ngClass]="user.isBanned ? 'banned-chip' : 'active-chip'">
+            {{ user.isBanned ? 'BANNED' : 'ACTIVE' }}
           </mat-chip>
         </td>
       </ng-container>
@@ -96,7 +96,7 @@
               <span>Change Role</span>
             </button>
             @if (user.role !== 'ADMIN') {
-            @if (!user.banned) {
+            @if (!user.isBanned) {
             <button mat-menu-item (click)="openBanDialog(user)">
               <mat-icon>block</mat-icon>
               <span>Ban User</span>

@@ -55,13 +55,13 @@ export class Register implements OnInit {
       firstName: ['', [
         Validators.required,
         Validators.minLength(3),
-        Validators.maxLength(15),
+        Validators.maxLength(30),
         Validators.pattern(/^[a-zA-Z\s]+$/) // Only letters and spaces
       ]],
       lastName: ['', [
         Validators.required,
         Validators.minLength(3),
-        Validators.maxLength(15),
+        Validators.maxLength(30),
         Validators.pattern(/^[a-zA-Z\s]+$/) // Only letters and spaces
       ]],
       password: ['', [

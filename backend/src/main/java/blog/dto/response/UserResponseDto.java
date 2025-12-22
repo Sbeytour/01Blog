@@ -18,7 +18,7 @@ public class UserResponseDto {
     private Long followersCount;
     private Long followingCount;
     private Boolean isFollowedByCurrentUser;
-    private Boolean banned;
+    private Boolean isBanned;
     private long reportCount;
     private LocalDateTime joinedDate;
 
@@ -47,7 +47,7 @@ public class UserResponseDto {
         dto.firstName = user.getFirstName();
         dto.lastName = user.getLastName();
         dto.role = user.getRole();
-        dto.banned = user.getBanned();
+        dto.isBanned = user.getisBanned();
         dto.profileImgUrl = user.getProfileImgUrl();
         dto.reportCount = reportCount;
         dto.joinedDate = user.getJoinedDate();
@@ -150,12 +150,12 @@ public class UserResponseDto {
         this.reportCount = reportCount;
     }
 
-    public Boolean getBanned() {
-        return banned;
+    public Boolean getisBanned() {
+        return isBanned;
     }
 
-    public void setBanned(Boolean banned) {
-        this.banned = banned;
+    public void setisBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
     }
 
     public LocalDateTime getJoinedDate() {

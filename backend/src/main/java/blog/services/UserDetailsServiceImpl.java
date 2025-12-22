@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import blog.entity.User;
-import blog.exceptions.UserBannedException;
+import blog.exceptions.UserisBannedException;
 import blog.exceptions.UserNotFoundException;
 import blog.repositories.UserRepository;
 
@@ -27,8 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             }
 
             // Check if user is banned
-            if (user.getBanned() != null && user.getBanned()) {
-                throw new UserBannedException("Your account has been banned. Please try again next time.");
+            if (user.getisBanned() != null && user.getisBanned()) {
+                throw new UserisBannedException("Your account has been banned. Please try again next time.");
             }
 
             return user;

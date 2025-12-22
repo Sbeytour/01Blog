@@ -94,7 +94,7 @@ public class AdminService {
             throw new UnauthorizedException("You cannot ban other admins");
         }
 
-        user.setBanned(true);
+        user.setisBanned(true);
         userRepository.save(user);
     }
 
@@ -104,7 +104,7 @@ public class AdminService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        user.setBanned(false);
+        user.setisBanned(false);
         userRepository.save(user);
     }
 

@@ -7,13 +7,13 @@ import jakarta.validation.constraints.Size;
 
 public class RegisterRequestDto {
     @NotBlank
-    @Pattern(regexp = "^[a-zA-Z0-9]{4,12}$", message = "username must be between 4 and 12 characters and contain only characters and numbers")
+    @Pattern(regexp = "^[a-zA-Z0-9]{4,15}$", message = "username must be between 4 and 15 characters and contain only characters and numbers")
     private String username;
 
-    @Size(min = 3, max = 15)
+    @Size(min = 3, max = 30)
     private String firstName;
 
-    @Size(min = 3, max = 15)
+    @Size(min = 3, max = 30)
     private String lastName;
 
     @Email

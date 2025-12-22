@@ -20,7 +20,7 @@ import blog.exceptions.InvalidTokenException;
 import blog.exceptions.ReportNotFoundException;
 import blog.exceptions.SuccessException;
 import blog.exceptions.UserAlreadyExistsException;
-import blog.exceptions.UserBannedException;
+import blog.exceptions.UserisBannedException;
 import blog.exceptions.UserNotFoundException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -88,10 +88,10 @@ public class GlobalExceptionHandler {
         return new ErrorResponseDto(exception.getMessage(), HttpStatus.UNAUTHORIZED.value());
     }
 
-    @ExceptionHandler(UserBannedException.class)
+    @ExceptionHandler(UserisBannedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponseDto handleUserBanned(UserBannedException exception) {
-        logger.warn("User banned: {}", exception.getMessage());
+    public ErrorResponseDto handleUserisBanned(UserisBannedException exception) {
+        logger.warn("User isBanned: {}", exception.getMessage());
 
         return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value());
     }

@@ -22,5 +22,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Admin queries for user management
     Page<User> findAllByOrderByIdDesc(Pageable pageable);
 
-    long countByBanned(Boolean banned);
+    long countByisBanned(Boolean isBanned);
 }

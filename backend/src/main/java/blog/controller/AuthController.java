@@ -21,7 +21,7 @@ import blog.dto.response.AuthResponseDto;
 import blog.dto.response.UserResponseDto;
 import blog.entity.User;
 import blog.exceptions.InvalidCredentialsException;
-import blog.exceptions.UserBannedException;
+import blog.exceptions.UserisBannedException;
 import blog.security.JwtUtils;
 import blog.services.AuthService;
 import jakarta.validation.Valid;
@@ -73,8 +73,8 @@ public class AuthController {
             AuthResponseDto authResponse = new AuthResponseDto(jwt, userResponseDto);
 
             return ResponseEntity.ok(authResponse);
-        } catch (UserBannedException e) {
-            throw new UserBannedException("User account is banned"); // Re-throw to be handled by GlobalExceptionHandler
+        } catch (UserisBannedException e) {
+            throw new UserisBannedException("User account is banned"); // Re-throw to be handled by GlobalExceptionHandler
         } catch (BadCredentialsException e) {
             throw new InvalidCredentialsException("Invalid username/email or password");
         } catch (AuthenticationException e) {

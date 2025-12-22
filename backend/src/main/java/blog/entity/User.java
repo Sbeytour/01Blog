@@ -34,37 +34,51 @@ public class User implements UserDetails {
     private long id;
 
     @NotBlank(message = "Username is required")
-    @Column(unique = true, nullable = false)
-    @Pattern(regexp = "^[a-zA-Z0-9]{4,12}$", message = "username must be between 4 and 12 characters and contain only characters and numbers")
+    @Pattern(regexp = "^[a-zA-Z0-9]{4,15}$", message = "username must be between 4 and 15 characters and contain only characters and numbers")
+    @Column(name = "username", unique = true, nullable = false, length = 15)
     private String username;
 
-    @Size(min = 3, max = 15)
+    @NotBlank(message = "First name is required")
+    @Size(min = 3, max = 30, message = "First name must be between 3 and 30 characters")
+    @Column(name = "first_name", nullable = false, length = 30)
     private String firstName;
 
-    @Size(min = 3, max = 15)
+    @NotBlank(message = "Last name is required")
+    @Size(min = 3, max = 30, message = "Last name must be between 3 and 30 characters")
+    @Column(name = "last_name", nullable = false, length = 30)
     private String lastName;
 
     @Email
     @NotBlank(message = "Email is required")
-    @Column(unique = true, nullable = false)
+    @Size(max = 100, message = "Email length should not exceed 100 characters")
     @Pattern(regexp = "^[a-zA-Z0-9]+\\.?[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-z]+$", message = "Email format is invalid")
+    @Column(name = "email", unique = true, nullable = false, length = 100)
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "password is required")
+    @Column(name = "password", nullable = false, length = 100)
     private String password;
 
-    @Size(min = 3, max = 250)
+    @Size(max = 250, message = "Bio must not exceed 250 characters")
+    @Column(name = "bio", length = 250)
     private String bio;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "role", nullable = false, length = 20)
     private Role role = Role.USER;
 
-    @Column(length = 10000000)
+    @Size(max = 520, message = "Profile URL must not exceed 520 characters")
+    @Column(name = "profile_img_url", length = 520)
     private String profileImgUrl;
 
-    @Column(nullable = false)
-    private Boolean banned = false;
+    @Column(name = "is_banned", nullable = false)
+    private Boolean isBanned = false;
+
+    @Column(name = "banned_until")
+    private LocalDateTime bannedUntil;
+
+    @Column(name = "ban_reason", columnDefinition = "TEXT")
+    private String banReason;
 
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subscription> followers;
@@ -85,7 +99,7 @@ public class User implements UserDetails {
     private List<Report> reportsMade;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(name = "joined_date", nullable = false, updatable = false)
     private LocalDateTime joinedDate;
 
     public long getId() {
@@ -176,12 +190,28 @@ public class User implements UserDetails {
         this.following = following;
     }
 
-    public Boolean getBanned() {
-        return banned;
+    public Boolean getisBanned() {
+        return isBanned;
     }
 
-    public void setBanned(Boolean banned) {
-        this.banned = banned;
+    public void setisBanned(Boolean isBanned) {
+        this.isBanned = isBanned;
+    }
+
+    public LocalDateTime getBannedUntil() {
+        return bannedUntil;
+    }
+
+    public void setBannedUntil(LocalDateTime bannedUntil) {
+        this.bannedUntil = bannedUntil;
+    }
+
+    public String getBanReason() {
+        return banReason;
+    }
+
+    public void setBanReason(String banReason) {
+        this.banReason = banReason;
     }
 
     public List<Post> getPosts() {
@@ -224,7 +254,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return !banned;
+        return !isBanned;
     }
 
     public LocalDateTime getJoinedDate() {

@@ -117,7 +117,7 @@ public class ReportService {
                         .map(user -> {
                             String name = user.getUsername();
                             String status;
-                            if (user.getBanned() != null && user.getBanned()) {
+                            if (user.getisBanned() != null && user.getisBanned()) {
                                 status = "BANNED";
                             } else {
                                 status = "ACTIVE";
@@ -182,7 +182,7 @@ public class ReportService {
                 if (report.getReportedType() == ReportedType.USER) {
                     User user = userRepository.findById(report.getReportedId())
                             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-                    user.setBanned(true);
+                    user.setisBanned(true);
                     userRepository.save(user);
                 }
                 break;

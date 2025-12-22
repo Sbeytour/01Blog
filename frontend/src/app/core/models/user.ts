@@ -10,7 +10,7 @@ export interface User {
   followersCount?: number;
   followingCount?: number;
   isFollowedByCurrentUser?: boolean;
-  banned: boolean;
+  isBanned: boolean;
   reportCount?: number;
   joinedDate: string;
 }
