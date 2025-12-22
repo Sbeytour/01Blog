@@ -51,17 +51,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {
                     // JWT invalid
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has expired. Please login again.");
+                    request.setAttribute("jwt_error", "Token has expired. Please login again.");
                     return;
                 }
             }
         } catch (UserNotFoundException ex) {
             // User not found in DB
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
+            request.setAttribute("jwt_error", "User not found");
             return;
         } catch (Exception ex) {
             // Any other error (JWT parsing, DB error, etc.)
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication failed");
+            request.setAttribute("jwt_error", "Authentication failed");
             return;
         }
         filterChain.doFilter(request, response);

@@ -2,8 +2,6 @@ package blog.Config;
 
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,89 +18,79 @@ import blog.exceptions.InvalidTokenException;
 import blog.exceptions.ReportNotFoundException;
 import blog.exceptions.SuccessException;
 import blog.exceptions.UserAlreadyExistsException;
-import blog.exceptions.UserisBannedException;
 import blog.exceptions.UserNotFoundException;
+import blog.exceptions.UserisBannedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SecurityException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     //LOGIC EXCEPRIONS
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleUserAlreadyExists(UserAlreadyExistsException exception) {
-        logger.warn("user already exist: {}", exception.getMessage());
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value(), "Bad Request, User already exist");
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponseDto handleUserNotFound(UserNotFoundException exception) {
-        logger.warn("user not found: {}", exception.getMessage());
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND.value());
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND.value(), "User not found");
     }
 
     @ExceptionHandler(ReportNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponseDto handleReportNotFound(ReportNotFoundException exception) {
-        logger.warn("report not found: {}", exception.getMessage());
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND.value());
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND.value(), "Report not found");
     }
 
     @ExceptionHandler(DuplicateReportException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleDuplicateReport(DuplicateReportException exception) {
-        logger.warn("duplicate report: {}", exception.getMessage());
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value(), "You Already report this content");
     }
 
     @ExceptionHandler(InvalidFileSizeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleInvalidFileSize(InvalidFileSizeException exception) {
-        logger.warn("invalid file size: {}", exception.getMessage());
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value(),"Invalid file Size");
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleMaxUploadSizeExceeded(MaxUploadSizeExceededException exception) {
-        logger.warn("file size exceeded: {}", exception.getMessage());
 
-        return new ErrorResponseDto("File size must be less than 50MB", HttpStatus.BAD_REQUEST.value());
+        return new ErrorResponseDto("File size Error", HttpStatus.BAD_REQUEST.value(), "Max Size must be less than 50MB");
     }
 
     //AUTHENTICATION && AUTHORIZATION EXCEPTIONS
-    @ExceptionHandler({ BadCredentialsException.class, InvalidCredentialsException.class })
+    @ExceptionHandler({BadCredentialsException.class, InvalidCredentialsException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponseDto handleInvalidCredentils(InvalidCredentialsException exception) {
-        logger.warn("Invalid Credentials: {}", exception.getMessage());
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.UNAUTHORIZED.value(), "Your credentials are invalid");
     }
 
     @ExceptionHandler(UserisBannedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponseDto handleUserisBanned(UserisBannedException exception) {
-        logger.warn("User isBanned: {}", exception.getMessage());
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value());
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value(),"Your acount has been banned");
     }
 
     //VALIDATION EXCEPTION
     @ExceptionHandler(SuccessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleSuccessException(SuccessException exception) {
-        logger.warn("Invalid Credentials: {}", exception.getMessage());
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value(), "Insuccess authentication");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -111,33 +99,28 @@ public class GlobalExceptionHandler {
         String fieldsErrors = exception.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage()).collect(Collectors.joining("; "));
 
-        return new ErrorResponseDto(fieldsErrors, HttpStatus.BAD_REQUEST.value());
+        return new ErrorResponseDto(fieldsErrors, HttpStatus.BAD_REQUEST.value(), "there is an error at your credentiel");
     }
 
     //GENERIC EXCEPTIONS
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponseDto handleGeniricExceptions(Exception exception) {
-        logger.warn("Generic Exception Error: {}", exception.getMessage());
 
-        return new ErrorResponseDto(exception.getMessage() + ": An unexpected error occurred. Please try again later",
-                HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ErrorResponseDto("Internal server error",
+                HttpStatus.INTERNAL_SERVER_ERROR.value(), ": An unexpected error occurred. Please try again later");
     }
 
     // JWT EXCEPTIONS:
-    @ExceptionHandler({ ExpiredJwtException.class })
+    @ExceptionHandler({ExpiredJwtException.class})
     public ErrorResponseDto handleExpiredJwtException(ExpiredJwtException exception) {
 
-        logger.warn("JWT token expired: {}", exception.getMessage());
-
-        return new ErrorResponseDto("JWT token has expired", HttpStatus.UNAUTHORIZED.value());
+        return new ErrorResponseDto("JWT Expiration", HttpStatus.UNAUTHORIZED.value(), "Token has been expired");
     }
 
-    @ExceptionHandler({ MalformedJwtException.class, SecurityException.class, InvalidTokenException.class })
+    @ExceptionHandler({MalformedJwtException.class, SecurityException.class, InvalidTokenException.class})
     public ErrorResponseDto handleInvalidJwtException(Exception exception) {
 
-        logger.warn("Invalid JWT token: {}", exception.getMessage());
-
-        return new ErrorResponseDto("Invalid token", HttpStatus.UNAUTHORIZED.value());
+        return new ErrorResponseDto("Invalid token", HttpStatus.UNAUTHORIZED.value(), "Token is invalid");
     }
 }
