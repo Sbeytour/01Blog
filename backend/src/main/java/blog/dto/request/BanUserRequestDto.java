@@ -15,6 +15,12 @@ public class BanUserRequestDto {
 
     private Boolean permanent;
 
+    public BanUserRequestDto(String reason, Integer durationDays, Boolean permanent) {
+        this.reason = reason;
+        this.durationDays = durationDays;
+        this.permanent = permanent;
+    }
+
     public String getReason() {
         return reason;
     }

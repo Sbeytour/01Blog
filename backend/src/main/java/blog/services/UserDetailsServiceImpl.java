@@ -26,25 +26,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 throw new UserNotFoundException("User not found with identifier: " + identifier);
             }
 
-            // Check if user is banned
-            // if (user.getisBanned() != null && user.getisBanned()) {
-            //     throw new UserisBannedException("Your account has been banned. Please try again next time.");
-            // }
-
             if (user.isActiveBan()) {
-            String banMessage = "Your account has been banned";
-            if (user.getBannedUntil() != null) {
-                banMessage += " until " + user.getBannedUntil();
-            } else {
-                banMessage += " permanently";
+                String banMessage = "Your account has been banned";
+                if (user.getBannedUntil() != null) {
+                    banMessage += " until " + user.getBannedUntil();
+                } else {
+                    banMessage += " permanently";
+                }
+                if (user.getBanReason() != null) {
+                    banMessage += ". Reason: " + user.getBanReason();
+                }
+                throw new DisabledException(banMessage);
             }
-            if (user.getBanReason() != null) {
-                banMessage += ". Reason: " + user.getBanReason();
-            }
-            throw new DisabledException(banMessage);
-        }
-
-
+            
             return user;
         } catch (UsernameNotFoundException e) {
             throw new UsernameNotFoundException("User not found by identifier: " + identifier);

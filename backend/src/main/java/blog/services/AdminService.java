@@ -8,20 +8,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import blog.dto.request.BanUserRequestDto;
-import blog.dto.request.UpdateUserRoleRequestDto;
 import blog.dto.response.AdminStatsResponseDto;
 import blog.dto.response.PostResponseDto;
 import blog.dto.response.UserResponseDto;
 import blog.entity.Post;
 import blog.entity.ReportStatus;
 import blog.entity.ReportedType;
-import blog.entity.Role;
 import blog.entity.User;
-import blog.exceptions.ResourceNotFoundException;
-import blog.exceptions.UnauthorizedException;
 import blog.repositories.PostRepository;
 import blog.repositories.ReportRepository;
 import blog.repositories.UserRepository;
@@ -78,121 +72,13 @@ public class AdminService {
         });
     }
 
-    // Ban a user
-    @Transactional
-    public void banUser(Long userId, BanUserRequestDto requestDto, Long adminId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " +
-                        userId));
-
-        // Prevent admin from banning themselves
-        if (userId.equals(adminId)) {
-            throw new UnauthorizedException("You cannot ban yourself");
-        }
-
-        // Prevent banning other admins
-        if (user.getRole() == Role.ADMIN) {
-            throw new UnauthorizedException("You cannot ban other admins");
-        }
-
-        user.setisBanned(true);
-        userRepository.save(user);
-    }
-
-    // Unban a user
-    @Transactional
-    public void unbanUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        user.setisBanned(false);
-        userRepository.save(user);
-    }
-
-    // Delete a user permanently
-    @Transactional
-    public void deleteUser(Long userId, Long adminId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " +
-                        userId));
-
-        // Prevent admin from deleting themselves
-        if (userId.equals(adminId)) {
-            throw new UnauthorizedException("You cannot delete yourself");
-        }
-
-        // Prevent deleting other admins
-        if (user.getRole() == Role.ADMIN) {
-            throw new UnauthorizedException("You cannot delete other admins");
-        }
-
-        // Handle reports where this user resolved them (set resolvedBy to null)
-        // This preserves the report history while removing the user reference
-        reportRepository.findAll().stream()
-                .filter(report -> report.getResolvedBy() != null && report.getResolvedBy().getId() == userId)
-                .forEach(report -> {
-                    report.setResolvedBy(null);
-                    reportRepository.save(report);
-                });
-
-        userRepository.delete(user);
-    }
-
-    // Update user role
-    @Transactional
-    public void updateUserRole(Long userId, UpdateUserRoleRequestDto requestDto,
-            Long adminId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " +
-                        userId));
-
-        // Prevent admin from changing their own role
-        if (userId.equals(adminId)) {
-            throw new UnauthorizedException("You cannot change your own role");
-        }
-
-        user.setRole(requestDto.getRole());
-        userRepository.save(user);
-    }
-
-    /**
-     * Delete a post by admin (override owner check)
-     */
-    @Transactional
-    public void deletePostByAdmin(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " +
-                        postId));
-
-        postRepository.delete(post);
-    }
-
+    
     // Get all posts for admin dashboard
     public List<PostResponseDto> getAllPosts() {
         List<Post> posts = postRepository.findAllPosts();
         return posts.stream()
                 .map(PostResponseDto::fromEntity)
                 .collect(Collectors.toList());
-    }
-
-    // hidde a post
-    @Transactional
-    public void hiddePost(Long postId, BanUserRequestDto requestDto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
-
-        post.setIsHidden(true);
-        postRepository.save(post);
-    }
-
-    // unhidde post
-    @Transactional
-    public void unHiddePost(Long postId, BanUserRequestDto requestDto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
-
-        post.setIsHidden(false);
-        postRepository.save(post);
     }
 
 }

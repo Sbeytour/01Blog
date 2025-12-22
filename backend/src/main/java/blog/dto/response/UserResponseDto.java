@@ -47,7 +47,7 @@ public class UserResponseDto {
         dto.firstName = user.getFirstName();
         dto.lastName = user.getLastName();
         dto.role = user.getRole();
-        dto.isBanned = user.getisBanned();
+        dto.isBanned = user.getIsBanned();
         dto.profileImgUrl = user.getProfileImgUrl();
         dto.reportCount = reportCount;
         dto.joinedDate = user.getJoinedDate();
@@ -150,11 +150,11 @@ public class UserResponseDto {
         this.reportCount = reportCount;
     }
 
-    public Boolean getisBanned() {
+    public Boolean getIsBanned() {
         return isBanned;
     }
 
-    public void setisBanned(Boolean isBanned) {
+    public void setIsBanned(Boolean isBanned) {
         this.isBanned = isBanned;
     }
 

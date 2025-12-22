@@ -1,6 +1,6 @@
 package blog.dto.request;
 
-import blog.entity.ReportAction;
+import blog.entity.AdminAction;
 import blog.entity.ReportStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -14,12 +14,12 @@ public class ResolveReportRequestDto {
     private String adminNotes;
 
     @NotNull(message = "Action is required")
-    private ReportAction action;
+    private AdminAction action;
 
     public ResolveReportRequestDto() {
     }
 
-    public ResolveReportRequestDto(ReportStatus status, String adminNotes, ReportAction action) {
+    public ResolveReportRequestDto(ReportStatus status, String adminNotes, AdminAction action) {
         this.status = status;
         this.adminNotes = adminNotes;
         this.action = action;
@@ -42,11 +42,11 @@ public class ResolveReportRequestDto {
         this.adminNotes = adminNotes;
     }
 
-    public ReportAction getAction() {
+    public AdminAction getAction() {
         return action;
     }
 
-    public void setAction(ReportAction action) {
+    public void setAction(AdminAction action) {
         this.action = action;
     }
 }

@@ -9,6 +9,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +26,7 @@ import blog.repositories.UserRepository;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -35,6 +38,11 @@ public class UserService {
 
     @Autowired
     private FileStorageConfig fileStorageConfig;
+
+    public User getCurrentUserEntity() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return (User) auth.getPrincipal();
+    }
 
     public UserResponseDto getUserProfile(String username, Long currentUserId) {
         User user = userRepository.findByUsernameOrEmail(username);
@@ -108,10 +116,10 @@ public class UserService {
 
         // Validate file type
         String contentType = file.getContentType();
-        if (contentType == null || (!contentType.equals("image/jpeg") &&
-                                     !contentType.equals("image/jpg") &&
-                                     !contentType.equals("image/png") &&
-                                     !contentType.equals("image/gif"))) {
+        if (contentType == null || (!contentType.equals("image/jpeg")
+                && !contentType.equals("image/jpg")
+                && !contentType.equals("image/png")
+                && !contentType.equals("image/gif"))) {
             throw new InvalidFileSizeException("Only JPG, PNG, and GIF images are allowed");
         }
 
@@ -119,8 +127,9 @@ public class UserService {
         String uploadsDir = fileStorageConfig.getUploadDir();
         File dir = new File(uploadsDir);
 
-        if (!dir.exists())
+        if (!dir.exists()) {
             dir.mkdirs();
+        }
 
         String originalFilename = file.getOriginalFilename();
         String extension = originalFilename != null && originalFilename.contains(".")

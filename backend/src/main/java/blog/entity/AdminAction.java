@@ -1,6 +1,6 @@
 package blog.entity;
 
-public enum ReportAction {
+public enum AdminAction {
     NONE,
     BAN_USER,
     HIDE_POST,

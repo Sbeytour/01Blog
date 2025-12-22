@@ -190,11 +190,11 @@ public class User implements UserDetails {
         this.following = following;
     }
 
-    public Boolean getisBanned() {
+    public Boolean getIsBanned() {
         return isBanned;
     }
 
-    public void setisBanned(Boolean isBanned) {
+    public void setIsBanned(Boolean isBanned) {
         this.isBanned = isBanned;
     }
 
@@ -255,6 +255,10 @@ public class User implements UserDetails {
 
     public void setJoinedDate(LocalDateTime joinedDate) {
         this.joinedDate = joinedDate;
+    }
+
+    public boolean isAdmin() {
+        return role == Role.ADMIN;
     }
 
     public boolean isActiveBan() {
