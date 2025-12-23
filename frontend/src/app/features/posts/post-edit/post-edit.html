@@ -1,0 +1,23 @@
+<div class="edit-post-dialog">
+    <mat-card class="edit-post-card">
+        <div class="card-header">
+            <h1>Update your post</h1>
+        </div>
+
+        @if (postData()) {
+            <app-post-form
+                [isEditMode]="true"
+                [isLoading]="isLoading()"
+                [errorMessage]="errorMessage()"
+                [successMessage]="successMessage()"
+                [initialData]="postData()"
+                (formSubmit)="handleFormSubmit($event)"
+                (formCancel)="handleFormCancel()">
+            </app-post-form>
+        } @else if (isLoading()) {
+            <div class="loading-container">
+                <p>Loading post data...</p>
+            </div>
+        }
+    </mat-card>
+</div>

@@ -11,7 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { DialogComponent } from '../dialog/dialog';
-import { PostCreate } from '../../features/posts/post-create/post-create';
+import { PostEdit } from '../../features/posts/post-edit/post-edit';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ReportDialogComponent } from '../report-dialog/report-dialog';
 import { ReportedType } from '../../core/models/report';
@@ -77,12 +77,11 @@ export class PostCard {
   onEdit(event: Event) {
     event.stopPropagation();
 
-    const dialogRef = this.dialog.open(PostCreate, {
+    const dialogRef = this.dialog.open(PostEdit, {
       width: '700px',
       maxWidth: '95vw',
       maxHeight: '95vh',
       data: {
-        editMode: true,
         postId: this.post.id
       }
     })

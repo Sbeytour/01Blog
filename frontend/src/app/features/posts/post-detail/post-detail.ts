@@ -17,7 +17,7 @@ import { Navbar } from '../../../components/navbar/navbar';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../../../components/dialog/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { PostCreate } from '../post-create/post-create';
+import { PostEdit } from '../post-edit/post-edit';
 import { MatInputModule } from '@angular/material/input';
 import { CommentInput } from '../../../components/comment-input/comment-input';
 import { CommentList } from '../../../components/comment-list/comment-list';
@@ -307,12 +307,11 @@ export class PostDetail implements OnInit {
   onEdit(event: Event) {
     event.stopPropagation();
 
-    const dialogRef = this.dialog.open(PostCreate, {
+    const dialogRef = this.dialog.open(PostEdit, {
       width: '700px',
       maxWidth: '95vw',
       maxHeight: '95vh',
       data: {
-        editMode: true,
         postId: this.post()!.id
       }
     })
