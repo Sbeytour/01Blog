@@ -8,20 +8,15 @@ export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
   const token = localStorage.getItem('Token');
 
-  if (!token) {
+  if (!authService.isAuthenticated) {
     router.navigate(['/auth/login']);
     return false;
   }
 
-  if (authService.isTokenExpired(token)) {
+  if (token && authService.isTokenExpired(token)) {
     authService.logout();
     return false;
   }
-
-  if (authService.currentUser()) {
-    return true;
-  }
-
 
   return authService.getCurrentUser().pipe(
     map(() => true),

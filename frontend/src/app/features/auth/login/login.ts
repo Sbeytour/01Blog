@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth';
 import { HttpErrorResponse } from '@angular/common/http';
+import { LoginRequest } from '../../../core/models/auth';
 
 @Component({
   selector: 'app-login',
@@ -23,18 +24,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class Login implements OnInit {
   loginForm!: FormGroup;
+  formbuilder = inject(FormBuilder);
+
+  authService = inject(AuthService);
+  router = inject(Router);
   hidePassword = signal(true);
   errorMessage = signal<string | null>(null);
 
-  formbuilder = inject(FormBuilder);
-  authService = inject(AuthService);
-  router = inject(Router);
-
   private intializeForm(): void {
     this.loginForm = this.formbuilder.group({
-      identifier: ['', [Validators.required,
-      Validators.minLength(3),
-      Validators.maxLength(50)]],
+      identifier: ['', [
+        Validators.required,
+        Validators.minLength(4),
+        Validators.maxLength(100)]],
       password: ['', [
         Validators.required,
         Validators.minLength(6),
@@ -45,25 +47,29 @@ export class Login implements OnInit {
 
   ngOnInit(): void {
     this.intializeForm();
-
-    // Check if user was redirected due to being banned
-    const state = history.state as { isBannedMessage?: string };
-    if (state && state.isBannedMessage) {
-      this.errorMessage.set(state.isBannedMessage);
-    }
   }
 
-  onSubmit(): void {
+  onSubmit(event: Event): void {
+    event.preventDefault();
+
+    this.errorMessage.set(null);
+
+    const credentials = this.loginForm.get('identifier');
+    if (credentials && typeof credentials.value === 'string') {
+      credentials.setValue(credentials.value.trim());
+    }
+
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
-    this.errorMessage.set(null);
+    const identifier = this.loginForm.get('identifier')?.value ?? '';
+    const password = this.loginForm.get('password')?.value ?? '';
+    const loginCredential: LoginRequest = { identifier, password };
 
-    this.authService.login(this.loginForm.value).subscribe({
-      next: (response) => {
-        console.log("login succeful", response);
+    this.authService.login(loginCredential).subscribe({
+      next: () => {
         this.router.navigate(['/home']);
       },
 

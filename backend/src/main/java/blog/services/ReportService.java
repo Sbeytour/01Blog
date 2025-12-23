@@ -12,7 +12,6 @@ import blog.dto.request.CreateReportRequestDto;
 import blog.dto.request.ResolveReportRequestDto;
 import blog.dto.response.AdminReportResponseDto;
 import blog.dto.response.ReportResponseDto;
-import blog.entity.AdminAction;
 import blog.entity.Post;
 import blog.entity.Report;
 import blog.entity.ReportStatus;

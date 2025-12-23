@@ -10,10 +10,10 @@ public class RegisterRequestDto {
     @Pattern(regexp = "^[a-zA-Z0-9]{4,15}$", message = "username must be between 4 and 15 characters and contain only characters and numbers")
     private String username;
 
-    @Size(min = 3, max = 30)
+    @Size(min = 3, max = 50)
     private String firstName;
 
-    @Size(min = 3, max = 30)
+    @Size(min = 3, max = 50)
     private String lastName;
 
     @Email
@@ -22,10 +22,10 @@ public class RegisterRequestDto {
     private String email;
 
     @NotBlank
-    @Size(min = 3, max = 30)
+    @Size(min = 6, max = 100)
     private String password;
 
-    @Size(max = 1000)
+    @Size(max = 250)
     private String bio;
 
     public String getUsername() {

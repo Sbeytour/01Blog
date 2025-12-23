@@ -27,10 +27,8 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    public String generateToken(Authentication authentication) {
+    public String generateToken(User user) {
         try {
-            User user = (User) authentication.getPrincipal();
-
             String username = user.getUsername();
             Date now = new Date();
             Date expaireDate = new Date(now.getTime() + jwtExpiration);

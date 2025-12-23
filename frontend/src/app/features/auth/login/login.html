@@ -13,7 +13,7 @@
     }
 
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <form [formGroup]="loginForm" (submit)="onSubmit($event)" class="login-form">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Username or Email</mat-label>
         <input matInput formControlName="identifier" placeholder="Enter your username or email">

@@ -10,6 +10,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RegisterRequest } from '../../../core/models/auth';
 
 @Component({
   selector: 'app-register',
@@ -29,12 +30,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class Register implements OnInit {
   registerForm!: FormGroup;
-  hidePassword = signal(true);
-  errorMessage = signal<string | null>(null);
-
   formbuilder = inject(FormBuilder);
+
   authService = inject(AuthService);
   router = inject(Router);
+
+  hidePassword = signal(true);
+  errorMessage = signal<string>('');
 
   ngOnInit(): void {
     this.intializeForm();
@@ -51,42 +53,49 @@ export class Register implements OnInit {
       email: ['', [
         Validators.required,
         Validators.email,
+        Validators.maxLength(100)
       ]],
       firstName: ['', [
         Validators.required,
         Validators.minLength(3),
-        Validators.maxLength(30),
+        Validators.maxLength(50),
         Validators.pattern(/^[a-zA-Z\s]+$/) // Only letters and spaces
       ]],
       lastName: ['', [
         Validators.required,
         Validators.minLength(3),
-        Validators.maxLength(30),
+        Validators.maxLength(50),
         Validators.pattern(/^[a-zA-Z\s]+$/) // Only letters and spaces
       ]],
       password: ['', [
         Validators.required,
-        Validators.minLength(8),
+        Validators.minLength(6),
         Validators.maxLength(100),
       ]],
       bio: ['', [
         Validators.maxLength(250)
-      ]],
-      profileImgUrl: ['', [
-        Validators.maxLength(500)
       ]]
     })
   }
 
   onSubmit(): void {
+
+    Object.keys(this.registerForm.controls).forEach((key) => {
+      const control = this.registerForm.get(key);
+      if (control && typeof control.value === 'string' && key !== 'password') {
+        control.setValue(control.value.trim());
+      }
+    });
+
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
     }
 
-    this.authService.register(this.registerForm.value).subscribe({
-      next: (response) => {
-        console.log("register succeful", response);
+    const credentials: RegisterRequest = this.registerForm.value;
+
+    this.authService.register(credentials).subscribe({
+      next: () => {
         this.router.navigate(['/home'])
       },
       error: (error: HttpErrorResponse) => {
