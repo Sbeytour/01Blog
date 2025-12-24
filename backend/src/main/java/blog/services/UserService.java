@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +33,8 @@ public class UserService {
     private final SubscriptionService subscriptionService;
     private final FileStorageConfig fileStorageConfig;
 
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository, SubscriptionService subscriptionService, FileStorageConfig fileStorageConfig) {
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository,
+            SubscriptionService subscriptionService, FileStorageConfig fileStorageConfig) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.subscriptionService = subscriptionService;
@@ -139,7 +142,7 @@ public class UserService {
         Path filePath = Paths.get(uploadsDir, fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        //Delete old profile picture if exists
+        // Delete old profile picture if exists
         if (user.getProfileImgUrl() != null && !user.getProfileImgUrl().isEmpty()) {
             String oldFileName = user.getProfileImgUrl().replace("/files/", "");
             Path oldFilePath = Paths.get(uploadsDir, oldFileName);
@@ -174,5 +177,15 @@ public class UserService {
         User updatedUser = userRepository.save(user);
 
         return UserResponseDto.fromEntity(updatedUser);
+    }
+
+    public List<UserResponseDto> searchUsers(String query) {
+        List<User> users = userRepository.searchUsers(query);
+
+        return users.stream()
+                .map(user -> {
+                    return UserResponseDto.fromEntity(user);
+                })
+                .collect(Collectors.toList());
     }
 }

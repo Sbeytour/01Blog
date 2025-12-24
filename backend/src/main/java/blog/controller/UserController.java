@@ -1,7 +1,9 @@
 package blog.controller;
 
 import java.io.IOException;
+import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,4 +59,11 @@ public class UserController {
 
         return userService.deleteProfileImg(user.getId());
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<UserResponseDto>> searchUsers(@RequestParam String query) {
+        List<UserResponseDto> users = userService.searchUsers(query);
+        return ResponseEntity.ok(users);
+    }
+
 }

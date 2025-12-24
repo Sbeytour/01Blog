@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../core/services/auth';
 import { NotificationService } from '../../core/services/notificationService';
 import { Notification } from '../../core/models/notification';
+import { SearchBarComponent } from '../searchBar/searchBar';
 
 @Component({
   selector: 'app-navbar',
@@ -23,7 +24,8 @@ import { Notification } from '../../core/models/notification';
     MatBadgeModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    RouterLink
+    RouterLink,
+    SearchBarComponent
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss'

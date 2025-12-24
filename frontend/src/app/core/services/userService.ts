@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { User } from '../models/user';
@@ -25,5 +25,9 @@ export class UserService {
 
   deleteProfilePic(): Observable<User> {
     return this.http.delete<User>(`${this.apiUrl}/profile/picture`);
+  }
+
+  searchUsers(query: string): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/profile/search`, { params: { query } });
   }
 }

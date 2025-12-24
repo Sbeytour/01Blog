@@ -1,5 +1,7 @@
 package blog.repositories;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,8 +18,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsernameOrEmail(@Param("identifier") String identifier);
 
     boolean existsByUsername(String username);
+
     boolean existsByEmail(String email);
 
-    //for user management in admin dashboard
+    // for user management in admin dashboard
     Page<User> findAllByOrderByIdDesc(Pageable pageable);
+
+    @Query("""
+            SELECT u FROM User u WHERE
+                LOWER(u.username) LIKE LOWER(CONCAT('%', :query, '%')) OR
+                LOWER(u.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR
+                LOWER(u.lastName) LIKE LOWER(CONCAT('%', :query, '%')) OR
+                LOWER(CONCAT(u.firstName, ' ', u.lastName)) LIKE LOWER(CONCAT('%', :query, '%'))
+                """)
+    public List<User> searchUsers(@Param("query") String query);
 }

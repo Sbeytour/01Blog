@@ -1,0 +1,13 @@
+<div class="user-card" (click)="onUserClick()">
+  <div class="user-avatar">
+    @if (user.profileImgUrl) {
+      <img [src]="user.profileImgUrl" [alt]="user.username" />
+    } @else {
+      <mat-icon>account_circle</mat-icon>
+    }
+  </div>
+  <div class="user-info">
+    <p class="user-name">{{ user.firstName }} {{ user.lastName }}</p>
+    <p class="user-username">&#64;{{ user.username }}</p>
+  </div>
+</div>

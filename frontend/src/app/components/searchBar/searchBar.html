@@ -1,0 +1,34 @@
+<div class="search-container">
+  <div class="search-bar">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      placeholder="Search for a user..."
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchChange()"
+      (focus)="onSearchFocus()"
+      (blur)="closeSearchResults()"
+      autocomplete="off"
+    />
+  </div>
+
+  <!-- Search Results Dropdown -->
+  @if (showSearchResults()) {
+  <div class="search-results-dropdown">
+    @if (isSearching()) {
+    <div class="search-loading">
+      <mat-spinner diameter="30"></mat-spinner>
+      <span>Searching...</span>
+    </div>
+    } @else if (searchResults().length > 0) {
+    <div class="results-list">
+      @for (user of searchResults(); track user.id) {
+      <app-user-card [user]="user" (userClick)="onUserClick(user)" />
+      }
+    </div>
+    } @else {
+    <app-empty-state icon="person_search" message="No User Found" />
+    }
+  </div>
+  }
+</div>

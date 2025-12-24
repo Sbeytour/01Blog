@@ -7,12 +7,38 @@
   height: 60px;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
 
   @media (max-width: 768px) {
     padding: 0 16px;
   }
 }
 
+.navbar-center {
+  flex: 1;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: 968px) {
+    max-width: 700px;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 500px;
+  }
+
+  @media (max-width: 568px) {
+    max-width: 300px;
+  }
+
+  app-searchBar {
+    width: 100%;
+    display: block;
+  }
+}
 
 .logo-link {
   display: flex;
