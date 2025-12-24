@@ -21,6 +21,8 @@ import { PostEdit } from '../post-edit/post-edit';
 import { MatInputModule } from '@angular/material/input';
 import { CommentInput } from '../../../components/comment-input/comment-input';
 import { CommentList } from '../../../components/comment-list/comment-list';
+import { DateFormatter } from '../../../core/utils/date-formatter';
+import { UserHelpers } from '../../../core/utils/user-helpers';
 
 @Component({
   selector: 'app-post-detail',
@@ -283,7 +285,8 @@ export class PostDetail implements OnInit {
   }
 
   fullName(): string {
-    return `${this.post()?.creator.firstName} ${this.post()?.creator.lastName}`
+    const creator = this.post()?.creator;
+    return creator ? UserHelpers.getFullName(creator) : '';
   }
 
   profilePic(): string | undefined {
@@ -317,9 +320,7 @@ export class PostDetail implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('Dialog closed with:', result);
       if (result?.success && result.editedPost) {
-        console.log('Reloading post...');
         this.loadPost(result.editedPost.id);
       }
     })
@@ -343,7 +344,6 @@ export class PostDetail implements OnInit {
           },
           error: (error) => {
             this.handleError(error);
-            console.log('Error deleting the post: ', error);
           }
         })
       }
@@ -351,23 +351,7 @@ export class PostDetail implements OnInit {
   }
 
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMs = now.getTime() - date.getTime();
-    const diffInMinutes = Math.floor(diffInMs / 60000);
-    const diffInHours = Math.floor(diffInMs / 3600000);
-    const diffInDays = Math.floor(diffInMs / 86400000);
-
-    if (diffInMinutes < 1) return 'Just now';
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInDays < 7) return `${diffInDays}d ago`;
-
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-    });
+    return DateFormatter.formatRelativeTime(dateString);
   }
 
   private handleError(error: HttpErrorResponse): void {

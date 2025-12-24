@@ -11,7 +11,4 @@ import blog.entity.Media;
 
 @Repository
 public interface MediaRepository extends JpaRepository<Media, Long> {
-    // find media of a post
-    @Query("SELECT m FROM Media m WHERE m.post.id = :postId")
-    List<Media> findAllMedia(@Param("postId") Long postId);
 }

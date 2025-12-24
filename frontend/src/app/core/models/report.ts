@@ -57,20 +57,6 @@ export interface ReportDetails {
   resolvedAt?: string;
 }
 
-
-// export interface ReportResponse {
-//   content: ReportDetails[];
-//   pageable: Pageable;
-//   totalPages: number;
-//   totalElements: number;
-//   last: boolean;
-//   first: boolean;
-//   number: number;
-//   size: number;
-//   numberOfElements: number;
-//   empty: boolean;
-// }
-
 export const ReportReasonLabels: Record<ReportReason, string> = {
   [ReportReason.SPAM]: 'Spam or misleading content',
   [ReportReason.HARASSMENT]: 'Harassment or bullying',

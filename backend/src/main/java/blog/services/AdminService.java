@@ -82,14 +82,6 @@ public class AdminService {
         );
     }
 
-    // // Get all posts for admin dashboard
-    // public List<PostResponseDto> getAllPosts() {
-    //     List<Post> posts = postRepository.findAllPosts();
-    //     return posts.stream()
-    //             .map(PostResponseDto::fromEntity)
-    //             .collect(Collectors.toList());
-    // }
-
     // Get all posts for admin dashboard with pagination
     public PageResponse<PostResponseDto> getAllPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);

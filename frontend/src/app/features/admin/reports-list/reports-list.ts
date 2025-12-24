@@ -15,6 +15,7 @@ import { ReportResponse, ReportStatus, ReportedType, ReportDetails } from '../..
 import { AdminService } from '../../../core/services/adminService';
 import { ReportDetailsModal } from '../report-details-modal/report-details-modal';
 import { TablePagination } from '../../../components/table-pagination/table-pagination';
+import { StringHelpers } from '../../../core/utils/string-helpers';
 
 @Component({
   selector: 'app-reports-list',
@@ -96,7 +97,7 @@ export class ReportsList implements OnInit {
   }
 
   getTruncatedText(text: string, maxLength: number = 20): string {
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return StringHelpers.truncate(text, maxLength);
   }
 
   formatDate(dateString: string): string {

@@ -12,8 +12,10 @@ import blog.dto.response.PagedCommentResponseDto;
 import blog.entity.Comment;
 import blog.entity.Post;
 import blog.entity.User;
+import blog.exceptions.ResourceNotFoundException;
 import blog.repositories.CommentRepository;
 import blog.repositories.PostRepository;
+import blog.util.ValidationUtils;
 
 @Service
 public class CommentService {
@@ -27,8 +29,7 @@ public class CommentService {
     }
 
     public CommentResponseDto createComment(Long postId, CreateCommentRequestDto createDto, User currentUser) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
+        Post post = ValidationUtils.validatePostExists(postId, postRepository);
 
         Comment comment = new Comment();
         comment.setContent(createDto.getContent());
@@ -41,11 +42,9 @@ public class CommentService {
 
     public CommentResponseDto updateComment(Long commentId, CreateCommentRequestDto updateDto, Long currentUserId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + commentId));
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + commentId));
 
-        if (comment.getUser().getId() != currentUserId) {
-            throw new RuntimeException("You are not authorized to update this comment");
-        }
+        ValidationUtils.validateOwnership(comment.getUser().getId(), currentUserId, "comment");
 
         comment.setContent(updateDto.getContent());
         Comment updatedComment = commentRepository.save(comment);
@@ -54,19 +53,15 @@ public class CommentService {
 
     public void deleteComment(Long commentId, Long currentUserId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + commentId));
+                .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + commentId));
 
-        if (comment.getUser().getId() != currentUserId) {
-            throw new RuntimeException("You are not authorized to delete this comment");
-        }
+        ValidationUtils.validateOwnership(comment.getUser().getId(), currentUserId, "comment");
 
         commentRepository.delete(comment);
     }
 
     public PagedCommentResponseDto getCommentsByPostId(Long postId, int page, int size) {
-        if (!postRepository.existsById(postId)) {
-            throw new RuntimeException("Post not found with id: " + postId);
-        }
+        ValidationUtils.validatePostExists(postId, postRepository);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Comment> commentPage = commentRepository.findByPostId(postId, pageable);

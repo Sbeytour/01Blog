@@ -65,7 +65,6 @@ export class ReportDetailsModal {
 
     this.adminService.getReportById(this.data.reportId).subscribe({
       next: (report) => {
-        console.log("report details = ", report);
         this.report.set(report);
         this.loading.set(false);
         // Pre-fill admin notes if they exist

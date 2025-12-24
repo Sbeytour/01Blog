@@ -78,7 +78,7 @@ public class Post {
         this.title = title;
     }
 
-    public Boolean getisHidden() {
+    public Boolean isHidden() {
         return isHidden;
     }
 

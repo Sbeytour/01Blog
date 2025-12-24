@@ -114,7 +114,6 @@ export class ReportDialogComponent implements OnInit {
       description: this.reportForm.value.description
     };
 
-    console.log("report request: ", request)
     this.reportService.createReport(request).subscribe({
       next: (report) => {
         this.snackBar.open(

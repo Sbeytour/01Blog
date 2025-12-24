@@ -19,6 +19,8 @@ import { PostCard } from '../../components/post-card/post-card';
 import { SubscriptionService } from '../../core/services/subscription';
 import { ReportDialogComponent } from '../../components/report-dialog/report-dialog';
 import { ReportedType } from '../../core/models/report';
+import { Post } from '../../core/models/post';
+import { InfiniteScroll } from '../../components/infinite-scroll/infinite-scroll';
 
 @Component({
   selector: 'app-profile',
@@ -33,6 +35,7 @@ import { ReportedType } from '../../core/models/report';
     Navbar,
     ProfileEdit,
     PostCard,
+    InfiniteScroll
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.scss'
@@ -48,6 +51,10 @@ export class UserProfile implements OnInit {
 
   isLoading = signal(false)
   errorMessage = signal<string | null>(null);
+  isLoadingMore = signal(false);
+  hasMore = signal(true);
+  currentPage = signal(0);
+  pageSize = 10;
 
   // Profile data
   profileUser = signal<User | null>(null);
@@ -58,13 +65,13 @@ export class UserProfile implements OnInit {
   isFollowLoading = signal(false);
 
   // Stats
-  postsCount = signal<number | null>(null);
+  postsCount = signal<number>(0);
 
   followersCount = signal(0);
   followingCount = signal(0);
 
   // Tab data
-  posts = signal<any[]>([]);
+  posts = signal<Post[]>([]);
 
   ngOnInit(): void {
     const currentUser = this.authService.currentUser();
@@ -92,9 +99,6 @@ export class UserProfile implements OnInit {
           this.followersCount.set(response.followersCount || 0);
           this.followingCount.set(response.followingCount || 0);
           this.isFollowedByCurrentUser.set(response.isFollowedByCurrentUser || false);
-        },
-        error: (error: HttpErrorResponse) => {
-          console.log("error fetching profile : ", error);
         }
       })
     }
@@ -103,6 +107,7 @@ export class UserProfile implements OnInit {
   loadUserPosts(userId: number | undefined) {
     this.isLoading.set(true);
     this.errorMessage.set(null);
+    this.currentPage.set(0);
 
     if (userId === undefined) {
       this.isLoading.set(false);
@@ -110,10 +115,12 @@ export class UserProfile implements OnInit {
       return;
     }
 
-    this.postService.getPostsByUser(userId).subscribe({
-      next: (posts) => {
-        this.posts.set(posts);
-        this.postsCount.set(posts.length);
+    this.postService.getPostsByUser(userId, 0, this.pageSize).subscribe({
+      next: (response) => {
+        this.posts.set(response.content);
+        this.postsCount.set(response.totalElements);
+        this.hasMore.set(response.hasMore);
+        this.currentPage.set(response.currentPage);
         this.isLoading.set(false);
       },
       error: (error: HttpErrorResponse) => {
@@ -136,7 +143,6 @@ export class UserProfile implements OnInit {
           this.followingCount.set(response.followingCount || 0);
         },
         error: (error: HttpErrorResponse) => {
-          console.log("error fetching own profile : ", error);
           this.profileUser.set(currentUser);
           this.loadUserPosts(currentUser?.id);
           this.isOwnProfile.set(true);
@@ -190,14 +196,6 @@ export class UserProfile implements OnInit {
     }
   }
 
-  navigateToPost(postId: number): void {
-    this.router.navigate(['/posts', postId]);
-  }
-
-  navigateToUserProfile(username: string): void {
-    this.router.navigate(['/profile', username]);
-  }
-
   onCancelEdit(): void {
     this.isEditing.set(false);
   }
@@ -205,7 +203,7 @@ export class UserProfile implements OnInit {
   onPostDeleted(postId: number): void {
     const updatedPosts = this.posts().filter(post => post.id !== postId);
     this.posts.set(updatedPosts);
-    this.postsCount.set(updatedPosts.length);
+    this.postsCount.update(count => Math.max(0, count - 1));
   }
 
   onPostEdited(editedPost: any): void {
@@ -217,6 +215,28 @@ export class UserProfile implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/home']);
+  }
+
+  loadMorePosts(): void {
+    const userId = this.profileUser()?.id;
+    if (!userId || this.isLoadingMore() || !this.hasMore()) return;
+
+    this.isLoadingMore.set(true);
+    const nextPage = this.currentPage() + 1;
+
+    this.postService.getPostsByUser(userId, nextPage, this.pageSize).subscribe({
+      next: (response) => {
+        const currentPosts = this.posts();
+        this.posts.set([...currentPosts, ...response.content]);
+        this.hasMore.set(response.hasMore);
+        this.currentPage.set(response.currentPage);
+        this.isLoadingMore.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error loading more posts:', error);
+        this.isLoadingMore.set(false);
+      }
+    });
   }
 
   onReportUser(): void {
@@ -235,7 +255,7 @@ export class UserProfile implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result?.success) {
-        console.log('Report submitted for user:', user.username);
+        // Report submitted successfully - dialog already shows snackbar
       }
     });
   }

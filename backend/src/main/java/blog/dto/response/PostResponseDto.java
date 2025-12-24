@@ -41,7 +41,7 @@ public class PostResponseDto {
                 : List.of();
         dto.commentsCount = post.getComments() != null ? post.getComments().size() : 0;
         dto.likesCount = post.getLikes() != null ? post.getLikes().size() : 0;
-        dto.isHidden = post.getisHidden();
+        dto.isHidden = post.isHidden();
         dto.createdAt = post.getCreatedAt();
         dto.updatedAt = post.getUpdatedAt();
         return dto;
@@ -149,7 +149,7 @@ public class PostResponseDto {
         this.updatedAt = updatedAt;
     }
 
-    public boolean isisHidden() {
+    public boolean isHidden() {
         return isHidden;
     }
 

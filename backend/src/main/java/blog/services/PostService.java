@@ -33,6 +33,8 @@ import blog.exceptions.UserNotFoundException;
 import blog.repositories.MediaRepository;
 import blog.repositories.PostRepository;
 import blog.repositories.UserRepository;
+import blog.util.FileStorageUtils;
+import blog.util.ValidationUtils;
 
 @Service
 public class PostService {
@@ -74,23 +76,9 @@ public class PostService {
         return PostResponseDto.fromEntity(post);
     }
 
-    // public List<PostResponseDto> getAllPosts(Long currentUserId) {
-    // // Get current user
-    // User currentUser = userRepository.findById(currentUserId)
-    // .orElseThrow(() -> new RuntimeException("User not found"));
-
-    // // Get posts from followed users only
-    // List<Post> posts = postRepository.findPostsByFollowedUsers(currentUser);
-
-    // return posts.stream()
-    // .map(post -> PostResponseDto.fromEntity(post, currentUserId))
-    // .toList();
-    // }
-
     public PageResponse<PostResponseDto> getAllPosts(Long currentUserId, int page, int size) {
         // Get current user
-        User currentUser = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User currentUser = ValidationUtils.validateUserExists(currentUserId, userRepository);
 
         // Create pageable with sorting by creation date descending
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -130,17 +118,14 @@ public class PostService {
     }
 
     public PostResponseDto getSinglePost(Long postId, Long currentUserId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        Post post = ValidationUtils.validatePostExists(postId, postRepository);
 
         return PostResponseDto.fromEntity(post, currentUserId);
     }
 
     public PostResponseDto updatePost(Long postId, CreatePostRequestDto updateRequest, Long currentUserId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
-
-        if (post.getCreator().getId() != currentUserId) {
-            throw new RuntimeException("You are not authorized to update this post");
-        }
+        Post post = ValidationUtils.validatePostExists(postId, postRepository);
+        ValidationUtils.validateOwnership(post.getCreator().getId(), currentUserId, "post");
 
         post.setTitle(updateRequest.getTitle());
         post.setContent(updateRequest.getContent());
@@ -181,15 +166,8 @@ public class PostService {
 
         for (Media media : mediaToDelete) {
             // Delete file from disk
-            try {
-                String fileName = media.getUrl().substring(media.getUrl().lastIndexOf('/') + 1);
-                String uploadsDir = fileStorageConfig.getUploadDir() + "/posts";
-                Path filePath = Paths.get(uploadsDir).resolve(fileName).normalize();
-                Files.deleteIfExists(filePath);
-            } catch (IOException e) {
-                System.err.println("Could not delete media file: " + media.getUrl());
-            }
-
+            String uploadsDir = fileStorageConfig.getUploadDir() + "/posts";
+            FileStorageUtils.deleteFile(media.getUrl(), uploadsDir);
         }
         // Remove from post's media list
         post.getMediaList().removeAll(mediaToDelete);
@@ -199,12 +177,8 @@ public class PostService {
     }
 
     public void deletePost(Long postId, Long currentUserId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postId));
-
-        if (post.getCreator().getId() != (currentUserId)) {
-            throw new RuntimeException("You are not authorized to delete this post");
-        }
+        Post post = ValidationUtils.validatePostExists(postId, postRepository);
+        ValidationUtils.validateOwnership(post.getCreator().getId(), currentUserId, "post");
 
         deleteOldMedia(post);
         postRepository.delete(post);
@@ -253,13 +227,7 @@ public class PostService {
         if (post.getMediaList() != null && !post.getMediaList().isEmpty()) {
             String uploadsDir = fileStorageConfig.getUploadDir() + "/posts";
             for (Media media : post.getMediaList()) {
-                try {
-                    String fileName = media.getUrl().substring(media.getUrl().lastIndexOf('/') + 1);
-                    Path filePath = Paths.get(uploadsDir).resolve(fileName).normalize();
-                    Files.deleteIfExists(filePath);
-                } catch (IOException e) {
-                    System.err.println("Could not delete old media file: " + media.getUrl());
-                }
+                FileStorageUtils.deleteFile(media.getUrl(), uploadsDir);
             }
             mediaRepository.deleteAll(post.getMediaList());
             post.getMediaList().clear();

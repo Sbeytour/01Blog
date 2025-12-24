@@ -33,10 +33,7 @@
   <!-- Posts List with Infinite Scroll -->
   @else {
   <div class="posts-grid">
-    <app-infinite-scroll
-      [isLoadingMore]="isLoadingMore()"
-      [hasMore]="hasMore()"
-      (loadMore)="loadMorePosts()">
+    <app-infinite-scroll [isLoadingMore]="isLoadingMore()" [hasMore]="hasMore()" (loadMore)="loadMorePosts()">
       <div class="posts-list">
         @for (post of posts(); track post.id) {
         <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)"

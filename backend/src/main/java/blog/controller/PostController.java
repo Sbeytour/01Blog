@@ -42,15 +42,6 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // @GetMapping
-    // public ResponseEntity<List<PostResponseDto>> getAllPosts(Authentication
-    // authentication) {
-    // User currentUser = (User) authentication.getPrincipal();
-    // List<PostResponseDto> posts = postService.getAllPosts(currentUser.getId());
-
-    // return ResponseEntity.ok(posts);
-    // }
-
     @GetMapping
     public ResponseEntity<PageResponse<PostResponseDto>> getAllPosts(
             @RequestParam(defaultValue = "0") int page,

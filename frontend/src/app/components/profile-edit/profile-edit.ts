@@ -113,7 +113,6 @@ export class ProfileEdit implements OnInit {
 
     if (file.size > 50 * 1024 * 1024) {
       this.errorMessage.set('File size must be less than 50MB');
-      console.log("size error",this.errorMessage);
       return;
     }
 
@@ -190,7 +189,6 @@ export class ProfileEdit implements OnInit {
 
     this.userService.updateProfile(updateData).subscribe({
       next: (response) => {
-        console.log("response ", response)
         this.authService.currentUser.set(response);
         this.successMessage.set('Profile updated successfully!');
         this.isLoading.set(false);
@@ -201,7 +199,6 @@ export class ProfileEdit implements OnInit {
         this.editCompleted.emit(response);
       },
       error: (error: HttpErrorResponse) => {
-        console.log("size error", error)
         this.handleError(error);
         this.isLoading.set(false);
       }
@@ -213,7 +210,7 @@ export class ProfileEdit implements OnInit {
   }
 
   hasUnsavedChanges() {
-    return this.profileForm.dirty || this.selectedFile.length > 0;
+    return this.profileForm.dirty || this.selectedFile() !== null;
   }
 
   onCancel(): void {
@@ -233,7 +230,7 @@ export class ProfileEdit implements OnInit {
   onDeleteImage(): void {
     this.isUploadingImage.set(true);
 
-    this.userService.deletProfilePic().subscribe({
+    this.userService.deleteProfilePic().subscribe({
       next: (resp) => {
         this.authService.currentUser.set(resp);
         this.imagePreview.set(null);

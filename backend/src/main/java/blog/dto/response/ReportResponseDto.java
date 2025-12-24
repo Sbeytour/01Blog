@@ -22,7 +22,7 @@ public class ReportResponseDto {
     // method to convert entity to dto
     public static ReportResponseDto fromEntity(Report report) {
         ReportResponseDto reportResp = new ReportResponseDto();
-        reportResp.id = report.getReportedId();
+        reportResp.id = report.getId();
         reportResp.reportedType = report.getReportedType();
         reportResp.reportedId = report.getReportedId();
         reportResp.reason = report.getReason();

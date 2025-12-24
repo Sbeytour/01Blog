@@ -39,9 +39,7 @@ export class Home implements OnInit {
     this.loadPosts();
   }
 
-  /**
-   * Load first page of posts
-   */
+  // Load first page of posts
   loadPosts(): void {
     this.isLoading.set(true);
     this.errorMessage.set(null);
@@ -62,9 +60,6 @@ export class Home implements OnInit {
     });
   }
 
-  /**
-   * Load more posts (triggered by infinite scroll)
-   */
   loadMorePosts(): void {
     if (!this.hasMore() || this.isLoadingMore()) {
       return;

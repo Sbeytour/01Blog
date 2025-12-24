@@ -99,7 +99,6 @@ export class Register implements OnInit {
         this.router.navigate(['/home'])
       },
       error: (error: HttpErrorResponse) => {
-        console.log("error: ", error);
         this.handleError(error);
       }
     })

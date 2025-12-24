@@ -135,24 +135,4 @@ public class ModerationService {
 
         postRepository.delete(post);
     }
-
-    // hidde a post
-    @Transactional
-    public void hiddePost(Long postId, BanUserRequestDto requestDto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
-
-        post.setIsHidden(true);
-        postRepository.save(post);
-    }
-
-    // unhidde post
-    @Transactional
-    public void unHiddePost(Long postId, BanUserRequestDto requestDto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
-
-        post.setIsHidden(false);
-        postRepository.save(post);
-    }
 }

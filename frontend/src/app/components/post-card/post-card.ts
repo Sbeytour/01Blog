@@ -15,6 +15,9 @@ import { PostEdit } from '../../features/posts/post-edit/post-edit';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ReportDialogComponent } from '../report-dialog/report-dialog';
 import { ReportedType } from '../../core/models/report';
+import { DateFormatter } from '../../core/utils/date-formatter';
+import { StringHelpers } from '../../core/utils/string-helpers';
+import { UserHelpers } from '../../core/utils/user-helpers';
 
 @Component({
   selector: 'app-post-card',
@@ -48,15 +51,15 @@ export class PostCard {
   }
 
   fullName(): string {
-    return `${this.post.creator.firstName} ${this.post.creator.lastName}`
+    return UserHelpers.getFullName(this.post.creator);
   }
 
   profilePic(): string | undefined {
     return this.post.creator.profileImgUrl;
   }
-  
+
   getTruncatedText(text: string, maxLength: number = 50): string {
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return StringHelpers.truncate(text, maxLength);
   }
 
   navigateToPost(event: Event): void {
@@ -108,9 +111,6 @@ export class PostCard {
         this.postService.deletePost(this.post.id).subscribe({
           next: () => {
             this.postDeleted.emit(this.post.id);
-          },
-          error: (error) => {
-            console.log('Error deleting the post: ', error);
           }
         })
       }
@@ -134,7 +134,6 @@ export class PostCard {
     dialogRef.afterClosed().subscribe(result => {
       if (result?.success) {
         // Report submitted successfully - dialog already shows snackbar
-        console.log('Report submitted for post:', this.post.id);
       }
     });
   }
@@ -161,22 +160,6 @@ export class PostCard {
   }
 
   formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMs = now.getTime() - date.getTime();
-    const diffInMinutes = Math.floor(diffInMs / 60000);
-    const diffInHours = Math.floor(diffInMs / 3600000);
-    const diffInDays = Math.floor(diffInMs / 86400000);
-
-    if (diffInMinutes < 1) return 'Just now';
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInDays < 7) return `${diffInDays}d ago`;
-
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
-    });
+    return DateFormatter.formatRelativeTime(dateString);
   }
 }

@@ -23,13 +23,9 @@ export class PostService {
   createPost(formData: FormData): Observable<Post> {
     return this.http.post<Post>(this.apiUrl, formData);
   }
-  // //Get all Posts
-  // getAllPosts(): Observable<Post[]> {
-  //   return this.http.get<Post[]>(this.apiUrl);
-  // }
 
   //Get all Posts with pagination (for infinite scroll)
-  getAllPosts(page: number = 0, size: number = 10): Observable<PagedPostResponse> {
+  getAllPosts(page: number = 0, size: number = 9): Observable<PagedPostResponse> {
     const params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
@@ -38,8 +34,12 @@ export class PostService {
   }
 
   //Get Posts Created by a specific user
-  getPostsByUser(userId: number): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.apiUrl}/user/${userId}`);
+  getPostsByUser(userId: number, page: number = 0, size: number = 10): Observable<PagedPostResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<PagedPostResponse>(`${this.apiUrl}/user/${userId}`, {params});
   }
 
   //Get a single post

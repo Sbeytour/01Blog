@@ -93,15 +93,18 @@
       </div>
       }
 
-      <!-- Posts Grid -->
+      <!-- Posts Grid with Infinite Scroll -->
       @if (!isLoading() && !errorMessage()) {
       @if (posts().length > 0) {
-      <div class="posts-grid">
-        @for (post of posts(); track post.id) {
-        <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)"
-          (postEdited)="onPostEdited($event)"></app-post-card>
-        }
-      </div>
+      <app-infinite-scroll [isLoadingMore]="isLoadingMore()" [hasMore]="hasMore()" (loadMore)="loadMorePosts()">
+        <div class="posts-grid">
+          @for (post of posts(); track post.id) {
+          <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)"
+            (postEdited)="onPostEdited($event)"></app-post-card>
+          }
+        </div>
+      </app-infinite-scroll>
+
       } @else {
       <!-- Empty State -->
       <div class="empty-state">

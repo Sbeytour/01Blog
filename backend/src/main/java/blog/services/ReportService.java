@@ -31,7 +31,6 @@ import blog.repositories.PostRepository;
 import blog.repositories.ReportRepository;
 import blog.repositories.UserRepository;
 
-// import java.time.LocalDateTime;
 @Service
 public class ReportService {
 
@@ -101,13 +100,6 @@ public class ReportService {
     }
 
     //-------- ADMIN METHODS --------
-    // Get all reports
-    // public List<AdminReportResponseDto> getAllReports() {
-    //     List<Report> reports = reportRepository.findAllByOrderByCreatedAtDesc();
-
-    //     return reports.stream().map(report -> AdminReportResponseDto.fromEntity(report)).toList();
-    // }
-
     // Get all reports with pagination
     public PageResponse<AdminReportResponseDto> getAllReportsPaged(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -159,7 +151,7 @@ public class ReportService {
                 .map(post -> {
                     String name = post.getTitle();
                     String status;
-                    if (post.getisHidden()) {
+                    if (post.isHidden()) {
                         status = "HIDDEN";
                     } else {
                         status = "ACTIVE";

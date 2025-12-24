@@ -54,16 +54,6 @@ public class AdminDashboardController {
         return ResponseEntity.ok(reports);
     }
 
-    // @GetMapping("/reports/paged")
-    // public ResponseEntity<PageResponse<AdminReportResponseDto>> getReportsPaged(
-    // @RequestParam(defaultValue = "0") int page,
-    // @RequestParam(defaultValue = "20") int size) {
-
-    // PageResponse<AdminReportResponseDto> reports =
-    // reportService.getAllReportsPaged(page, size);
-    // return ResponseEntity.ok(reports);
-    // }
-
     @GetMapping("/reports/{reportId}")
     public ResponseEntity<AdminReportResponseDto> getReportById(@PathVariable Long reportId) {
         AdminReportResponseDto report = reportService.getReportById(reportId);
@@ -71,12 +61,6 @@ public class AdminDashboardController {
     }
 
     // ---- POST ----
-    // @GetMapping("/posts")
-    // public ResponseEntity<List<PostResponseDto>> getAllPosts() {
-    //     List<PostResponseDto> posts = adminService.getAllPosts();
-    //     return ResponseEntity.ok(posts);
-    // }
-
     @GetMapping("/posts")
     public ResponseEntity<PageResponse<PostResponseDto>> getAllPosts(
             @RequestParam(defaultValue = "0") int page,

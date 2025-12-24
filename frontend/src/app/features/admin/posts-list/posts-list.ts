@@ -15,6 +15,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { TablePagination } from '../../../components/table-pagination/table-pagination';
+import { StringHelpers } from '../../../core/utils/string-helpers';
+import { UserHelpers } from '../../../core/utils/user-helpers';
 
 @Component({
   selector: 'app-posts-list',
@@ -76,7 +78,7 @@ export class PostsList implements OnInit {
   }
 
   getCreatorName(post: Post): string {
-    return `${post.creator.firstName} ${post.creator.lastName}`.trim();
+    return UserHelpers.getFullName(post.creator);
   }
 
   getCreatorAvatar(post: Post): string | undefined {
@@ -84,7 +86,7 @@ export class PostsList implements OnInit {
   }
 
   getTruncatedTitle(title: string, maxLength: number = 30): string {
-    return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
+    return StringHelpers.truncate(title, maxLength);
   }
 
   navigateToPost(postId: number) {
@@ -102,10 +104,6 @@ export class PostsList implements OnInit {
       month: 'short',
       day: 'numeric'
     });
-  }
-
-  viewPost(postId: number): void {
-    this.router.navigate(['/posts', postId]);
   }
 
   openDeleteDialog(post: Post): void {

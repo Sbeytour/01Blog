@@ -23,9 +23,4 @@ export class SubscriptionService {
   unfollowUser(userId: number): Observable<FollowResponse> {
     return this.http.delete<FollowResponse>(`${this.apiUrl}/${userId}/unfollow`);
   }
-
-  //Check if current user follows a specific user
-  isFollowing(userId: number): Observable<{ isFollowing: boolean }> {
-    return this.http.get<{ isFollowing: boolean }>(`${this.apiUrl}/${userId}/isfollowing`);
-  }
 }

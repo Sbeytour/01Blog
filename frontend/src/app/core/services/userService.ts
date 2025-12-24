@@ -23,7 +23,7 @@ export class UserService {
     return this.http.post<User>(`${this.apiUrl}/profile/picture`, formData);
   }
 
-  deletProfilePic(): Observable<User> {
+  deleteProfilePic(): Observable<User> {
     return this.http.delete<User>(`${this.apiUrl}/profile/picture`);
   }
 }

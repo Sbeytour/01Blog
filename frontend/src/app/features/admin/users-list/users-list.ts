@@ -17,6 +17,7 @@ import { AdminService } from '../../../core/services/adminService';
 import { AuthService } from '../../../core/services/auth';
 import { User, UserRole } from '../../../core/models/user';
 import { TablePagination } from '../../../components/table-pagination/table-pagination';
+import { UserHelpers } from '../../../core/utils/user-helpers';
 
 @Component({
   selector: 'app-users-list',
@@ -81,7 +82,7 @@ export class UsersList implements OnInit {
   }
 
   getFullName(user: User): string {
-    return `${user.firstName} ${user.lastName}`.trim();
+    return UserHelpers.getFullName(user);
   }
 
   getUserAvatar(user: User): string {
