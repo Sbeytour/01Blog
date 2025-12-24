@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AdminService } from '../../../core/services/adminService';
@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { TablePagination } from '../../../components/table-pagination/table-pagination';
 
 @Component({
   selector: 'app-posts-list',
@@ -25,9 +26,9 @@ import { FormsModule } from '@angular/forms';
     MatIconModule,
     MatMenuModule,
     MatChipsModule,
-    MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    TablePagination
   ],
   templateUrl: './posts-list.html',
   styleUrl: './posts-list.scss'
@@ -55,10 +56,10 @@ export class PostsList implements OnInit {
 
   loadPosts(): void {
     this.loading.set(true);
-    this.adminService.getPosts().subscribe({
-      next: (posts: Post[]) => {
-        this.posts.set(posts);
-        this.totalElements.set(posts.length);
+    this.adminService.getPosts(this.pageIndex(), this.pageSize()).subscribe({
+      next: (response) => {
+        this.posts.set(response.content);
+        this.totalElements.set(response.totalElements);
         this.loading.set(false);
       },
       error: (error) => {
@@ -235,4 +236,3 @@ export class BanUserDialog {
     return this.reason.trim().length >= 10;
   }
 }
-

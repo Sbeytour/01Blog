@@ -1,0 +1,38 @@
+.infinite-scroll-container {
+  width: 100%;
+}
+
+.scroll-sentinel {
+  height: 1px;
+  width: 100%;
+  visibility: hidden;
+}
+
+.loading-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  gap: 12px;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.no-more-items {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  margin-top: 16px;
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--mat-sys-on-surface-variant);
+    text-align: center;
+  }
+}

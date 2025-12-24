@@ -2,6 +2,8 @@ package blog.repositories;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,13 +14,21 @@ import blog.entity.User;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    // find all posts ordered by created Date
-    @Query("SELECT p FROM Post p ORDER BY p.createdAt DESC")
-    List<Post> findAllPosts();
+        // find all posts ordered by created Date
+        @Query("SELECT p FROM Post p ORDER BY p.createdAt DESC")
+        Page<Post> findAllPosts(Pageable pageable);
 
-    // Find posts from users that the current user follows and current user posts
-    @Query("SELECT p FROM Post p WHERE p.creator = :currentUser OR p.creator IN " +
-            "(SELECT s.following FROM Subscription s WHERE s.follower = :currentUser) " +
-            "ORDER BY p.createdAt DESC")
-    List<Post> findPostsByFollowedUsers(@Param("currentUser") User currentUser);
+        // Find posts from users that the current user follows and current user posts
+        @Query("SELECT p FROM Post p WHERE p.creator = :currentUser OR p.creator IN " +
+                        "(SELECT s.following FROM Subscription s WHERE s.follower = :currentUser) " +
+                        "ORDER BY p.createdAt DESC")
+        List<Post> findPostsByFollowedUsers(@Param("currentUser") User currentUser);
+
+        @Query("SELECT p FROM Post p WHERE p.creator = :userId AND p.isHidden = false ORDER BY p.createdAt DESC")
+        Page<Post> findByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId, Pageable pageable);
+
+        // Find posts from users that the current user follows with pagination
+        @Query("SELECT p FROM Post p WHERE p.creator = :currentUser OR p.creator IN " +
+                        "(SELECT s.following FROM Subscription s WHERE s.follower = :currentUser)")
+        Page<Post> findPostsByFollowedUsersPaged(@Param("currentUser") User currentUser, Pageable pageable);
 }

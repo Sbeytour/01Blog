@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import blog.Config.FileStorageConfig;
 import blog.dto.request.CreatePostRequestDto;
+import blog.dto.response.PageResponse;
 import blog.dto.response.PostResponseDto;
 import blog.entity.Media;
 import blog.entity.MediaType;
@@ -30,13 +35,13 @@ import blog.repositories.PostRepository;
 import blog.repositories.UserRepository;
 
 @Service
-public class PostService {    
+public class PostService {
 
-    private final PostRepository postRepository;    
-    private final UserRepository userRepository;    
-    private final MediaRepository mediaRepository;    
-    private final ObjectMapper objectMapper;    
-    private final FileStorageConfig fileStorageConfig;    
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final MediaRepository mediaRepository;
+    private final ObjectMapper objectMapper;
+    private final FileStorageConfig fileStorageConfig;
     private final NotificationService notificationService;
 
     public PostService(PostRepository postRepository, UserRepository userRepository, MediaRepository mediaRepository,
@@ -69,28 +74,59 @@ public class PostService {
         return PostResponseDto.fromEntity(post);
     }
 
-    public List<PostResponseDto> getAllPosts(Long currentUserId) {
+    // public List<PostResponseDto> getAllPosts(Long currentUserId) {
+    // // Get current user
+    // User currentUser = userRepository.findById(currentUserId)
+    // .orElseThrow(() -> new RuntimeException("User not found"));
+
+    // // Get posts from followed users only
+    // List<Post> posts = postRepository.findPostsByFollowedUsers(currentUser);
+
+    // return posts.stream()
+    // .map(post -> PostResponseDto.fromEntity(post, currentUserId))
+    // .toList();
+    // }
+
+    public PageResponse<PostResponseDto> getAllPosts(Long currentUserId, int page, int size) {
         // Get current user
         User currentUser = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Get posts from followed users only
-        List<Post> posts = postRepository.findPostsByFollowedUsers(currentUser);
+        // Create pageable with sorting by creation date descending
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-        return posts.stream()
+        // Get posts from followed users only with pagination
+        Page<Post> postPage = postRepository.findPostsByFollowedUsersPaged(currentUser, pageable);
+
+        // Convert to DTOs
+        List<PostResponseDto> postDtos = postPage.getContent().stream()
                 .map(post -> PostResponseDto.fromEntity(post, currentUserId))
                 .toList();
+
+        return new PageResponse<>(
+                postDtos,
+                postPage.getNumber(),
+                postPage.getTotalPages(),
+                postPage.getTotalElements());
     }
 
-    public List<PostResponseDto> getPostsByUser(Long userId, Long currentUserId) {
+    public PageResponse<PostResponseDto> getPostsByUser(Long userId, Long currentUserId, int page, int size) {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("User not found");
         }
+        Pageable pageable = PageRequest.of(page, size);
 
-        List<Post> posts = postRepository.findAllPosts().stream().filter(post -> post.getCreator().getId() == userId)
+        Page<Post> posts = postRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
+
+        List<PostResponseDto> postDtos = posts.getContent().stream()
+                .map(post -> PostResponseDto.fromEntity(post, currentUserId))
                 .toList();
 
-        return posts.stream().map(post -> PostResponseDto.fromEntity(post, currentUserId)).toList();
+        return new PageResponse<>(
+                postDtos,
+                posts.getNumber(),
+                posts.getTotalPages(),
+                posts.getTotalElements());
     }
 
     public PostResponseDto getSinglePost(Long postId, Long currentUserId) {
@@ -113,7 +149,8 @@ public class PostService {
         String deleteMediaIdsJson = updateRequest.getDeletedMediaIds();
         if (deleteMediaIdsJson != null && !deleteMediaIdsJson.isEmpty()) {
             try {
-                // convert the Json data to a list ,using jackson(convert json text into a java object)
+                // convert the Json data to a list ,using jackson(convert json text into a java
+                // object)
                 List<Long> deletedIds = objectMapper.readValue(deleteMediaIdsJson, new TypeReference<List<Long>>() {
                 });
 

@@ -30,15 +30,20 @@
     <p class="empty-subtitle">Discover and connect with others to build your personalized feed.</p>
   </div>
   }
-  <!-- Posts List -->
+  <!-- Posts List with Infinite Scroll -->
   @else {
   <div class="posts-grid">
-    <div class="posts-list">
-      @for (post of posts(); track post.id) {
-      <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)"
-        (postEdited)="onPostEdited($event)"></app-post-card>
-      }
-    </div>
+    <app-infinite-scroll
+      [isLoadingMore]="isLoadingMore()"
+      [hasMore]="hasMore()"
+      (loadMore)="loadMorePosts()">
+      <div class="posts-list">
+        @for (post of posts(); track post.id) {
+        <app-post-card [post]="post" (postDeleted)="onPostDeleted($event)"
+          (postEdited)="onPostEdited($event)"></app-post-card>
+        }
+      </div>
+    </app-infinite-scroll>
   </div>
   }
 </div>

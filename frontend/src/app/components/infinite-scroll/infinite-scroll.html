@@ -1,0 +1,22 @@
+<div class="infinite-scroll-container">
+  <!-- Content projected from parent -->
+  <ng-content></ng-content>
+
+  <!-- Invisible sentinel element that triggers loading -->
+  <div #scrollSentinel class="scroll-sentinel"></div>
+
+  <!-- Loading more spinner -->
+  @if (isLoadingMore) {
+    <div class="loading-more">
+      <mat-spinner diameter="30"></mat-spinner>
+      <p>{{ loadingMessage }}</p>
+    </div>
+  }
+
+  <!-- No more items message -->
+  @if (!hasMore && !isLoadingMore) {
+    <div class="no-more-items">
+      <p>{{ noMoreMessage }}</p>
+    </div>
+  }
+</div>

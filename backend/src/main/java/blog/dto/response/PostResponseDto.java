@@ -17,6 +17,7 @@ public class PostResponseDto {
     private List<CommentResponseDto> comments;
     private int commentsCount;
     private int likesCount;
+    private long reportCount;
     private boolean isHidden;
     @JsonProperty("isLikedByCurrentUser")
     private boolean isLikedByCurrentUser;
@@ -50,6 +51,13 @@ public class PostResponseDto {
         PostResponseDto dto = fromEntity(post);
         dto.isLikedByCurrentUser = post.getLikes() != null &&
                 post.getLikes().stream().anyMatch(like -> like.getUser().getId() == (currentUserId));
+        return dto;
+    }
+
+    // For admin dashboard with report count
+    public static PostResponseDto forAdminDash(Post post, long reportCount) {
+        PostResponseDto dto = fromEntity(post);
+        dto.reportCount = reportCount;
         return dto;
     }
 
@@ -147,5 +155,13 @@ public class PostResponseDto {
 
     public void setIsHidden(boolean isHidden) {
         this.isHidden = isHidden;
+    }
+
+    public long getReportCount() {
+        return reportCount;
+    }
+
+    public void setReportCount(long reportCount) {
+        this.reportCount = reportCount;
     }
 }

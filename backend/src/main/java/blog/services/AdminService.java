@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import blog.dto.response.AdminStatsResponseDto;
+import blog.dto.response.PageResponse;
 import blog.dto.response.PostResponseDto;
 import blog.dto.response.UserResponseDto;
 import blog.entity.Post;
@@ -61,23 +62,53 @@ public class AdminService {
     }
 
     // Get all users
-    public Page<UserResponseDto> getAllUsers(int page, int size) {
+    public PageResponse<UserResponseDto> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> users = userRepository.findAllByOrderByIdDesc(pageable);
 
-        return users.map(user -> {
-            long reportCount = reportRepository.countByReportedIdAndReportedType(
-                    user.getId(), ReportedType.USER);
-            return UserResponseDto.forAdminDash(user, reportCount);
-        });
+        List<UserResponseDto> userDtos = users.getContent().stream()
+                .map(user -> {
+                    long reportCount = reportRepository.countByReportedIdAndReportedType(
+                            user.getId(), ReportedType.USER);
+                    return UserResponseDto.forAdminDash(user, reportCount);
+                })
+                .collect(Collectors.toList());
+
+        return new PageResponse<>(
+                userDtos,
+                users.getNumber(),
+                users.getTotalPages(),
+                users.getTotalElements()
+        );
     }
 
-    // Get all posts for admin dashboard
-    public List<PostResponseDto> getAllPosts() {
-        List<Post> posts = postRepository.findAllPosts();
-        return posts.stream()
-                .map(PostResponseDto::fromEntity)
+    // // Get all posts for admin dashboard
+    // public List<PostResponseDto> getAllPosts() {
+    //     List<Post> posts = postRepository.findAllPosts();
+    //     return posts.stream()
+    //             .map(PostResponseDto::fromEntity)
+    //             .collect(Collectors.toList());
+    // }
+
+    // Get all posts for admin dashboard with pagination
+    public PageResponse<PostResponseDto> getAllPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postPage = postRepository.findAllPosts(pageable);
+
+        List<PostResponseDto> postDtos = postPage.getContent().stream()
+                .map(post -> {
+                    long reportCount = reportRepository.countByReportedIdAndReportedType(
+                            post.getId(), ReportedType.POST);
+                    return PostResponseDto.forAdminDash(post, reportCount);
+                })
                 .collect(Collectors.toList());
+
+        return new PageResponse<>(
+                postDtos,
+                postPage.getNumber(),
+                postPage.getTotalPages(),
+                postPage.getTotalElements()
+        );
     }
 
 }

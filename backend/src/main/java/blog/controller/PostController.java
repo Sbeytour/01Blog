@@ -1,7 +1,5 @@
 package blog.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import blog.dto.request.CreatePostRequestDto;
+import blog.dto.response.PageResponse;
 import blog.dto.response.PostResponseDto;
 import blog.entity.User;
 import blog.services.PostService;
@@ -43,21 +42,35 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // @GetMapping
+    // public ResponseEntity<List<PostResponseDto>> getAllPosts(Authentication
+    // authentication) {
+    // User currentUser = (User) authentication.getPrincipal();
+    // List<PostResponseDto> posts = postService.getAllPosts(currentUser.getId());
+
+    // return ResponseEntity.ok(posts);
+    // }
+
     @GetMapping
-    public ResponseEntity<List<PostResponseDto>> getAllPosts(Authentication authentication) {
+    public ResponseEntity<PageResponse<PostResponseDto>> getAllPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication) {
+
         User currentUser = (User) authentication.getPrincipal();
-        List<PostResponseDto> posts = postService.getAllPosts(currentUser.getId());
+        PageResponse<PostResponseDto> posts = postService.getAllPosts(currentUser.getId(), page, size);
 
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PostResponseDto>> getPostsByUser(
+    public ResponseEntity<PageResponse<PostResponseDto>> getPostsByUser(
             @PathVariable Long userId,
-            Authentication authentication) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, Authentication authentication) {
 
         User currentUser = (User) authentication.getPrincipal();
-        List<PostResponseDto> posts = postService.getPostsByUser(userId, currentUser.getId());
+        PageResponse<PostResponseDto> posts = postService.getPostsByUser(userId, currentUser.getId(), page, size);
 
         return ResponseEntity.ok(posts);
     }

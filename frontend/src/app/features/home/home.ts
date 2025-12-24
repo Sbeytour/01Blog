@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatButton } from '@angular/material/button';
+import { InfiniteScroll } from '../../components/infinite-scroll/infinite-scroll';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,8 @@ import { MatButton } from '@angular/material/button';
     MatButton,
     PostCard,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    InfiniteScroll
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss'
@@ -27,25 +29,61 @@ export class Home implements OnInit {
 
   posts = signal<Post[]>([]);
   isLoading = signal(true);
+  isLoadingMore = signal(false);
+  hasMore = signal(true);
+  currentPage = signal(0);
+  pageSize = 9;
   errorMessage = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.loadAllPosts();
+    this.loadPosts();
   }
 
-  loadAllPosts(): void {
+  /**
+   * Load first page of posts
+   */
+  loadPosts(): void {
     this.isLoading.set(true);
     this.errorMessage.set(null);
+    this.currentPage.set(0);
 
-    this.postService.getAllPosts().subscribe({
-      next: (posts) => {
-        this.posts.set(posts);
+    this.postService.getAllPosts(0, this.pageSize).subscribe({
+      next: (response) => {
+        this.posts.set(response.content);
+        this.hasMore.set(response.hasMore);
+        this.currentPage.set(response.currentPage);
         this.isLoading.set(false);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error loading posts:', error);
         this.errorMessage.set('Failed to load posts. Please try again later.');
         this.isLoading.set(false);
+      }
+    });
+  }
+
+  /**
+   * Load more posts (triggered by infinite scroll)
+   */
+  loadMorePosts(): void {
+    if (!this.hasMore() || this.isLoadingMore()) {
+      return;
+    }
+
+    this.isLoadingMore.set(true);
+    const nextPage = this.currentPage() + 1;
+
+    this.postService.getAllPosts(nextPage, this.pageSize).subscribe({
+      next: (response) => {
+        // Append new posts to existing posts
+        this.posts.update(current => [...current, ...response.content]);
+        this.hasMore.set(response.hasMore);
+        this.currentPage.set(response.currentPage);
+        this.isLoadingMore.set(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error loading more posts:', error);
+        this.isLoadingMore.set(false);
       }
     });
   }
@@ -61,6 +99,6 @@ export class Home implements OnInit {
   }
 
   onRetry(): void {
-    this.loadAllPosts();
+    this.loadPosts();
   }
 }

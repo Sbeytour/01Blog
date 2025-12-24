@@ -47,6 +47,7 @@
   .table-container {
     flex: 1;
     overflow: auto;
+    scrollbar-width: none;
     border-radius: 12px 12px 0 0;
 
     .posts-table {

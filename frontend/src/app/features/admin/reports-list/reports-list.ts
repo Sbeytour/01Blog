@@ -10,9 +10,11 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { PageEvent } from '@angular/material/paginator';
 import { ReportResponse, ReportStatus, ReportedType, ReportDetails } from '../../../core/models/report';
 import { AdminService } from '../../../core/services/adminService';
 import { ReportDetailsModal } from '../report-details-modal/report-details-modal';
+import { TablePagination } from '../../../components/table-pagination/table-pagination';
 
 @Component({
   selector: 'app-reports-list',
@@ -28,7 +30,8 @@ import { ReportDetailsModal } from '../report-details-modal/report-details-modal
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    TablePagination
   ],
   templateUrl: './reports-list.html',
   styleUrl: './reports-list.scss'
@@ -39,6 +42,11 @@ export class ReportsList implements OnInit {
 
   reports = signal<ReportResponse[]>([]);
   loading = signal<boolean>(false);
+
+  // Pagination
+  totalElements = signal<number>(0);
+  pageSize = signal<number>(20);
+  pageIndex = signal<number>(0);
 
   displayedColumns: string[] = ['type', 'reason', 'reporter', 'description', 'status', 'actions'];
 
@@ -51,9 +59,10 @@ export class ReportsList implements OnInit {
 
   loadReports(): void {
     this.loading.set(true);
-    this.adminService.getAllReports().subscribe({
+    this.adminService.getAllReports(this.pageIndex(), this.pageSize()).subscribe({
       next: (response) => {
-        this.reports.set(response);
+        this.reports.set(response.content);
+        this.totalElements.set(response.totalElements);
         this.loading.set(false);
       },
       error: (error) => {
@@ -61,6 +70,12 @@ export class ReportsList implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+    this.loadReports();
   }
 
   getStatusClass(status: ReportStatus): string {

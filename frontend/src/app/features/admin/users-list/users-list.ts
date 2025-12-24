@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { AdminService } from '../../../core/services/adminService';
 import { AuthService } from '../../../core/services/auth';
 import { User, UserRole } from '../../../core/models/user';
+import { TablePagination } from '../../../components/table-pagination/table-pagination';
 
 @Component({
   selector: 'app-users-list',
@@ -27,13 +28,13 @@ import { User, UserRole } from '../../../core/models/user';
     MatIconModule,
     MatMenuModule,
     MatChipsModule,
-    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
+    TablePagination
   ],
   templateUrl: './users-list.html',
   styleUrl: './users-list.scss'

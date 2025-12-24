@@ -3,7 +3,12 @@ package blog.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +16,7 @@ import blog.dto.request.BanUserRequestDto;
 import blog.dto.request.CreateReportRequestDto;
 import blog.dto.request.ResolveReportRequestDto;
 import blog.dto.response.AdminReportResponseDto;
+import blog.dto.response.PageResponse;
 import blog.dto.response.ReportResponseDto;
 import blog.entity.Post;
 import blog.entity.Report;
@@ -96,10 +102,27 @@ public class ReportService {
 
     //-------- ADMIN METHODS --------
     // Get all reports
-    public List<AdminReportResponseDto> getAllReports() {
-        List<Report> reports = reportRepository.findAllByOrderByCreatedAtDesc();
+    // public List<AdminReportResponseDto> getAllReports() {
+    //     List<Report> reports = reportRepository.findAllByOrderByCreatedAtDesc();
 
-        return reports.stream().map(report -> AdminReportResponseDto.fromEntity(report)).toList();
+    //     return reports.stream().map(report -> AdminReportResponseDto.fromEntity(report)).toList();
+    // }
+
+    // Get all reports with pagination
+    public PageResponse<AdminReportResponseDto> getAllReportsPaged(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Report> reportPage = reportRepository.findAllByOrderByCreatedAtDesc(pageable);
+
+        List<AdminReportResponseDto> reportDtos = reportPage.getContent().stream()
+                .map(AdminReportResponseDto::fromEntity)
+                .collect(Collectors.toList());
+
+        return new PageResponse<>(
+                reportDtos,
+                reportPage.getNumber(),
+                reportPage.getTotalPages(),
+                reportPage.getTotalElements()
+        );
     }
 
     // Get a single report by ID with full details

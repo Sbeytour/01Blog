@@ -84,6 +84,14 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+
+    <!-- Pagination -->
+    <app-table-pagination
+      [totalElements]="totalElements()"
+      [pageSize]="pageSize()"
+      [pageIndex]="pageIndex()"
+      (pageChange)="onPageChange($event)">
+    </app-table-pagination>
   </div>
   }
 </div>

@@ -11,6 +11,20 @@ import {
 } from '../models/admin';
 import { Post } from '../models/post';
 import { ReportDetails, ReportResponse } from '../models/report';
+
+export interface PagedReportResponse {
+  content: ReportResponse[];
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
+}
+
+export interface PagedPostResponse {
+  content: Post[];
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -50,9 +64,20 @@ export class AdminService {
   }
 
   // Report Management
-  getAllReports(): Observable<ReportResponse[]> {
-    return this.http.get<ReportResponse[]>(`${this.apiUrl}/reports`);
+  getAllReports(page: number = 0, size: number = 20): Observable<PagedReportResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<PagedReportResponse>(`${this.apiUrl}/reports`, { params });
   }
+
+  // getAllReportsPaged(page: number = 0, size: number = 20): Observable<PagedReportResponse> {
+  //   const params = new HttpParams()
+  //     .set('page', page.toString())
+  //     .set('size', size.toString());
+
+  //   return this.http.get<PagedReportResponse>(`${this.apiUrl}/reports/paged`, { params });
+  // }
 
   getReportById(reportId: number): Observable<ReportDetails> {
     return this.http.get<ReportDetails>(`${this.apiUrl}/reports/${reportId}`);
@@ -63,9 +88,21 @@ export class AdminService {
   }
 
   // Post Management
-  getPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.apiUrl}/posts`);
+  getPosts(page: number = 0, size: number = 20): Observable<PagedPostResponse> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get<PagedPostResponse>(`${this.apiUrl}/posts`, { params });
   }
+
+  // getPostsPaged(page: number = 0, size: number = 20): Observable<PagedPostResponse> {
+  //   const params = new HttpParams()
+  //     .set('page', page.toString())
+  //     .set('size', size.toString());
+
+  //   return this.http.get<PagedPostResponse>(`${this.apiUrl}/posts/paged`, { params });
+  // }
 
   hiddePost(postId: number, reason: string): Observable<void> {
     const request: BanUserRequest = { reason };
