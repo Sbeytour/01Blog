@@ -2,17 +2,7 @@ import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, Input, Outp
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-/**
- * Simple Infinite Scroll Component
- *
- * Usage:
- * <app-infinite-scroll
- *   [isLoadingMore]="isLoadingMore()"
- *   [hasMore]="hasMore()"
- *   (loadMore)="loadMoreItems()">
- *   <!-- Your content here -->
- * </app-infinite-scroll>
- */
+
 @Component({
   selector: 'app-infinite-scroll',
   standalone: true,
@@ -42,10 +32,8 @@ export class InfiniteScroll implements AfterViewInit, OnDestroy {
     }
   }
 
-  /**
-   * Sets up an IntersectionObserver to watch when the sentinel element comes into view
-   * When it does, and we have more items to load, emits the loadMore event
-   */
+  // Sets up an IntersectionObserver to watch when the sentinel element comes into view When it does, and we have more items to load, emits the loadMore event
+   
   private setupScrollObserver(): void {
     // If sentinel not ready yet, try again in 100ms
     if (!this.scrollSentinel) {

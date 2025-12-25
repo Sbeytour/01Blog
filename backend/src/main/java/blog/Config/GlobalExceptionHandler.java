@@ -17,6 +17,7 @@ import blog.exceptions.InvalidCredentialsException;
 import blog.exceptions.InvalidFileSizeException;
 import blog.exceptions.InvalidTokenException;
 import blog.exceptions.ReportNotFoundException;
+import blog.exceptions.ResourceNotFoundException;
 import blog.exceptions.ValidationException;
 import blog.exceptions.UserAlreadyExistsException;
 import blog.exceptions.UserNotFoundException;
@@ -48,6 +49,13 @@ public class GlobalExceptionHandler {
     public ErrorResponseDto handleReportNotFound(ReportNotFoundException exception) {
 
         return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND.value(), "Report not found");
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseDto handleResourceNotFound(ResourceNotFoundException exception) {
+
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.NOT_FOUND.value(), "Resource not found");
     }
 
     @ExceptionHandler(DuplicateReportException.class)

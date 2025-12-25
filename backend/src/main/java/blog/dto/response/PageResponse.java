@@ -20,7 +20,6 @@ public class PageResponse<T> {
         this.hasMore = currentPage < totalPages - 1;
     }
 
-    // Getters and Setters
     public List<T> getContent() {
         return content;
     }

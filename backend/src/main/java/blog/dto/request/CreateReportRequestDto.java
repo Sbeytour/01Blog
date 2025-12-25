@@ -21,7 +21,6 @@ public class CreateReportRequestDto {
     @Size(min = 10, max = 1000, message = "Description must be between 10 and 1000 characters")
     private String description;
 
-    // Getters and Setters
     public ReportedType getReportedType() {
         return reportedType;
     }

@@ -16,6 +16,22 @@ body {
   color-scheme: dark;
 }
 
+// Shared Loading State
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  min-height: 400px;
+
+  p {
+    font-size: 14px;
+    color: var(--mat-sys-on-surface-variant);
+    margin: 0;
+  }
+}
+
 // html,
 // h1,
 // h2,

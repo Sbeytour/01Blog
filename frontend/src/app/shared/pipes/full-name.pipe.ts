@@ -1,10 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { UserHelpers } from '../../core/utils/user-helpers';
 
-/**
- * Pipe to get full name from user object
- * Usage: {{ user | fullName }}
- */
+// Pipe to get full name from user object ,Usage: {{ user | fullName }}
 @Pipe({
   name: 'fullName',
   standalone: true

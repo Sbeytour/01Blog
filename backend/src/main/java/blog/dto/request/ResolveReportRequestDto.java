@@ -37,7 +37,6 @@ public class ResolveReportRequestDto {
         this.banPermanent = banPermanent;
     }
 
-    // Getters and Setters
     public ReportStatus getStatus() {
         return status;
     }

@@ -1,8 +1,16 @@
 <app-navbar></app-navbar>
 
+@if (isLoading()) {
+<div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading post...</p>
+</div>
+} @else if (errorConfig()) {
+<app-error-state [config]="errorConfig()!" (retry)="onRetryLoadPost()">
+</app-error-state>
+} @else if (post()) {
 <div class="post-details-container">
 
-    @if (post()) {
     <mat-card class="post-card">
         <mat-card-header class="post-header">
             <div class="header-container">
@@ -82,7 +90,8 @@
 
                             <!-- Video -->
                             @if (media.type === 'VIDEO'){
-                            <video [src]="media.url" class="media-video" (click)="$event.stopPropagation(); openMediaViewer(media.url, media.type)"></video>
+                            <video [src]="media.url" class="media-video"
+                                (click)="$event.stopPropagation(); openMediaViewer(media.url, media.type)"></video>
                             }
                         </div>
                         }
@@ -123,7 +132,6 @@
         </app-comment-list>
     </div>
     }
-    }
 
     <!-- Media Viewer Modal -->
     @if (isMediaViewerOpen()) {
@@ -144,3 +152,4 @@
     </div>
     }
 </div>
+}

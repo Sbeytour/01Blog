@@ -2,9 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorConfig, ErrorType } from '../../components/error-state/error-state';
 
 export class ErrorHandler {
-  /**
-   * Maps HTTP error responses to ErrorConfig for consistent error display
-   */
+
+  // Maps HTTP error responses to ErrorConfig for consistent error display
   static mapHttpError(error: HttpErrorResponse, entityName?: string): ErrorConfig {
     const type = this.getErrorType(error.status);
 
@@ -17,9 +16,7 @@ export class ErrorHandler {
     };
   }
 
-  /**
-   * Maps HTTP status codes to error types
-   */
+  // Maps HTTP status codes to error types
   private static getErrorType(status: number): ErrorType {
     switch (status) {
       case 404:
@@ -38,9 +35,7 @@ export class ErrorHandler {
     }
   }
 
-  /**
-   * Gets a user-friendly error message from HTTP error
-   */
+  // Gets a user-friendly error message from HTTP error 
   static getErrorMessage(error: HttpErrorResponse): string {
     // Always prefer backend message if available
     if (error.error?.message) {
@@ -62,24 +57,7 @@ export class ErrorHandler {
     }
   }
 
-  /**
-   * Creates a banned user error config
-   */
-  static userBanned(message?: string): ErrorConfig {
-    return {
-      type: 'forbidden',
-      title: 'Account Banned',
-      message: message || 'Your account has been banned. Please contact support for more information.',
-      icon: 'block',
-      showHomeButton: false,
-      showBackButton: false,
-      showRetryButton: false
-    };
-  }
-
-  /**
-   * Creates a user not found error config
-   */
+  // Creates a user not found error config
   static userNotFound(username: string): ErrorConfig {
     return {
       type: 'not-found',
@@ -92,9 +70,8 @@ export class ErrorHandler {
     };
   }
 
-  /**
-   * Creates a post not found error config
-   */
+  // Creates a post not found error config
+
   static postNotFound(postId?: number): ErrorConfig {
     return {
       type: 'not-found',
@@ -107,9 +84,8 @@ export class ErrorHandler {
     };
   }
 
-  /**
-   * Creates a forbidden access error config
-   */
+  // Creates a forbidden access error config
+
   static forbidden(resource: string = 'resource'): ErrorConfig {
     return {
       type: 'forbidden',
@@ -117,18 +93,6 @@ export class ErrorHandler {
       showHomeButton: true,
       showBackButton: true,
       showRetryButton: false
-    };
-  }
-
-  /**
-   * Creates a network error config
-   */
-  static networkError(): ErrorConfig {
-    return {
-      type: 'network-error',
-      showHomeButton: true,
-      showBackButton: false,
-      showRetryButton: true
     };
   }
 }

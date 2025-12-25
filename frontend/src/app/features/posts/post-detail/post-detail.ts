@@ -23,6 +23,8 @@ import { CommentInput } from '../../../components/comment-input/comment-input';
 import { CommentList } from '../../../components/comment-list/comment-list';
 import { DateFormatter } from '../../../core/utils/date-formatter';
 import { UserHelpers } from '../../../core/utils/user-helpers';
+import { ErrorState, ErrorConfig } from '../../../components/error-state/error-state';
+import { ErrorHandler } from '../../../core/utils/error-handler';
 
 @Component({
   selector: 'app-post-detail',
@@ -38,7 +40,8 @@ import { UserHelpers } from '../../../core/utils/user-helpers';
     MatProgressSpinnerModule,
     MatDividerModule,
     CommentInput,
-    CommentList
+    CommentList,
+    ErrorState
   ],
   templateUrl: './post-detail.html',
   styleUrl: './post-detail.scss'
@@ -56,6 +59,7 @@ export class PostDetail implements OnInit {
   postId?: number;
   isLoading = signal(true);
   errorMessage = signal<string | null>(null);
+  errorConfig = signal<ErrorConfig | null>(null);
 
   // Comment-related signals
   comments = signal<Comment[]>([]);
@@ -105,6 +109,7 @@ export class PostDetail implements OnInit {
   private loadPost(postId: number): void {
     this.isLoading.set(true);
     this.errorMessage.set(null);
+    this.errorConfig.set(null);
 
     this.postService.getSinglePost(postId).subscribe({
       next: (post) => {
@@ -114,7 +119,16 @@ export class PostDetail implements OnInit {
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error loading post:', error);
-        this.handleError(error);
+
+        // Check if error message indicates post not found
+        const errorMsg = error.error?.message?.toLowerCase() || '';
+        const isPostNotFound = error.status === 404 || errorMsg.includes('post not found') || errorMsg.includes('post does not exist');
+
+        if (isPostNotFound) {
+          this.errorConfig.set(ErrorHandler.postNotFound(postId));
+        } else {
+          this.errorConfig.set(ErrorHandler.mapHttpError(error, `Post #${postId}`));
+        }
         this.isLoading.set(false);
       }
     });
@@ -342,8 +356,9 @@ export class PostDetail implements OnInit {
           next: () => {
             this.router.navigate(['home']);
           },
-          error: (error) => {
-            this.handleError(error);
+          error: (error: HttpErrorResponse) => {
+            console.error('Error deleting post:', error);
+            this.errorMessage.set('Failed to delete post. Please try again.');
           }
         })
       }
@@ -354,15 +369,9 @@ export class PostDetail implements OnInit {
     return DateFormatter.formatRelativeTime(dateString);
   }
 
-  private handleError(error: HttpErrorResponse): void {
-    if (error.status === 404) {
-      this.errorMessage.set('Post not found.');
-    } else if (error.status === 403) {
-      this.errorMessage.set('You do not have permission to view this post.');
-    } else if (error.status === 0) {
-      this.errorMessage.set('Network error. Please check your connection.');
-    } else {
-      this.errorMessage.set('Failed to load post. Please try again later.');
+  onRetryLoadPost(): void {
+    if (this.postId) {
+      this.loadPost(this.postId);
     }
   }
 }

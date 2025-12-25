@@ -22,7 +22,6 @@ public class SubscriptionService {
 
     @Transactional
     public UserResponseDto followUser(Long followerId, Long followingId) {
-        // Prevent self-following
         if (followerId.equals(followingId)) {
             throw new IllegalArgumentException("You cannot follow yourself");
         }
@@ -44,7 +43,6 @@ public class SubscriptionService {
         subscription.setFollowing(following);
         subscriptionRepository.save(subscription);
 
-        // Prepare response - return full user data for the user being followed
         UserResponseDto response = UserResponseDto.fromEntity(following);
         response.setIsFollowedByCurrentUser(true);
         response.setFollowersCount(subscriptionRepository.countByFollowing(following));
@@ -67,7 +65,6 @@ public class SubscriptionService {
 
         subscriptionRepository.delete(subscription);
 
-        // Prepare response - return full user data for the user being unfollowed
         UserResponseDto response = UserResponseDto.fromEntity(following);
         response.setIsFollowedByCurrentUser(false);
         response.setFollowersCount(subscriptionRepository.countByFollowing(following));

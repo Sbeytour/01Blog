@@ -1,16 +1,6 @@
 import { AbstractControl, FormGroup } from '@angular/forms';
 
-/**
- * Utility class for handling form validation error messages
- * Eliminates duplicated getFieldErrorMsg methods across components
- */
 export class FormValidationHelper {
-  /**
-   * Gets a user-friendly error message for a form field
-   * @param field The form control to check
-   * @param fieldName The display name of the field
-   * @returns Error message or undefined if no error
-   */
   static getFieldErrorMessage(field: AbstractControl | null, fieldName: string): string | undefined {
     if (!field || !field.errors || field.untouched) {
       return undefined;
@@ -51,10 +41,6 @@ export class FormValidationHelper {
     return 'Invalid input';
   }
 
-  /**
-   * Marks all controls in a form group as touched
-   * Useful for showing validation errors when form is submitted
-   */
   static markFormGroupTouched(formGroup: FormGroup): void {
     Object.keys(formGroup.controls).forEach(key => {
       const control = formGroup.get(key);
@@ -66,16 +52,10 @@ export class FormValidationHelper {
     });
   }
 
-  /**
-   * Checks if a form field has errors and is touched
-   */
   static hasError(field: AbstractControl | null): boolean {
     return !!(field && field.errors && field.touched);
   }
 
-  /**
-   * Checks if a specific error exists on a field
-   */
   static hasSpecificError(field: AbstractControl | null, errorName: string): boolean {
     return !!(field && field.errors && field.errors[errorName] && field.touched);
   }

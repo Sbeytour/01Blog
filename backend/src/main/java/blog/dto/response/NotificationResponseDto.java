@@ -44,7 +44,6 @@ public class NotificationResponseDto {
         }
     }
 
-    // Constructors
     public NotificationResponseDto() {
     }
 
@@ -67,7 +66,6 @@ public class NotificationResponseDto {
         return dto;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

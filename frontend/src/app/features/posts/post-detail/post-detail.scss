@@ -377,6 +377,8 @@
       background-color: var(--mat-sys-surface);
     }
 
+    .err
+
     .comments-title {
       display: flex;
       align-items: center;
@@ -449,14 +451,6 @@
       }
     }
   }
-}
-
-// Loading State
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 400px;
 }
 
 // Error State

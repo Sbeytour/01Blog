@@ -1,10 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { StringHelpers } from '../../core/utils/string-helpers';
 
-/**
- * Pipe to truncate strings to a specified length
- * Usage: {{ longText | truncate:50 }}
- */
+// Pipe to truncate strings to a specified length, Usage: {{ longText | truncate:50 }}
+
 @Pipe({
   name: 'truncate',
   standalone: true

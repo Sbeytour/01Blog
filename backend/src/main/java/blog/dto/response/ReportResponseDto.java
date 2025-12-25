@@ -1,10 +1,10 @@
 package blog.dto.response;
 
+import java.time.LocalDateTime;
+
 import blog.entity.Report;
 import blog.entity.ReportReason;
 import blog.entity.ReportedType;
-
-import java.time.LocalDateTime;
 
 public class ReportResponseDto {
 
@@ -15,7 +15,6 @@ public class ReportResponseDto {
     private String description;
     private LocalDateTime createdAt;
 
-    // Constructor
     public ReportResponseDto() {
     }
 
@@ -31,7 +30,6 @@ public class ReportResponseDto {
         return reportResp;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

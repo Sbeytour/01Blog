@@ -14,9 +14,6 @@ export class ReportService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/api/reports`;
 
-  /**
-   * Create a new report
-   */
   createReport(request: CreateReportRequest): Observable<ReportResponse> {
     return this.http.post<ReportResponse>(this.apiUrl, request);
   }

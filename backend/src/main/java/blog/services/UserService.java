@@ -27,6 +27,7 @@ import blog.repositories.UserRepository;
 
 @Service
 public class UserService {
+        // Prepare response - return full user data for the user being unfollowed
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -55,7 +56,6 @@ public class UserService {
 
         UserResponseDto userResponse = UserResponseDto.fromEntity(user);
 
-        // Add follow statistics
         userResponse.setFollowersCount(subscriptionService.getFollowersCount(user.getId()));
         userResponse.setFollowingCount(subscriptionService.getFollowingCount(user.getId()));
 
@@ -85,7 +85,7 @@ public class UserService {
             user.setLastName(updateDto.getLastName().trim());
         }
 
-        // Update email (check if already exists)
+        // Update email
         if (updateDto.getEmail() != null && !updateDto.getEmail().trim().isEmpty()) {
             String newEmail = updateDto.getEmail().trim();
             if (!user.getEmail().equals(newEmail)) {

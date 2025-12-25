@@ -8,10 +8,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { UserRole } from '../../core/models/user';
 
-/**
- * Generic confirmation dialog for delete operations
- * Used for deleting users, posts, or any other entities
- */
+export interface DeleteDialogData {
+  title: string;
+  message: string;
+  entityName?: string;
+}
+
 @Component({
   selector: 'app-delete-confirmation-dialog',
   standalone: true,
@@ -37,15 +39,16 @@ export class DeleteConfirmationDialog {
   constructor(@Inject(MAT_DIALOG_DATA) public data: DeleteDialogData) { }
 }
 
-export interface DeleteDialogData {
-  title: string;
-  message: string;
-  entityName?: string;
+export interface BanUserDialogData {
+  username: string;
 }
 
-/**
- * Dialog for banning users with temporary or permanent duration
- */
+export interface BanUserDialogResult {
+  reason: string;
+  permanent: boolean;
+  durationDays: number;
+}
+
 @Component({
   selector: 'app-ban-user-dialog',
   standalone: true,
@@ -149,19 +152,10 @@ export class BanUserDialog {
   }
 }
 
-export interface BanUserDialogData {
-  username: string;
+export interface HidePostDialogData {
+  postTitle: string;
 }
 
-export interface BanUserDialogResult {
-  reason: string;
-  permanent: boolean;
-  durationDays: number;
-}
-
-/**
- * Dialog for hiding posts with a reason
- */
 @Component({
   selector: 'app-hide-post-dialog',
   standalone: true,
@@ -225,13 +219,11 @@ export class HidePostDialog {
   }
 }
 
-export interface HidePostDialogData {
-  postTitle: string;
+export interface ChangeRoleDialogData {
+  username: string;
+  currentRole: UserRole;
 }
 
-/**
- * Dialog for changing user roles
- */
 @Component({
   selector: 'app-change-role-dialog',
   standalone: true,
@@ -269,9 +261,4 @@ export class ChangeRoleDialog {
   constructor(@Inject(MAT_DIALOG_DATA) public data: ChangeRoleDialogData) {
     this.selectedRole = data.currentRole;
   }
-}
-
-export interface ChangeRoleDialogData {
-  username: string;
-  currentRole: UserRole;
 }

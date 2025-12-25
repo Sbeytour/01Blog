@@ -20,7 +20,6 @@ public class AdminStatsResponseDto {
         this.mostReportedUserReportCount = mostReportedUserReportCount;
     }
 
-    // Getters and Setters
     public long getTotalUsers() {
         return totalUsers;
     }

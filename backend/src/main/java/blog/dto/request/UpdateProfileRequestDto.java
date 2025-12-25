@@ -33,8 +33,6 @@ public class UpdateProfileRequestDto {
     @Size(max = 500)
     private String profileImgUrl;
 
-    // Getters and Setters
-
     public String getUsername() {
         return username;
     }

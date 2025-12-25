@@ -77,16 +77,13 @@ public class PostService {
     }
 
     public PageResponse<PostResponseDto> getAllPosts(Long currentUserId, int page, int size) {
-        // Get current user
         User currentUser = ValidationUtils.validateUserExists(currentUserId, userRepository);
 
         // Create pageable with sorting by creation date descending
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-        // Get posts from followed users only with pagination
         Page<Post> postPage = postRepository.findPostsByFollowedUsersPaged(currentUser, pageable);
 
-        // Convert to DTOs
         List<PostResponseDto> postDtos = postPage.getContent().stream()
                 .map(post -> PostResponseDto.fromEntity(post, currentUserId))
                 .toList();
@@ -134,8 +131,7 @@ public class PostService {
         String deleteMediaIdsJson = updateRequest.getDeletedMediaIds();
         if (deleteMediaIdsJson != null && !deleteMediaIdsJson.isEmpty()) {
             try {
-                // convert the Json data to a list ,using jackson(convert json text into a java
-                // object)
+                // convert the Json data to a list ,using jackson(convert json text into a java object)
                 List<Long> deletedIds = objectMapper.readValue(deleteMediaIdsJson, new TypeReference<List<Long>>() {
                 });
 
@@ -149,7 +145,6 @@ public class PostService {
         List<MultipartFile> files = updateRequest.getFiles();
         if (files != null && !files.isEmpty()) {
             // Save new media
-            // post.setMediaList(saveMediaFiles(files, post));
             List<Media> newMedia = saveMediaFiles(files, post);
             for (Media media : newMedia) {
                 post.getMediaList().add(media);
@@ -169,7 +164,7 @@ public class PostService {
             String uploadsDir = fileStorageConfig.getUploadDir() + "/posts";
             FileStorageUtils.deleteFile(media.getUrl(), uploadsDir);
         }
-        // Remove from post's media list
+        // Remove from post media list
         post.getMediaList().removeAll(mediaToDelete);
 
         // Delete from database

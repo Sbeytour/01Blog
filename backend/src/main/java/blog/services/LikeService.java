@@ -23,7 +23,6 @@ public class LikeService {
 
     @Transactional
     public LikeResponseDto toggleLike(Long postId, User currentUser) {
-        // Check if post exists
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 

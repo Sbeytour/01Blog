@@ -95,8 +95,6 @@ public class ModerationService {
             throw new UnauthorizedException("You cannot delete other admins");
         }
 
-        // Handle reports where this user resolved them (set resolvedBy to null)
-        // This preserves the report history while removing the user reference
         reportRepository.findAll().stream()
                 .filter(report -> report.getResolvedBy() != null && report.getResolvedBy().getId() == userId)
                 .forEach(report -> {

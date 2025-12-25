@@ -48,7 +48,6 @@ public class ReportService {
 
     @Transactional
     public ReportResponseDto createReport(CreateReportRequestDto requestDto, User reporter) {
-        // Validate that the reported entity exists
         validateReportedEntity(requestDto.getReportedType(), requestDto.getReportedId());
 
         // prevent users to report themselves
@@ -67,7 +66,6 @@ public class ReportService {
             throw new DuplicateReportException();
         }
 
-        // Create and save the report
         Report report = new Report();
 
         report.setReportedType(requestDto.getReportedType());

@@ -1,11 +1,11 @@
 package blog.dto.response;
 
+import java.time.LocalDateTime;
+
 import blog.entity.Report;
 import blog.entity.ReportReason;
 import blog.entity.ReportStatus;
 import blog.entity.ReportedType;
-
-import java.time.LocalDateTime;
 
 public class AdminReportResponseDto {
     private Long id;
@@ -56,7 +56,6 @@ public class AdminReportResponseDto {
         return dto;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
