@@ -106,10 +106,14 @@ export class Login implements OnInit {
   }
 
   private handleError(error: HttpErrorResponse): void {
+    // Check if error message indicates user is banned (backend might return different status codes)
+    const errorMsg = error.error?.message?.toLowerCase() || '';
+    const isBanned = errorMsg.includes('banned') || errorMsg.includes('suspended') || error.status === 403;
+
     if (error.status === 0) {
       this.errorMessage.set('Network error. Please check your connection and try again.');
-    } else if (error.status === 403) {
-      // User is banned
+    } else if (isBanned) {
+      // User is banned - show specific message
       this.errorMessage.set(error.error?.message || 'Your account has been banned. Please contact support.');
       // Ensure user is logged out
       this.authService.logout();
@@ -117,6 +121,8 @@ export class Login implements OnInit {
       this.errorMessage.set(error.error?.message || 'Invalid username/email or password');
     } else if (error.status === 400) {
       this.errorMessage.set(error.error?.message || 'Invalid input. Please check your credentials.');
+    } else if (error.status === 404) {
+      this.errorMessage.set('User not found. Please check your username or email.');
     } else if (error.status === 500) {
       this.errorMessage.set('Server error. Please try again later.');
     } else {

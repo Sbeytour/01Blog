@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
-import { DialogComponent } from '../dialog/dialog';
+import { DialogComponent } from '../confirmationDialog/dialog';
 import { PostEdit } from '../../features/posts/post-edit/post-edit';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ReportDialogComponent } from '../report-dialog/report-dialog';

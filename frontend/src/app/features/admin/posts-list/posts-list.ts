@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, Inject } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,16 +7,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { AdminService } from '../../../core/services/adminService';
 import { Post } from '../../../core/models/post';
 import { Router } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
 import { TablePagination } from '../../../components/table-pagination/table-pagination';
 import { StringHelpers } from '../../../core/utils/string-helpers';
 import { UserHelpers } from '../../../core/utils/user-helpers';
+import {
+  DeleteConfirmationDialog,
+  HidePostDialog
+} from '../../../components/dialogs/admin-dialogs';
 
 @Component({
   selector: 'app-posts-list',
@@ -29,7 +30,6 @@ import { UserHelpers } from '../../../core/utils/user-helpers';
     MatMenuModule,
     MatChipsModule,
     MatProgressSpinnerModule,
-    MatDialogModule,
     TablePagination
   ],
   templateUrl: './posts-list.html',
@@ -107,9 +107,13 @@ export class PostsList implements OnInit {
   }
 
   openDeleteDialog(post: Post): void {
-    const dialogRef = this.dialog.open(DeletePostDialog, {
+    const dialogRef = this.dialog.open(DeleteConfirmationDialog, {
       width: '400px',
-      data: { post }
+      data: {
+        title: 'Delete Post',
+        message: 'Are you sure you want to permanently delete this post?',
+        entityName: post.title
+      }
     });
 
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
@@ -133,9 +137,9 @@ export class PostsList implements OnInit {
   }
 
   openHiddeDialog(post: Post): void {
-    const dialogRef = this.dialog.open(BanUserDialog, {
+    const dialogRef = this.dialog.open(HidePostDialog, {
       width: '400px',
-      data: { post }
+      data: { postTitle: post.title }
     });
 
     dialogRef.afterClosed().subscribe((reason: string) => {
@@ -169,68 +173,5 @@ export class PostsList implements OnInit {
         this.loading.set(false);
       }
     });
-  }
-}
-
-// Delete Post Dialog Component
-@Component({
-  selector: 'delete-post-dialog',
-  standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule],
-  template: `
-    <h2 mat-dialog-title>Delete Post</h2>
-    <mat-dialog-content>
-      <p>Are you sure you want to permanently delete this post?</p>
-      <p><strong>{{ data.post.title }}</strong></p>
-      <p style="color: #f44336;">This action cannot be undone!</p>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button [mat-dialog-close]="false">Cancel</button>
-      <button mat-raised-button color="warn" [mat-dialog-close]="true">
-        Delete
-      </button>
-    </mat-dialog-actions>
-  `
-})
-export class DeletePostDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { post: Post }) { }
-}
-
-
-// Ban User Dialog Component
-@Component({
-  selector: 'hidde-post-dialog',
-  standalone: true,
-  imports: [CommonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormsModule],
-  template: `
-    <h2 mat-dialog-title>Ban User</h2>
-    <mat-dialog-content>
-      <p>You are about to ban <strong>{{ data.post.title }}</strong></p>
-      <mat-form-field appearance="outline" style="width: 100%;">
-        <mat-label>Reason for ban</mat-label>
-        <textarea
-          matInput
-          [(ngModel)]="reason"
-          placeholder="Enter reason (min 10 characters)"
-          rows="4"
-          required
-        ></textarea>
-      </mat-form-field>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button [mat-dialog-close]="null">Cancel</button>
-      <button mat-raised-button color="warn" [mat-dialog-close]="reason" [disabled]="!isValid()">
-        Ban User
-      </button>
-    </mat-dialog-actions>
-  `
-})
-export class BanUserDialog {
-  reason: string = '';
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { post: Post }) { }
-
-  isValid(): boolean {
-    return this.reason.trim().length >= 10;
   }
 }

@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { Post } from '../../../core/models/post';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '../../../components/dialog/dialog';
+import { DialogComponent } from '../../../components/confirmationDialog/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PostForm, PostFormData } from '../../../components/post-form/post-form';
 

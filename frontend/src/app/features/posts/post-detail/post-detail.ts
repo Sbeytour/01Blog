@@ -15,7 +15,7 @@ import { LikeService } from '../../../core/services/likeService';
 import { AuthService } from '../../../core/services/auth';
 import { Navbar } from '../../../components/navbar/navbar';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '../../../components/dialog/dialog';
+import { DialogComponent } from '../../../components/confirmationDialog/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { PostEdit } from '../post-edit/post-edit';
 import { MatInputModule } from '@angular/material/input';

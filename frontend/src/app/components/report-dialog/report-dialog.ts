@@ -15,7 +15,7 @@ import {
   ReportReasonLabels,
   ReportedType
 } from '../../core/models/report';
-import { DialogComponent } from '../dialog/dialog';
+import { DialogComponent } from '../confirmationDialog/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 

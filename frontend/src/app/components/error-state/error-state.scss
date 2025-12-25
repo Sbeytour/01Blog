@@ -1,0 +1,107 @@
+.error-state-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 20px;
+}
+
+.error-card {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.icon-container {
+  margin-bottom: 24px;
+}
+
+.error-icon {
+  font-size: 80px;
+  width: 80px;
+  height: 80px;
+  color: #9e9e9e;
+
+  &.not-found {
+    color: #ff9800;
+  }
+
+  &.forbidden {
+    color: #f44336;
+  }
+
+  &.server-error {
+    color: #f44336;
+  }
+
+  &.network-error {
+    color: #2196f3;
+  }
+}
+
+.error-title {
+  font-size: 32px;
+  font-weight: 500;
+  margin: 0 0 16px 0;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.error-message {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.6);
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.entity-info {
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.87);
+  margin: 12px 0 24px 0;
+
+  strong {
+    color: #1976d2;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 32px;
+
+  button {
+    mat-icon {
+      margin-right: 8px;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .error-icon {
+    font-size: 60px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .error-title {
+    font-size: 24px;
+  }
+
+  .error-message {
+    font-size: 14px;
+  }
+
+  .entity-info {
+    font-size: 16px;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+
+    button {
+      width: 100%;
+    }
+  }
+}

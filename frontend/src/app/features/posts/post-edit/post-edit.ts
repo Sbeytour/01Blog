@@ -7,7 +7,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PostForm, PostFormData } from '../../../components/post-form/post-form';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '../../../components/dialog/dialog';
+import { DialogComponent } from '../../../components/confirmationDialog/dialog';
 
 export interface PostEditData {
   postId: number;

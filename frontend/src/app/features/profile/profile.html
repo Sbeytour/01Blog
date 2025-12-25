@@ -1,5 +1,10 @@
 <app-navbar></app-navbar>
 
+<!-- Error State - Show when user profile fails to load -->
+@if (errorConfig()) {
+  <app-error-state [config]="errorConfig()!" (retry)="onRetryLoadProfile()"></app-error-state>
+} @else {
+
 <div class="profile-container">
 
   <!-- Profile Info Card -->
@@ -118,3 +123,5 @@
     }
   </div>
 </div>
+
+}

@@ -14,7 +14,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { UpdateProfileRequest } from '../../core/models/user';
 import { environment } from '../../../environments/environment';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from '../dialog/dialog';
+import { DialogComponent } from '../confirmationDialog/dialog';
 
 @Component({
   selector: 'app-profile-edit',

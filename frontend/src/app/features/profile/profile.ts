@@ -21,6 +21,8 @@ import { ReportDialogComponent } from '../../components/report-dialog/report-dia
 import { ReportedType } from '../../core/models/report';
 import { Post } from '../../core/models/post';
 import { InfiniteScroll } from '../../components/infinite-scroll/infinite-scroll';
+import { ErrorState, ErrorConfig } from '../../components/error-state/error-state';
+import { ErrorHandler } from '../../core/utils/error-handler';
 
 @Component({
   selector: 'app-profile',
@@ -35,7 +37,8 @@ import { InfiniteScroll } from '../../components/infinite-scroll/infinite-scroll
     Navbar,
     ProfileEdit,
     PostCard,
-    InfiniteScroll
+    InfiniteScroll,
+    ErrorState
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.scss'
@@ -51,6 +54,7 @@ export class UserProfile implements OnInit {
 
   isLoading = signal(false)
   errorMessage = signal<string | null>(null);
+  errorConfig = signal<ErrorConfig | null>(null);
   isLoadingMore = signal(false);
   hasMore = signal(true);
   currentPage = signal(0);
@@ -90,6 +94,9 @@ export class UserProfile implements OnInit {
     if (currentUser?.username === username) {
       this.router.navigate(['/profile']);
     } else {
+      this.isLoading.set(true);
+      this.errorConfig.set(null);
+
       this.userService.getUserProfile(username).subscribe({
         next: (response) => {
           this.profileUser.set(response);
@@ -99,6 +106,21 @@ export class UserProfile implements OnInit {
           this.followersCount.set(response.followersCount || 0);
           this.followingCount.set(response.followingCount || 0);
           this.isFollowedByCurrentUser.set(response.isFollowedByCurrentUser || false);
+          this.isLoading.set(false);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error loading user profile:', error);
+
+          // Check if error message indicates user not found
+          const errorMsg = error.error?.message?.toLowerCase() || '';
+          const isUserNotFound = error.status === 404 || errorMsg.includes('user not found') || errorMsg.includes('user does not exist');
+
+          if (isUserNotFound) {
+            this.errorConfig.set(ErrorHandler.userNotFound(username));
+          } else {
+            this.errorConfig.set(ErrorHandler.mapHttpError(error, `@${username}`));
+          }
+          this.isLoading.set(false);
         }
       })
     }
@@ -256,6 +278,18 @@ export class UserProfile implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result?.success) {
         // Report submitted successfully - dialog already shows snackbar
+      }
+    });
+  }
+
+  onRetryLoadProfile(): void {
+    this.route.paramMap.subscribe(params => {
+      const username = params.get('username');
+      const currentUser = this.authService.currentUser();
+      if (username) {
+        this.loadUserProfile(username, currentUser);
+      } else {
+        this.loadCurrentUserProfile(currentUser);
       }
     });
   }

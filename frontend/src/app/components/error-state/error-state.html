@@ -1,0 +1,47 @@
+<div class="error-state-container">
+  <mat-card class="error-card">
+    <mat-card-content>
+      <div class="icon-container">
+        <mat-icon class="error-icon" [class.not-found]="config.type === 'not-found'"
+                                     [class.forbidden]="config.type === 'forbidden'"
+                                     [class.server-error]="config.type === 'server-error'"
+                                     [class.network-error]="config.type === 'network-error'">
+          {{ errorIcon }}
+        </mat-icon>
+      </div>
+
+      <h1 class="error-title">{{ errorTitle }}</h1>
+
+      <p class="error-message">{{ errorMessage }}</p>
+
+      @if (config.type === 'not-found' && config.entityName) {
+        <p class="entity-info">
+          <strong>{{ config.entityName }}</strong>
+        </p>
+      }
+
+      <div class="actions">
+        @if (showRetryButton) {
+          <button mat-raised-button color="primary" (click)="onRetry()">
+            <mat-icon>refresh</mat-icon>
+            Try Again
+          </button>
+        }
+
+        @if (showHomeButton) {
+          <button mat-raised-button [color]="showRetryButton ? 'accent' : 'primary'" (click)="goToHome()">
+            <mat-icon>home</mat-icon>
+            Go to Home
+          </button>
+        }
+
+        @if (showBackButton) {
+          <button mat-stroked-button (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Go Back
+          </button>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

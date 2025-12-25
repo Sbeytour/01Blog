@@ -49,6 +49,10 @@ public class UserService {
     public UserResponseDto getUserProfile(String username, Long currentUserId) {
         User user = userRepository.findByUsernameOrEmail(username);
 
+        if (user == null) {
+            throw new UserNotFoundException("User not found with username: " + username);
+        }
+
         UserResponseDto userResponse = UserResponseDto.fromEntity(user);
 
         // Add follow statistics

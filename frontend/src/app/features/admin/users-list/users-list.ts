@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,17 +7,19 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AdminService } from '../../../core/services/adminService';
 import { AuthService } from '../../../core/services/auth';
 import { User, UserRole } from '../../../core/models/user';
 import { TablePagination } from '../../../components/table-pagination/table-pagination';
 import { UserHelpers } from '../../../core/utils/user-helpers';
+import {
+  BanUserDialog,
+  BanUserDialogResult,
+  ChangeRoleDialog,
+  DeleteConfirmationDialog
+} from '../../../components/dialogs/admin-dialogs';
 
 @Component({
   selector: 'app-users-list',
@@ -30,11 +32,6 @@ import { UserHelpers } from '../../../core/utils/user-helpers';
     MatMenuModule,
     MatChipsModule,
     MatProgressSpinnerModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    FormsModule,
     TablePagination
   ],
   templateUrl: './users-list.html',
@@ -95,23 +92,23 @@ export class UsersList implements OnInit {
 
   openBanDialog(user: User): void {
     const dialogRef = this.dialog.open(BanUserDialog, {
-      width: '400px',
-      data: { user }
+      width: '500px',
+      data: { username: user.username }
     });
 
-    dialogRef.afterClosed().subscribe((reason: string) => {
-      if (reason) {
-        this.banUser(user.id, reason);
+    dialogRef.afterClosed().subscribe((result: BanUserDialogResult | null) => {
+      if (result) {
+        this.banUser(user.id, result.reason, result.permanent, result.durationDays);
       }
     });
   }
 
-  banUser(userId: number, reason: string): void {
+  banUser(userId: number, reason: string, permanent: boolean, durationDays: number): void {
     this.isLoading.set(true);
     const banRequest = {
       reason,
-      permanent: true,
-      durationDays: 0
+      permanent,
+      durationDays: permanent ? 0 : durationDays
     };
     this.adminService.banUser(userId, banRequest).subscribe({
       next: () => {
@@ -140,7 +137,7 @@ export class UsersList implements OnInit {
   openRoleDialog(user: User): void {
     const dialogRef = this.dialog.open(ChangeRoleDialog, {
       width: '400px',
-      data: { user }
+      data: { username: user.username, currentRole: user.role }
     });
 
     dialogRef.afterClosed().subscribe((newRole: UserRole) => {
@@ -164,9 +161,13 @@ export class UsersList implements OnInit {
   }
 
   openDeleteDialog(user: User): void {
-    const dialogRef = this.dialog.open(DeleteUserDialog, {
+    const dialogRef = this.dialog.open(DeleteConfirmationDialog, {
       width: '400px',
-      data: { user }
+      data: {
+        title: 'Delete User',
+        message: `Are you sure you want to permanently delete ${user.username}?`,
+        entityName: user.username
+      }
     });
 
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
@@ -198,98 +199,3 @@ export class UsersList implements OnInit {
     });
   }
 }
-
-// Ban User Dialog Component
-@Component({
-  selector: 'ban-user-dialog',
-  standalone: true,
-  imports: [CommonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormsModule],
-  template: `
-    <h2 mat-dialog-title>Ban User</h2>
-    <mat-dialog-content>
-      <p>You are about to ban <strong>{{ data.user.username }}</strong></p>
-      <mat-form-field appearance="outline" style="width: 100%;">
-        <mat-label>Reason for ban</mat-label>
-        <textarea
-          matInput
-          [(ngModel)]="reason"
-          placeholder="Enter reason (min 10 characters)"
-          rows="4"
-          required
-        ></textarea>
-      </mat-form-field>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button [mat-dialog-close]="null">Cancel</button>
-      <button mat-raised-button color="warn" [mat-dialog-close]="reason" [disabled]="!isValid()">
-        Ban User
-      </button>
-    </mat-dialog-actions>
-  `
-})
-export class BanUserDialog {
-  reason: string = '';
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User }) { }
-
-  isValid(): boolean {
-    return this.reason.trim().length >= 10;
-  }
-}
-
-// Change Role Dialog Component
-@Component({
-  selector: 'change-role-dialog',
-  standalone: true,
-  imports: [CommonModule, MatDialogModule, MatFormFieldModule, MatSelectModule, MatButtonModule, FormsModule],
-  template: `
-    <h2 mat-dialog-title>Change User Role</h2>
-    <mat-dialog-content>
-      <p>Change role for <strong>{{ data.user.username }}</strong></p>
-      <mat-form-field appearance="outline" style="width: 100%;">
-        <mat-label>Role</mat-label>
-        <mat-select [(ngModel)]="selectedRole">
-          <mat-option [value]="'USER'">User</mat-option>
-          <mat-option [value]="'ADMIN'">Admin</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button [mat-dialog-close]="null">Cancel</button>
-      <button mat-raised-button color="primary" [mat-dialog-close]="selectedRole">
-        Update Role
-      </button>
-    </mat-dialog-actions>
-  `
-})
-export class ChangeRoleDialog {
-  selectedRole: UserRole;
-
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User }) {
-    this.selectedRole = data.user.role;
-  }
-}
-
-// Delete User Dialog Component
-@Component({
-  selector: 'delete-user-dialog',
-  standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule],
-  template: `
-    <h2 mat-dialog-title>Delete User</h2>
-    <mat-dialog-content>
-      <p>Are you sure you want to permanently delete <strong>{{ data.user.username }}</strong>?</p>
-      <p style="color: #f44336;">This action cannot be undone!</p>
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button [mat-dialog-close]="false">Cancel</button>
-      <button mat-raised-button color="warn" [mat-dialog-close]="true">
-        Delete
-      </button>
-    </mat-dialog-actions>
-  `
-})
-export class DeleteUserDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User }) { }
-}
-
