@@ -77,8 +77,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.getWriter().write("{\"message\":\"" + ex.getMessage() + "\",\"status\":403,\"error\":\"Your account has been banned\"}");
             return;
         } catch (UserNotFoundException ex) {
-            // User not found in DB
-            request.setAttribute("jwt_error", "User not found");
+            // User not found in DB (deleted user)
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"User account not found. Please log in again.\",\"status\":401,\"error\":\"Unauthorized\"}");
             return;
         } catch (Exception ex) {
             // Any other error (JWT parsing, DB error, etc.)

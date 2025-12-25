@@ -23,7 +23,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error) => {
       if (error.status === 401 && !isAuthEndpoint) {
         localStorage.removeItem("Token");
-        router.navigate(['/auth/login']);
+        const message = error.error?.message || 'Your session has expired. Please log in again.';
+        router.navigate(['/auth/login'], {
+          state: { message }
+        });
       }
 
       if (error.status === 403) {
