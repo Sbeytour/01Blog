@@ -111,6 +111,11 @@ public class PostService {
     public PostResponseDto getSinglePost(Long postId, Long currentUserId) {
         Post post = ValidationUtils.validatePostExists(postId, postRepository);
 
+        // Check if post is hidden and user is not the creator
+        if (post.isHidden() && !currentUserId.equals(post.getCreator().getId())) {
+            throw new RuntimeException("This post is not available");
+        }
+
         return PostResponseDto.fromEntity(post, currentUserId);
     }
 

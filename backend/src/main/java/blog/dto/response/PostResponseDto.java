@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import blog.entity.Post;
 
 public class PostResponseDto {
+
     private Long id;
     private String title;
     private String content;
@@ -49,8 +50,8 @@ public class PostResponseDto {
 
     public static PostResponseDto fromEntity(Post post, Long currentUserId) {
         PostResponseDto dto = fromEntity(post);
-        dto.isLikedByCurrentUser = post.getLikes() != null &&
-                post.getLikes().stream().anyMatch(like -> like.getUser().getId() == (currentUserId));
+        dto.isLikedByCurrentUser = post.getLikes() != null
+                && post.getLikes().stream().anyMatch(like -> like.getUser().getId() == (currentUserId));
         return dto;
     }
 
@@ -149,6 +150,7 @@ public class PostResponseDto {
         this.updatedAt = updatedAt;
     }
 
+    @JsonProperty("isHidden")
     public boolean isHidden() {
         return isHidden;
     }

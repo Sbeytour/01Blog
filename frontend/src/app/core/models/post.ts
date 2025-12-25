@@ -19,6 +19,7 @@ export interface Post {
     commentsCount: number;
     isHidden: boolean;
     isLikedByCurrentUser?: boolean;
+    reportCount?: number;
     createdAt: string;
     updatedAt: string;
 }

@@ -123,20 +123,20 @@ export class PostsList implements OnInit {
     });
   }
 
-  hiddePost(postId: number, reason: string): void {
+  hidePost(postId: number, reason: string): void {
     this.loading.set(true);
-    this.adminService.hiddePost(postId, reason).subscribe({
+    this.adminService.hidePost(postId, reason).subscribe({
       next: () => {
         this.loadPosts();
       },
       error: (error) => {
-        console.error('Failed to hidde post:', error);
+        console.error('Failed to hide post. Full error:', error);
         this.loading.set(false);
       }
     });
   }
 
-  openHiddeDialog(post: Post): void {
+  openHideDialog(post: Post): void {
     const dialogRef = this.dialog.open(HidePostDialog, {
       width: '400px',
       data: { postTitle: post.title }
@@ -144,7 +144,7 @@ export class PostsList implements OnInit {
 
     dialogRef.afterClosed().subscribe((reason: string) => {
       if (reason) {
-        this.hiddePost(post.id, reason);
+        this.hidePost(post.id, reason);
       }
     });
   }
@@ -156,7 +156,7 @@ export class PostsList implements OnInit {
         this.loadPosts();
       },
       error: (error) => {
-        console.error('Failed to unhide post:', error);
+        console.error('Failed to unhide post. Full error:', error);
         this.loading.set(false);
       }
     });

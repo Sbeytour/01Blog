@@ -71,4 +71,29 @@ public class AdminModerationController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/posts/{postId}/hide")
+    public ResponseEntity<Void> hidePost(
+            @PathVariable Long postId,
+            @Valid @RequestBody BanUserRequestDto requestDto) {
+        System.out.println("AdminModerationController.hidePost called for postId: " + postId);
+        System.out.println("Request body reason: " + requestDto.getReason());
+        moderationService.hidePost(postId, requestDto.getReason());
+        System.out.println("Post hidden successfully");
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/posts/{postId}/unhide")
+    public ResponseEntity<Void> unhidePost(@PathVariable Long postId) {
+        System.out.println("AdminModerationController.unhidePost called for postId: " + postId);
+        moderationService.unhidePost(postId);
+        System.out.println("Post unhidden successfully");
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+        moderationService.deletePostByAdmin(postId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -88,13 +88,13 @@ export class AdminService {
     return this.http.get<PagedPostResponse>(`${this.apiUrl}/posts`, { params });
   }
 
-  hiddePost(postId: number, reason: string): Observable<void> {
+  hidePost(postId: number, reason: string): Observable<void> {
     const request: BanUserRequest = { reason };
-    return this.http.put<void>(`${this.apiUrl}/posts/${postId}/hidde`, request);
+    return this.http.put<void>(`${this.apiUrl}/posts/${postId}/hide`, request);
   }
 
   unhidePost(postId: number): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/posts/${postId}/unhidde`, null);
+    return this.http.put<void>(`${this.apiUrl}/posts/${postId}/unhide`, {});
   }
 
   deletePost(postId: number): Observable<void> {

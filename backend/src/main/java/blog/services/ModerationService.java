@@ -123,7 +123,33 @@ public class ModerationService {
     }
 
     //--------------------Post Moderation-----------------------------
-    
+
+    // Hide a post
+    @Transactional
+    public void hidePost(Long postId, String reason) {
+        System.out.println("ModerationService.hidePost called for postId: " + postId + " with reason: " + reason);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+
+        System.out.println("Post found. Current isHidden: " + post.isHidden());
+        post.setIsHidden(true);
+        Post savedPost = postRepository.save(post);
+        System.out.println("Post saved. New isHidden: " + savedPost.isHidden());
+    }
+
+    // Unhide a post
+    @Transactional
+    public void unhidePost(Long postId) {
+        System.out.println("ModerationService.unhidePost called for postId: " + postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: " + postId));
+
+        System.out.println("Post found. Current isHidden: " + post.isHidden());
+        post.setIsHidden(false);
+        Post savedPost = postRepository.save(post);
+        System.out.println("Post saved. New isHidden: " + savedPost.isHidden());
+    }
+
     //Delete Post
     @Transactional
     public void deletePostByAdmin(Long postId) {

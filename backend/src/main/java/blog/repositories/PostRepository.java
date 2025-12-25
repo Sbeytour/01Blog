@@ -20,7 +20,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         Page<Post> findByUserIdOrderByCreatedAtDesc(@Param("userId") Long userId, Pageable pageable);
 
         // Find posts from users that the current user follows with pagination
-        @Query("SELECT p FROM Post p WHERE p.creator = :currentUser OR p.creator IN " +
-                        "(SELECT s.following FROM Subscription s WHERE s.follower = :currentUser)")
+        @Query("SELECT p FROM Post p WHERE p.isHidden = false AND (p.creator = :currentUser OR p.creator IN " +
+                        "(SELECT s.following FROM Subscription s WHERE s.follower = :currentUser))")
         Page<Post> findPostsByFollowedUsersPaged(@Param("currentUser") User currentUser, Pageable pageable);
 }
