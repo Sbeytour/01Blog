@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -122,13 +123,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleTypeMismatch(MethodArgumentTypeMismatchException exception) {
-        String paramName = exception.getName();
-        String typeName = exception.getRequiredType() != null ? exception.getRequiredType().getSimpleName() : "unknown";
-
         return new ErrorResponseDto(
-                String.format("Invalid value for parameter '%s'. Expected type: %s", paramName, typeName),
+                String.format("Invalid value for parameter"),
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid parameter type"
+        );
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ErrorResponseDto handleMethodNotAllowed(HttpRequestMethodNotSupportedException exception) {
+        return new ErrorResponseDto(
+                String.format("Method Not Allowed for this endpoint."), HttpStatus.METHOD_NOT_ALLOWED.value(), "Method Not Allowed"
         );
     }
 

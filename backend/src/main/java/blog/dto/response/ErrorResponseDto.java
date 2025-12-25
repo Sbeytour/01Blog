@@ -9,6 +9,7 @@ public class ErrorResponseDto {
     public ErrorResponseDto(String message, int statusCode, String error) {
         this.message = message;
         this.statusCode = statusCode;
+        this.error = error;
     }
 
     public String getMessage() {
