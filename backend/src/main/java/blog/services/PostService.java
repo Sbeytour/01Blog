@@ -1,14 +1,8 @@
 package blog.services;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -181,38 +175,29 @@ public class PostService {
 
     private List<Media> saveMediaFiles(List<MultipartFile> files, Post post) {
         List<Media> mediaList = new ArrayList<>();
-
         String uploadsDir = fileStorageConfig.getUploadDir() + "/posts";
-        File dir = new File(uploadsDir);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
 
         for (MultipartFile file : files) {
-            String orgFileName = file.getOriginalFilename();
-            String extension = orgFileName != null && orgFileName.contains(".")
-                    ? orgFileName.substring(orgFileName.lastIndexOf("."))
-                    : "";
-            String fileName = UUID.randomUUID() + extension;
-            Path filePath = Paths.get(uploadsDir, fileName);
-
             try {
-                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                // Save file using shared utility method
+                String fileName = FileStorageUtils.saveUploadedFile(file, uploadsDir, "");
+
+                // Determine media type based on content type
+                String contentType = file.getContentType();
+                MediaType mediaType = contentType != null && contentType.startsWith("image")
+                        ? MediaType.IMAGE
+                        : MediaType.VIDEO;
+
+                // Create media entity
+                Media media = new Media();
+                media.setUrl("/files/posts/" + fileName);
+                media.setType(mediaType);
+                media.setPost(post);
+
+                mediaList.add(media);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to save file: " + fileName, e);
+                throw new RuntimeException("Failed to save file: " + file.getOriginalFilename(), e);
             }
-
-            String contentType = file.getContentType();
-            MediaType mediaType = contentType != null && contentType.startsWith("image")
-                    ? MediaType.IMAGE
-                    : MediaType.VIDEO;
-
-            Media media = new Media();
-            media.setUrl("/files/posts/" + fileName);
-            media.setType(mediaType);
-            media.setPost(post);
-
-            mediaList.add(media);
         }
 
         return mediaRepository.saveAll(mediaList);

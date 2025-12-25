@@ -1,13 +1,10 @@
 package blog.services;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
@@ -24,10 +21,10 @@ import blog.exceptions.InvalidFileSizeException;
 import blog.exceptions.UserAlreadyExistsException;
 import blog.exceptions.UserNotFoundException;
 import blog.repositories.UserRepository;
+import blog.util.FileStorageUtils;
 
 @Service
 public class UserService {
-        // Prepare response - return full user data for the user being unfollowed
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -131,27 +128,14 @@ public class UserService {
 
         // Get upload directory from configuration
         String uploadsDir = fileStorageConfig.getUploadDir();
-        File dir = new File(uploadsDir);
-
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        String originalFilename = file.getOriginalFilename();
-        String extension = originalFilename != null && originalFilename.contains(".")
-                ? originalFilename.substring(originalFilename.lastIndexOf("."))
-                : ".jpg";
-
-        String fileName = UUID.randomUUID() + extension;
-        Path filePath = Paths.get(uploadsDir, fileName);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         // Delete old profile picture if exists
         if (user.getProfileImgUrl() != null && !user.getProfileImgUrl().isEmpty()) {
-            String oldFileName = user.getProfileImgUrl().replace("/files/", "");
-            Path oldFilePath = Paths.get(uploadsDir, oldFileName);
-            Files.deleteIfExists(oldFilePath);
+            FileStorageUtils.deleteFile(user.getProfileImgUrl(), uploadsDir);
         }
+
+        // Save new file using shared utility method
+        String fileName = FileStorageUtils.saveUploadedFile(file, uploadsDir, ".jpg");
 
         user.setProfileImgUrl("/files/" + fileName);
         User updatedUser = userRepository.save(user);

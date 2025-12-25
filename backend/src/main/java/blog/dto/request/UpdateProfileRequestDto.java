@@ -1,19 +1,17 @@
 package blog.dto.request;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class UpdateProfileRequestDto {
 
-    @Size(min = 3, max = 15, message = "username must be between 4 and 15 characters")
+    @Size(min = 4, max = 15, message = "username must be between 4 and 15 characters")
     @Pattern(regexp = "^[a-zA-Z0-9]{4,15}$", message = "username must be between 4 and 15 characters and contain only characters and numbers")
     private String username;
 
     @Size(min = 3, max = 30, message = "First name must be between 3 and 30 characters")
     @Pattern(regexp = "^[a-zA-Z\\s]+$", message = "First name can only contain letters and spaces")
-    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
     @Size(min = 3, max = 30, message = "Last name must be between 3 and 30 characters")
@@ -21,16 +19,17 @@ public class UpdateProfileRequestDto {
     private String lastName;
 
     @Email(message = "Email format is invalid")
+    @Size(max = 100, message = "Email length should not exceed 100 characters")
     @Pattern(regexp = "^[a-zA-Z0-9]+\\.?[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-z]+$", message = "Email format is invalid")
     private String email;
 
-    @Size(min = 8, max = 30, message = "Password must be between 8 and 30 characters")
+    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
     private String password;
 
-    @Size(max = 1000, message = "Bio cannot exceed 1000 characters")
+    @Size(max = 250, message = "Bio cannot exceed 1000 characters")
     private String bio;
 
-    @Size(max = 500)
+    @Size(max = 520, message = "Profile URL must not exceed 520 characters")
     private String profileImgUrl;
 
     public String getUsername() {
