@@ -5,6 +5,15 @@
     display: flex;
     flex-direction: column;
 
+    @media (max-width: 768px) {
+        height: auto;
+        min-height: 350px;
+    }
+
+    @media (max-width: 480px) {
+        min-height: 300px;
+    }
+
     .post-header {
         .header-container {
             display: flex;
@@ -18,12 +27,20 @@
                 gap: 12px;
                 // flex: 1;
 
+                @media (max-width: 480px) {
+                    gap: 8px;
+                }
 
                 .user-pic {
                     width: 40px;
                     height: 40px;
                     border-radius: 50%;
                     border: 1px solid var(--mat-sys-surface-tint);
+
+                    @media (max-width: 480px) {
+                        width: 36px;
+                        height: 36px;
+                    }
 
                     .profile-pic {
                         width: 100%;
@@ -39,6 +56,11 @@
                             width: 39px;
                             color: var(--mat-sys-primary);
 
+                            @media (max-width: 480px) {
+                                font-size: 35px;
+                                height: 35px;
+                                width: 35px;
+                            }
                         }
                     }
                 }
@@ -47,17 +69,33 @@
                     display: flex;
                     flex-direction: column;
                     gap: 2px;
+                    min-width: 0;
+                    flex: 1;
 
                     .full-name {
                         font-size: 16px;
                         margin: 0;
                         color: var(--mat-sys-on-surface);
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+
+                        @media (max-width: 480px) {
+                            font-size: 14px;
+                        }
                     }
 
                     .username {
                         font-size: 14px;
                         color: var(--mat-sys-inverse-surface);
                         margin: 0;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+
+                        @media (max-width: 480px) {
+                            font-size: 12px;
+                        }
                     }
                 }
             }
@@ -102,6 +140,12 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             word-break: break-word;
+
+            @media (max-width: 480px) {
+                font-size: 16px;
+                margin: 12px 0 10px 0;
+                padding: 0 12px;
+            }
         }
 
         // Title overlay for posts with media
@@ -113,6 +157,10 @@
             background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 70%, transparent 100%);
             padding: 40px 16px 16px 16px;
             z-index: 2;
+
+            @media (max-width: 480px) {
+                padding: 30px 12px 12px 12px;
+            }
 
             h3 {
                 font-size: 16px;
@@ -126,11 +174,20 @@
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
                 text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+
+                @media (max-width: 480px) {
+                    font-size: 14px;
+                }
             }
         }
 
         .text-content {
             padding: 0 16px;
+
+            @media (max-width: 480px) {
+                padding: 0 12px;
+            }
+
             p {
                 font-size: 14px;
                 line-height: 1.5;
@@ -142,6 +199,11 @@
                 -webkit-line-clamp: 4;
                 -webkit-box-orient: vertical;
                 word-break: break-word;
+
+                @media (max-width: 480px) {
+                    font-size: 13px;
+                    -webkit-line-clamp: 3;
+                }
             }
         }
 
@@ -234,10 +296,18 @@
         padding: 10px 12px;
         margin-top: auto;
 
+        @media (max-width: 480px) {
+            padding: 8px 10px;
+        }
+
         .footer-stats {
             display: flex;
             align-items: center;
             gap: 20px;
+
+            @media (max-width: 480px) {
+                gap: 12px;
+            }
 
             .stat-item {
                 display: flex;
@@ -246,11 +316,22 @@
                 font-size: 14px;
                 color: var(--mat-sys-inverse-surface);
 
+                @media (max-width: 480px) {
+                    gap: 4px;
+                    font-size: 13px;
+                }
+
                 mat-icon {
                     font-size: 18px;
                     width: 18px;
                     height: 18px;
                     color: #999;
+
+                    @media (max-width: 480px) {
+                        font-size: 16px;
+                        width: 16px;
+                        height: 16px;
+                    }
                 }
 
                 &.likes {
@@ -293,6 +374,10 @@
                 margin-left: auto;
                 font-size: 13px;
                 color: var(--mat-sys-inverse-surface);
+
+                @media (max-width: 480px) {
+                    font-size: 12px;
+                }
             }
         }
     }

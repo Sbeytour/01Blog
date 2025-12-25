@@ -11,6 +11,18 @@
 
   @media (max-width: 768px) {
     padding: 0 16px;
+    height: 56px;
+  }
+
+  @media (max-width: 600px) {
+    padding: 0 12px;
+    gap: 8px;
+    height: 56px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 8px;
+    gap: 6px;
   }
 }
 
@@ -30,8 +42,12 @@
     max-width: 500px;
   }
 
-  @media (max-width: 568px) {
-    max-width: 300px;
+  @media (max-width: 600px) {
+    max-width: 200px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 150px;
   }
 
   app-searchBar {
@@ -46,6 +62,7 @@
   text-decoration: none;
   cursor: pointer;
   gap: 1px;
+  flex-shrink: 0;
 
   .logo {
     font-size: 25px;
@@ -57,6 +74,12 @@
 
     @media (max-width: 768px) {
       font-size: 20px;
+      padding: 1px 4px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 18px;
+      padding: 1px 3px;
     }
   }
 
@@ -69,6 +92,10 @@
     @media (max-width: 768px) {
       font-size: 20px;
     }
+
+    @media (max-width: 480px) {
+      font-size: 18px;
+    }
   }
 
   &:hover {
@@ -80,6 +107,23 @@
   display: flex;
   align-items: center;
   gap: 8px;
+
+  @media (max-width: 600px) {
+    border-radius: 8px;
+    min-width: 30px;
+    height: 30px;
+    gap: 2px;
+    span {
+      display: none;
+    }
+
+    mat-icon {
+      font-size: 20px;
+      padding: 0;
+      width: 20px;
+      height: 20px;
+    }
+  }
 
   .create-post-btn {
     display: flex;
@@ -109,6 +153,7 @@
       }
     }
 
+
     @media (max-width: 500px) {
       border-radius: 8px;
       min-width: 30px;
@@ -134,10 +179,32 @@
     height: 50px;
     width: 50px;
 
+    @media (max-width: 600px) {
+      height: 40px;
+      width: 40px;
+    }
+
+    @media (max-width: 480px) {
+      height: 36px;
+      width: 36px;
+    }
+
     mat-icon {
       font-size: 32px;
       height: 32px;
       width: 32px;
+
+      @media (max-width: 600px) {
+        font-size: 26px;
+        height: 26px;
+        width: 26px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 24px;
+        height: 24px;
+        width: 24px;
+      }
     }
 
   }
@@ -149,12 +216,30 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--mat-sys-primary);
+
+      @media (max-width: 600px) {
+        width: 28px;
+        height: 28px;
+      }
+
+      @media (max-width: 480px) {
+        width: 24px;
+        height: 24px;
+      }
     }
 
     .default-avatar {
       font-size: 32px;
       padding: 0;
       color: var(--mat-sys-primary);
+
+      @media (max-width: 600px) {
+        font-size: 28px;
+      }
+
+      @media (max-width: 480px) {
+        font-size: 24px;
+      }
     }
   }
 }

@@ -2,4 +2,95 @@ mat-paginator {
   background-color: transparent;
   border-top: 1px solid var(--mat-sys-outline-variant);
   margin-top: 16px;
+
+  // Responsive styles for mobile
+  @media (max-width: 768px) {
+    margin-top: 12px;
+
+    ::ng-deep {
+      .mat-mdc-paginator-container {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 8px 12px;
+        min-height: auto;
+      }
+
+      .mat-mdc-paginator-page-size {
+        margin-right: 0;
+        flex: 1 1 100%;
+        order: 1;
+
+        .mat-mdc-paginator-page-size-label {
+          font-size: 12px;
+          margin-right: 4px;
+        }
+
+        .mat-mdc-paginator-page-size-select {
+          font-size: 12px;
+          margin: 0 4px;
+        }
+      }
+
+      .mat-mdc-paginator-range-actions {
+        flex: 1 1 100%;
+        order: 2;
+        justify-content: space-between;
+
+        .mat-mdc-paginator-range-label {
+          font-size: 12px;
+          margin: 0 8px 0 0;
+        }
+      }
+
+      .mdc-icon-button {
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+
+        .mat-mdc-paginator-icon {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 8px;
+
+    ::ng-deep {
+      .mat-mdc-paginator-container {
+        padding: 6px 8px;
+        gap: 6px;
+      }
+
+      .mat-mdc-paginator-page-size {
+        .mat-mdc-paginator-page-size-label {
+          font-size: 11px;
+        }
+
+        .mat-mdc-paginator-page-size-select {
+          font-size: 11px;
+        }
+      }
+
+      .mat-mdc-paginator-range-actions {
+        .mat-mdc-paginator-range-label {
+          font-size: 11px;
+          margin: 0 4px 0 0;
+        }
+      }
+
+      .mdc-icon-button {
+        width: 32px;
+        height: 32px;
+        padding: 4px;
+
+        .mat-mdc-paginator-icon {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
 }

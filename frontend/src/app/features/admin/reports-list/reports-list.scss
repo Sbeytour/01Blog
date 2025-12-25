@@ -4,20 +4,57 @@
   height: 100%;
   background: var(--mat-sys-surface);
   border-radius: 12px;
+
+  @media (max-width: 768px) {
+    border-radius: 10px;
+  }
+
+  @media (max-width: 480px) {
+    border-radius: 8px;
+  }
+
   .header {
     margin-bottom: 24px;
+
+    @media (max-width: 768px) {
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 480px) {
+      margin-bottom: 12px;
+    }
 
     h2 {
       margin: 25px 0 5px 25px;
       font-size: 24px;
       font-weight: 600;
       color: var(--mat-sys-primary);
+
+      @media (max-width: 768px) {
+        margin: 20px 0 5px 16px;
+        font-size: 20px;
+      }
+
+      @media (max-width: 480px) {
+        margin: 16px 0 4px 12px;
+        font-size: 18px;
+      }
     }
 
     p {
       margin: 0 0 0 25px;
       color: var(--mat-sys-on-surface-variant);
       font-size: 14px;
+
+      @media (max-width: 768px) {
+        margin: 0 0 0 16px;
+        font-size: 13px;
+      }
+
+      @media (max-width: 480px) {
+        margin: 0 0 0 12px;
+        font-size: 12px;
+      }
     }
   }
 
@@ -46,11 +83,54 @@
 
   .table-container {
     flex: 1;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: auto;
     border-radius: 12px 12px 0 0;
+    -webkit-overflow-scrolling: touch;
+
+    // Show scrollbar on all devices
+    &::-webkit-scrollbar {
+      height: 8px;
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--mat-sys-surface-container-low);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--mat-sys-outline-variant);
+      border-radius: 4px;
+
+      &:hover {
+        background: var(--mat-sys-outline);
+      }
+    }
+
+    // For Firefox
+    scrollbar-width: thin;
+    scrollbar-color: var(--mat-sys-outline-variant) var(--mat-sys-surface-container-low);
+
+    @media (max-width: 768px) {
+      border-radius: 10px 10px 0 0;
+    }
+
+    @media (max-width: 480px) {
+      border-radius: 8px 8px 0 0;
+    }
 
     .reports-table {
       width: 100%;
+      min-width: 800px;
+
+      @media (max-width: 1200px) {
+        min-width: 700px;
+      }
+
+      @media (max-width: 768px) {
+        min-width: 200px;
+      }
 
       th {
         font-weight: 600;
@@ -167,17 +247,81 @@
 @media (max-width: 768px) {
   .reports-list-container {
     padding: 8px;
+    .table-container {
+      .reports-table {
+        max-width: 200px;
+
+        th,
+        td {
+          padding: 10px 12px;
+          font-size: 13px;
+        }
+
+        th {
+          font-size: 11px;
+        }
+
+        .description-text {
+          max-width: 100px;
+        }
+
+        .report-id,
+        .entity-name,
+        .reporter-name,
+        .reason-text {
+          font-size: 13px;
+        }
+
+        mat-chip {
+          font-size: 10px;
+          padding: 3px 8px;
+          height: 20px;
+        }
+
+        .date-text {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .reports-list-container {
+    padding: 6px;
 
     .table-container {
       .reports-table {
         th,
         td {
-          padding: 8px;
-          font-size: 13px;
+          padding: 8px 10px;
+          font-size: 12px;
+        }
+
+        th {
+          font-size: 10px;
         }
 
         .description-text {
-          max-width: 100px;
+          max-width: 80px;
+        }
+
+        .report-id,
+        .entity-name,
+        .reporter-name,
+        .reason-text {
+          font-size: 12px;
+        }
+
+        mat-chip {
+          font-size: 9px;
+          padding: 2px 6px;
+          height: 18px;
+          border-radius: 10px;
+        }
+
+        .date-text {
+          font-size: 11px;
         }
       }
     }

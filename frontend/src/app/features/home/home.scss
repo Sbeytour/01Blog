@@ -4,6 +4,7 @@
   padding: 24px;
   overflow: auto;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 
   .posts-grid {
     width: 100%;
@@ -24,10 +25,18 @@
       grid-template-columns: 1fr;
       gap: 16px;
     }
+
+    @media (max-width: 480px) {
+      gap: 12px;
+    }
   }
 
   @media (max-width: 768px) {
     padding: 16px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
   }
 }
 
@@ -43,11 +52,34 @@
   padding: 24px;
   color: var(--mat-sys-on-error-container);
 
+  @media (max-width: 768px) {
+    min-height: calc(100vh - 100px);
+    padding: 20px;
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px;
+    gap: 10px;
+  }
+
   .error-icon {
     font-size: 72px;
     width: 72px;
     height: 72px;
     color: var(--mat-sys-on-error-container);
+
+    @media (max-width: 768px) {
+      font-size: 60px;
+      width: 60px;
+      height: 60px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+    }
   }
 
   h2 {
@@ -55,6 +87,14 @@
     font-weight: 600;
     color: var(--mat-sys-on-surface);
     margin: 0;
+
+    @media (max-width: 768px) {
+      font-size: 20px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 18px;
+    }
   }
 
   p {
@@ -62,6 +102,15 @@
     color: var(--mat-sys-on-surface-variant);
     margin: 0;
     max-width: 400px;
+
+    @media (max-width: 768px) {
+      font-size: 15px;
+      max-width: 90%;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 14px;
+    }
   }
 
   button {
@@ -80,12 +129,35 @@
   text-align: center;
   padding: 24px;
 
+  @media (max-width: 768px) {
+    min-height: calc(100vh - 100px);
+    padding: 20px;
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px;
+    gap: 10px;
+  }
+
   .empty-icon {
     font-size: 96px;
     width: 96px;
     height: 96px;
     color: var(--mat-sys-primary);
     opacity: 0.3;
+
+    @media (max-width: 768px) {
+      font-size: 80px;
+      width: 80px;
+      height: 80px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+    }
   }
 
   h2 {
@@ -93,6 +165,14 @@
     font-weight: 600;
     color: var(--mat-sys-on-surface);
     margin: 0;
+
+    @media (max-width: 768px) {
+      font-size: 24px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+    }
   }
 
   p {
@@ -100,11 +180,24 @@
     color: var(--mat-sys-on-surface-variant);
     margin: 0;
     max-width: 400px;
+
+    @media (max-width: 768px) {
+      font-size: 15px;
+      max-width: 90%;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 14px;
+    }
   }
 
   .empty-subtitle {
     font-size: 14px;
     opacity: 0.8;
+
+    @media (max-width: 480px) {
+      font-size: 13px;
+    }
   }
 
   button {
