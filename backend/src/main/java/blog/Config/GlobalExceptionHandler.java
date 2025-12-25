@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import blog.dto.response.ErrorResponseDto;
@@ -18,10 +19,10 @@ import blog.exceptions.InvalidFileSizeException;
 import blog.exceptions.InvalidTokenException;
 import blog.exceptions.ReportNotFoundException;
 import blog.exceptions.ResourceNotFoundException;
-import blog.exceptions.ValidationException;
 import blog.exceptions.UserAlreadyExistsException;
 import blog.exceptions.UserNotFoundException;
 import blog.exceptions.UserisBannedException;
+import blog.exceptions.ValidationException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SecurityException;
@@ -69,7 +70,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponseDto handleInvalidFileSize(InvalidFileSizeException exception) {
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value(),"Invalid file Size");
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value(), "Invalid file Size");
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
@@ -91,14 +92,14 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponseDto handleUserisBanned(UserisBannedException exception) {
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value(),"Your acount has been banned");
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value(), "Your acount has been banned");
     }
 
     @ExceptionHandler(DisabledException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponseDto handleDisabled(DisabledException exception) {
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value(),"Your account has been banned");
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value(), "Your account has been banned");
     }
 
     //VALIDATION EXCEPTION
@@ -116,6 +117,19 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage()).collect(Collectors.joining("; "));
 
         return new ErrorResponseDto(fieldsErrors, HttpStatus.BAD_REQUEST.value(), "there is an error at your credentiel");
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseDto handleTypeMismatch(MethodArgumentTypeMismatchException exception) {
+        String paramName = exception.getName();
+        String typeName = exception.getRequiredType() != null ? exception.getRequiredType().getSimpleName() : "unknown";
+
+        return new ErrorResponseDto(
+                String.format("Invalid value for parameter '%s'. Expected type: %s", paramName, typeName),
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid parameter type"
+        );
     }
 
     //GENERIC EXCEPTIONS

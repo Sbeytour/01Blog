@@ -1,0 +1,7 @@
+@if (authService.currentUser()) {
+  <app-navbar></app-navbar>
+}
+
+<div class="not-found-container">
+  <app-error-state [config]="errorConfig"></app-error-state>
+</div>

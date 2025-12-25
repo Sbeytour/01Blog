@@ -98,7 +98,16 @@ export class PostDetail implements OnInit {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
-        this.postId = Number(id);
+        const numericId = Number(id);
+
+        // Validate that the ID is a valid positive integer
+        if (isNaN(numericId) || numericId <= 0 || !Number.isInteger(numericId)) {
+          this.isLoading.set(false);
+          this.errorConfig.set(ErrorHandler.postNotFound());
+          return;
+        }
+
+        this.postId = numericId;
         this.loadPost(this.postId);
       } else {
         this.router.navigate(['/home']);
