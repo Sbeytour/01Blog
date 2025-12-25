@@ -23,6 +23,7 @@ import blog.entity.Media;
 import blog.entity.MediaType;
 import blog.entity.Post;
 import blog.entity.User;
+import blog.exceptions.ResourceNotFoundException;
 import blog.exceptions.UserNotFoundException;
 import blog.repositories.MediaRepository;
 import blog.repositories.PostRepository;
@@ -111,9 +112,9 @@ public class PostService {
     public PostResponseDto getSinglePost(Long postId, Long currentUserId) {
         Post post = ValidationUtils.validatePostExists(postId, postRepository);
 
-        // Check if post is hidden and user is not the creator
-        if (post.isHidden() && !currentUserId.equals(post.getCreator().getId())) {
-            throw new RuntimeException("This post is not available");
+        // Check if post is hidden
+        if (post.isHidden()) {
+            throw new ResourceNotFoundException("Post not found");
         }
 
         return PostResponseDto.fromEntity(post, currentUserId);

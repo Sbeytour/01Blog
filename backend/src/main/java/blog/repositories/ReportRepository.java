@@ -17,9 +17,10 @@ import blog.entity.User;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-    // Check if a user has already reported a specific entity (regardless of status)
+    // Check if a user has already reported a specific entity with a pending status
     @Query("SELECT COUNT(r) > 0 FROM Report r WHERE r.reporter = :reporter "
-            + "AND r.reportedType = :reportedType AND r.reportedId = :reportedId")
+            + "AND r.reportedType = :reportedType AND r.reportedId = :reportedId "
+            + "AND r.status = 'PENDING'")
     boolean existsByReporterAndTypeAndReported(
             @Param("reporter") User reporter,
             @Param("reportedType") ReportedType reportedType,

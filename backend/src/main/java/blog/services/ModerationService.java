@@ -154,8 +154,7 @@ public class ModerationService {
     @Transactional
     public void deletePostByAdmin(Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFoundException("Post not found with id: "
-                + postId));
+                .orElseThrow(() -> new ResourceNotFoundException("Post not found with"));
 
         postRepository.delete(post);
     }
