@@ -85,7 +85,7 @@ npm install
 
 3. Start the development server:
 ```bash
-ng serve
+npm start
 ```
 
 The frontend application will be available at `http://localhost:4200`
