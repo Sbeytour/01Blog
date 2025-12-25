@@ -75,8 +75,8 @@ export class PostCreate implements OnInit {
     });
   }
 
-  private handleSuccess(_createdPost: Post): void {
-    this.router.navigate(['/home']);
+  private handleSuccess(createdPost: Post): void {
+    this.router.navigate(['/api/posts', createdPost.id]);
   }
 
   private handleError(error: HttpErrorResponse): void {
