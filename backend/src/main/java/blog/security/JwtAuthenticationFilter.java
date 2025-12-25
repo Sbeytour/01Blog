@@ -3,14 +3,17 @@ package blog.security;
 import java.io.IOException;
 
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import blog.entity.User;
 import blog.exceptions.UserNotFoundException;
 import blog.services.UserDetailsServiceImpl;
+import blog.util.BanMessageFormatter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,7 +48,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                if (jwtUtils.validateToken(jwt)) {
+                // Check if user is banned
+                if (userDetails instanceof User user) {
+                    if (user.isActiveBan()) {
+                        String banMessage = BanMessageFormatter.formatBanMessage(user.getBannedUntil(), user.getBanReason());
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"message\":\"" + banMessage + "\",\"status\":403,\"error\":\"Your account has been banned\"}");
+                        return;
+                    }
+                }
+
+                if (userDetails != null && jwtUtils.validateToken(jwt)) {
                     UsernamePasswordAuthenticationToken authentication
                             = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(userDetails);
@@ -56,6 +70,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     return;
                 }
             }
+        } catch (DisabledException ex) {
+            // User is banned
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"message\":\"" + ex.getMessage() + "\",\"status\":403,\"error\":\"Your account has been banned\"}");
+            return;
         } catch (UserNotFoundException ex) {
             // User not found in DB
             request.setAttribute("jwt_error", "User not found");

@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,7 +17,7 @@ import blog.exceptions.InvalidCredentialsException;
 import blog.exceptions.InvalidFileSizeException;
 import blog.exceptions.InvalidTokenException;
 import blog.exceptions.ReportNotFoundException;
-import blog.exceptions.SuccessException;
+import blog.exceptions.ValidationException;
 import blog.exceptions.UserAlreadyExistsException;
 import blog.exceptions.UserNotFoundException;
 import blog.exceptions.UserisBannedException;
@@ -85,12 +86,19 @@ public class GlobalExceptionHandler {
         return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value(),"Your acount has been banned");
     }
 
-    //VALIDATION EXCEPTION
-    @ExceptionHandler(SuccessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponseDto handleSuccessException(SuccessException exception) {
+    @ExceptionHandler(DisabledException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponseDto handleDisabled(DisabledException exception) {
 
-        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value(), "Insuccess authentication");
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.FORBIDDEN.value(),"Your account has been banned");
+    }
+
+    //VALIDATION EXCEPTION
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseDto handleValidationException(ValidationException exception) {
+
+        return new ErrorResponseDto(exception.getMessage(), HttpStatus.BAD_REQUEST.value(), "Validation failed");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

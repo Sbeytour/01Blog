@@ -2,6 +2,8 @@ package blog.services;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -13,10 +15,11 @@ import blog.dto.request.LoginRequestDto;
 import blog.dto.request.RegisterRequestDto;
 import blog.entity.User;
 import blog.exceptions.InvalidCredentialsException;
-import blog.exceptions.SuccessException;
 import blog.exceptions.UserAlreadyExistsException;
 import blog.exceptions.UserisBannedException;
+import blog.exceptions.ValidationException;
 import blog.repositories.UserRepository;
+import blog.util.BanMessageFormatter;
 
 @Service
 public class AuthService {
@@ -34,19 +37,19 @@ public class AuthService {
 
     public User saveUser(RegisterRequestDto registerRequest) {
         if (registerRequest.getUsername() == null || registerRequest.getUsername().trim().isEmpty()) {
-            throw new SuccessException("Username is required");
+            throw new ValidationException("Username is required");
         }
         if (registerRequest.getFirstName() == null || registerRequest.getFirstName().trim().isEmpty()) {
-            throw new SuccessException("FirstName is required");
+            throw new ValidationException("FirstName is required");
         }
         if (registerRequest.getLastName() == null || registerRequest.getLastName().trim().isEmpty()) {
-            throw new SuccessException("LastName is required");
+            throw new ValidationException("LastName is required");
         }
         if (registerRequest.getEmail() == null || registerRequest.getEmail().trim().isEmpty()) {
-            throw new SuccessException("Email is required");
+            throw new ValidationException("Email is required");
         }
         if (registerRequest.getPassword() == null || registerRequest.getPassword().isEmpty()) {
-            throw new SuccessException("Password is required");
+            throw new ValidationException("Password is required");
         }
 
         if (userRespository.existsByUsername(registerRequest.getUsername())
@@ -69,14 +72,22 @@ public class AuthService {
     }
 
     public User login(LoginRequestDto loginRequest) {
+        // First, check if user exists and is banned
+        User user = userRespository.findByUsernameOrEmail(loginRequest.getIdentifier());
+        if (user != null && user.isActiveBan()) {
+            String banMessage = BanMessageFormatter.formatBanMessage(user.getBannedUntil(), user.getBanReason());
+            throw new UserisBannedException(banMessage);
+        }
+
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getIdentifier(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             return (User) authentication.getPrincipal();
-        } catch (UserisBannedException e) {
-            throw new UserisBannedException("User account is banned");
+        } catch (LockedException | DisabledException e) {
+            // User account is locked/disabled (banned)
+            throw new UserisBannedException(e.getMessage());
         } catch (BadCredentialsException e) {
             throw new InvalidCredentialsException("Invalid username/email or password");
         } catch (AuthenticationException e) {

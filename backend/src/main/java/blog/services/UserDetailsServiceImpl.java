@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import blog.entity.User;
 import blog.exceptions.UserNotFoundException;
 import blog.repositories.UserRepository;
+import blog.util.BanMessageFormatter;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -29,15 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             }
 
             if (user.isActiveBan()) {
-                String banMessage = "Your account has been banned";
-                if (user.getBannedUntil() != null) {
-                    banMessage += " until " + user.getBannedUntil();
-                } else {
-                    banMessage += " permanently";
-                }
-                if (user.getBanReason() != null) {
-                    banMessage += ". Reason: " + user.getBanReason();
-                }
+                String banMessage = BanMessageFormatter.formatBanMessage(user.getBannedUntil(), user.getBanReason());
                 throw new DisabledException(banMessage);
             }
 
